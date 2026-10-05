@@ -1,0 +1,2438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Doc 4 — Database Design | ORCA Research Dossier</title>
+<meta name="description" content="ORCA &#8212; Doc 4 — Database Design. Complete research and architecture documentation.">
+<link rel="stylesheet" type="text/css" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="mermaid.min.js"></script>
+<script>
+if (typeof mermaid === 'undefined') {
+  document.write('<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"><\/script>');
+}
+</script>
+</head>
+<body>
+
+<header id="dhead" class="container">
+  <div class="row">
+    <div id="dpic">
+      <img src="ORCA_architecture.svg" class="ppic" alt="ORCA" onerror="this.style.background='#f0f0f0'" />
+    </div>
+    <div id="ddesc">
+      <h1>ORCA</h1>
+      <h2>Doc 4 — Database Design</h2>
+      <nav class="doc-nav">
+        <a href="index.html">Home</a>
+<a href="architecture.html">Architecture Diagram</a>
+<a href="doc1.html">User Flows</a>
+<a href="doc2.html">Agentic System</a>
+<a href="doc3.html">Data Pipeline</a>
+<a href="doc4.html" class="active">Database</a>
+<a href="doc5.html">Implementation</a>
+<a href="doc6.html">Memory & Context</a>
+<a href="fisher.html">Fisher Research</a>
+<a href="data-sources.html">Data Sources</a>
+
+      </nav>
+    </div>
+  </div>
+</header>
+
+<hr>
+
+<div class="page-with-toc">
+  <!-- Sidebar TOC -->
+  <aside class="toc-sidebar">
+    <div class="toc-sticky">
+      <div class="toc-header">
+        <span class="toc-label">&#9679; Table of Contents</span>
+        <a class="toc-top-link" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593; TOP</a>
+      </div>
+      <ul class="toc-list" id="tocList">
+        <li><a href="#section-1" data-target="section-1">ORCA Architecture Document 4 — Database Design</a></li>
+<li><a href="#section-2" data-target="section-2">0. Storage Architecture Overview</a></li>
+<li><a href="#section-3" class="toc-h3" data-target="section-3">The Rule</a></li>
+<li><a href="#section-4" data-target="section-4">1. Entity Relationship Overview</a></li>
+<li><a href="#section-5" data-target="section-5">2. PostgreSQL + PostGIS — Complete Schema</a></li>
+<li><a href="#section-6" data-target="section-6">2.1 Extensions Required</a></li>
+<li><a href="#section-7" data-target="section-7">2.2 Data Pipeline Tables</a></li>
+<li><a href="#section-8" class="toc-h3" data-target="section-8">data_sources</a></li>
+<li><a href="#section-9" class="toc-h3" data-target="section-9">datasets</a></li>
+<li><a href="#section-10" class="toc-h3" data-target="section-10">ingestion_records</a></li>
+<li><a href="#section-11" class="toc-h3" data-target="section-11">validation_records</a></li>
+<li><a href="#section-12" class="toc-h3" data-target="section-12">quality_records</a></li>
+<li><a href="#section-13" data-target="section-13">2.3 Semantic Crosswalk Tables</a></li>
+<li><a href="#section-14" class="toc-h3" data-target="section-14">canonical_variables</a></li>
+<li><a href="#section-15" class="toc-h3" data-target="section-15">variable_mappings</a></li>
+<li><a href="#section-16" data-target="section-16">2.4 Spatial / GIS Tables</a></li>
+<li><a href="#section-17" class="toc-h3" data-target="section-17">coastal_gazetteer</a></li>
+<li><a href="#section-18" class="toc-h3" data-target="section-18">marine_boundaries</a></li>
+<li><a href="#section-19" class="toc-h3" data-target="section-19">geofences</a></li>
+<li><a href="#section-20" class="toc-h3" data-target="section-20">ports_harbours</a></li>
+<li><a href="#section-21" data-target="section-21">2.5 Evidence & Provenance Tables</a></li>
+<li><a href="#section-22" class="toc-h3" data-target="section-22">evidence_records</a></li>
+<li><a href="#section-23" class="toc-h3" data-target="section-23">claims</a></li>
+<li><a href="#section-24" data-target="section-24">2.6 Workflow Engine Tables</a></li>
+<li><a href="#section-25" class="toc-h3" data-target="section-25">workflows</a></li>
+<li><a href="#section-26" class="toc-h3" data-target="section-26">tasks</a></li>
+<li><a href="#section-27" class="toc-h3" data-target="section-27">tool_executions</a></li>
+<li><a href="#section-28" data-target="section-28">2.7 Marine State Table</a></li>
+<li><a href="#section-29" class="toc-h3" data-target="section-29">marine_states</a></li>
+<li><a href="#section-30" data-target="section-30">2.8 Alert System Tables</a></li>
+<li><a href="#section-31" class="toc-h3" data-target="section-31">alert_subscriptions</a></li>
+<li><a href="#section-32" class="toc-h3" data-target="section-32">alerts</a></li>
+<li><a href="#section-33" data-target="section-33">2.9 User & Session Tables</a></li>
+<li><a href="#section-34" class="toc-h3" data-target="section-34">users</a></li>
+<li><a href="#section-35" class="toc-h3" data-target="section-35">sessions</a></li>
+<li><a href="#section-36" class="toc-h3" data-target="section-36">conversations</a></li>
+<li><a href="#section-37" class="toc-h3" data-target="section-37">conversation_turns</a></li>
+<li><a href="#section-38" data-target="section-38">3. Object Storage — S3/MinIO Bucket Structure</a></li>
+<li><a href="#section-39" class="toc-h3" data-target="section-39">Bucket Rules</a></li>
+<li><a href="#section-40" class="toc-h3" data-target="section-40">Object Naming Convention</a></li>
+<li><a href="#section-41" data-target="section-41">4. Parquet — Analytical Tables</a></li>
+<li><a href="#section-42" class="toc-h3" data-target="section-42">Observation Time-Series Schema (Parquet)</a></li>
+<li><a href="#section-43" class="toc-h3" data-target="section-43">Climatology Schema (Parquet)</a></li>
+<li><a href="#section-44" data-target="section-44">5. Redis — Ephemeral State</a></li>
+<li><a href="#section-45" class="toc-h3" data-target="section-45">Key Patterns</a></li>
+<li><a href="#section-46" class="toc-h3" data-target="section-46">TTL Policies</a></li>
+<li><a href="#section-47" class="toc-h3" data-target="section-47">What NEVER Goes in Redis</a></li>
+<li><a href="#section-48" data-target="section-48">6. Indexing Strategy</a></li>
+<li><a href="#section-49" data-target="section-49">PostgreSQL Indexes Summary</a></li>
+<li><a href="#section-50" data-target="section-50">Critical Query Patterns</a></li>
+<li><a href="#section-51" data-target="section-51">7. Data Lifecycle & Retention</a></li>
+<li><a href="#section-52" class="toc-h3" data-target="section-52">Retention Policy</a></li>
+<li><a href="#section-53" data-target="section-53">8. Pipeline Step ↔ Database Mapping</a></li>
+<li><a href="#section-54" data-target="section-54">9. Seed Data — V1 Gujarat Prototype</a></li>
+<li><a href="#section-55" class="toc-h3" data-target="section-55">Data Sources (Seed)</a></li>
+<li><a href="#section-56" class="toc-h3" data-target="section-56">Canonical Variables (Seed)</a></li>
+<li><a href="#section-57" data-target="section-57">10. Summary — Database Design Principles</a></li>
+<li><a href="#section-58" data-target="section-58">11. PS Fulfillment Verification - Database Document</a></li>
+<li><a href="#section-59" class="toc-h3" data-target="section-59">Database Tables -> Hero Investigation Loop</a></li>
+<li><a href="#section-60" data-target="section-60">12. NEW DATABASE TABLES: Event, Decision, Scenario, Uncertainty, Investigation</a></li>
+<li><a href="#section-61" data-target="section-61">12.1 Event Intelligence Tables</a></li>
+<li><a href="#section-62" data-target="section-62">12.2 Decision Trade-off Tables</a></li>
+<li><a href="#section-63" data-target="section-63">12.3 Scenario Tables</a></li>
+<li><a href="#section-64" data-target="section-64">12.4 Marine State Versioning Tables</a></li>
+<li><a href="#section-65" data-target="section-65">12.5 Uncertainty Tables</a></li>
+<li><a href="#section-66" data-target="section-66">12.6 Investigation Event Tables</a></li>
+<li><a href="#section-67" data-target="section-67">12.7 Updated Table Summary</a></li>
+<li><a href="#section-68" data-target="section-68">13. MEMORY AND CONTEXT TABLES (from Doc 6 Integration)</a></li>
+<li><a href="#section-69" data-target="section-69">13.1 Additional Extension Required</a></li>
+<li><a href="#section-70" data-target="section-70">13.2 Memory Items</a></li>
+<li><a href="#section-71" data-target="section-71">13.3 Memory Embeddings</a></li>
+<li><a href="#section-72" data-target="section-72">13.4 Memory Links</a></li>
+<li><a href="#section-73" data-target="section-73">13.5 Memory Events</a></li>
+<li><a href="#section-74" data-target="section-74">13.6 Updated Storage Architecture Overview</a></li>
+<li><a href="#section-75" data-target="section-75">14. ECOLOGICALLY SENSITIVE ZONES (PS Explicit Requirement)</a></li>
+<li><a href="#section-76" data-target="section-76">14.1 Updated Spatial Constraint Layers</a></li>
+<li><a href="#section-77" data-target="section-77">14.2 Updated marine_boundaries Boundary Types</a></li>
+<li><a href="#section-78" data-target="section-78">14.3 Ecologically Sensitive Zones Data</a></li>
+<li><a href="#section-79" data-target="section-79">14.4 Updated Geospatial Agent Tools</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <div class="toc-content">
+    <div class="breadcrumb"><a href="index.html">Home</a> / Doc 4 — Database Design</div>
+
+    <div class="md-content">
+<h1 id="section-1">ORCA Architecture Document 4 — Database Design</h1>
+
+<p><strong>Project:</strong> ORCA — Marine EcOsystem Reasoning with Collaborative Agents</p>
+<p><strong>Problem Statement ID:</strong> 26176</p>
+<p><strong>Organization:</strong> ISRO / Department of Space</p>
+<p><strong>Document:</strong> Complete Database Schema, Storage Layout, Indexing & Data Lifecycle</p>
+<p><strong>Status:</strong> Planning Phase — Architecture Design</p>
+<p><strong>Date:</strong> 22 September 2026 (Updated: 26 September 2026)</p>
+<p><strong>PS Alignment:</strong> This document defines the storage backbone that makes ORCA's evidence-grounded decisions possible. Every table exists to serve one purpose: turning raw marine data into trustworthy evidence that the agentic investigation loop can cite, trace, and explain.</p>
+
+<hr>
+
+<h1 id="section-2">0. Storage Architecture Overview</h1>
+
+<p>ORCA uses <strong>four distinct storage technologies</strong>, each chosen for a specific data class:</p>
+
+<pre><code class="language-text">┌────────────────────────────────────────────────────────────────────────┐
+│                        ORCA STORAGE ARCHITECTURE                       │
+├───────────────────┬────────────────────┬──────────────┬────────────────┤
+│   POSTGRESQL      │   OBJECT STORAGE   │   PARQUET    │     REDIS      │
+│   + POSTGIS       │   S3 / MinIO       │   Analytics  │     Cache      │
+├───────────────────┼────────────────────┼──────────────┼────────────────┤
+│ Metadata          │ Raw scientific     │ Historical   │ Hot cache      │
+│ Workflows         │ NetCDF, Zarr       │ time-series  │ Session state  │
+│ Evidence          │ GeoTIFF, HDF       │ Observations │ Workflow state │
+│ Source registry   │ GRIB, CSV, JSON    │ Vessel data  │ In-flight dedup│
+│ Dataset catalog   │ Normalized chunks  │ Climatology  │ Rate limits    │
+│ Spatial geometry  │ Derived artifacts  │ Feature      │ Idempotency    │
+│ GIS boundaries    │ Raster tiles (COG) │ tables       │ Query results  │
+│ Ports &amp; harbours  │ Climatology ref    │              │ Lock state     │
+│ Users &amp; sessions  │                    │              │                │
+│ Alerts            │                    │              │                │
+│ Marine State refs │                    │              │                │
+│ Memory + Context  │                    │              │                │
+└───────────────────┴────────────────────┴──────────────┴────────────────┘</code></pre>
+
+<h3 id="section-3">The Rule</h3>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>Data Class</th><th>Goes To</th><th>Why</th></tr></thead>
+<tbody><tr><td>Raw scientific files</td><td><strong>S3/MinIO</strong></td><td>Immutable binary blobs, versioned, no query needed on content</td></tr>
+<tr><td>Structured metadata, relationships, GIS</td><td><strong>PostgreSQL + PostGIS</strong></td><td>Relational integrity, spatial indexing, transactional consistency</td></tr>
+<tr><td>Large analytical time-series</td><td><strong>Parquet</strong></td><td>Columnar scan performance, cheap bulk storage</td></tr>
+<tr><td>Ephemeral operational state</td><td><strong>Redis</strong></td><td>Sub-millisecond access, automatic expiry, no durability needed</td></tr>
+</tbody></table></div>
+
+<hr>
+
+<h1 id="section-4">1. Entity Relationship Overview</h1>
+
+<div class="mermaid-container" id="doc4-mermaid-1">
+  <div class="mermaid-toolbar">
+    <div class="mermaid-title"><span class="mermaid-icon">&#9881;</span> Architecture Diagram</div>
+    <div class="mermaid-controls">
+      <button type="button" class="mm-btn" onclick="mermaidZoom('doc4-mermaid-1', 1.25)" title="Zoom In">&#65291; Zoom</button>
+      <button type="button" class="mm-btn" onclick="mermaidZoom('doc4-mermaid-1', 0.8)" title="Zoom Out">&#65293;</button>
+      <button type="button" class="mm-btn" onclick="mermaidReset('doc4-mermaid-1')" title="Fit to Screen">&#x26F6; Fit</button>
+      <button type="button" class="mm-btn" onclick="mermaidFullscreen('doc4-mermaid-1')" title="Expand Fullscreen">&#x2922; Expand</button>
+      <button type="button" class="mm-btn mm-btn-copy" onclick="mermaidCopy('doc4-mermaid-1')" title="Copy Mermaid Syntax">Copy Code</button>
+      <button type="button" class="mm-btn" onclick="mermaidToggleCode('doc4-mermaid-1')" title="Toggle Source Code">&lt;/&gt; Code</button>
+    </div>
+  </div>
+  <div class="mermaid-viewport" id="doc4-mermaid-1-viewport">
+    <div class="mermaid-stage" id="doc4-mermaid-1-stage">
+      <div style="color: #64748b; font-size: 13px; padding: 20px;">Rendering diagram...</div>
+    </div>
+    <pre class="mermaid-source" style="display:none;">erDiagram
+    DATA_SOURCES ||--o{ DATASETS : provides
+    DATASETS ||--o{ INGESTION_RECORDS : ingested_as
+    INGESTION_RECORDS ||--|| VALIDATION_RECORDS : validated_by
+    VALIDATION_RECORDS ||--|| QUALITY_RECORDS : quality_checked_by
+    INGESTION_RECORDS ||--o{ EVIDENCE_RECORDS : produces
+    EVIDENCE_RECORDS ||--o{ CLAIMS : supports
+
+    WORKFLOWS ||--o{ TASKS : contains
+    TASKS ||--o{ TOOL_EXECUTIONS : executes
+    TOOL_EXECUTIONS ||--o{ EVIDENCE_RECORDS : generates
+    WORKFLOWS ||--|| MARINE_STATES : produces
+
+    USERS ||--o{ SESSIONS : owns
+    SESSIONS ||--o{ CONVERSATIONS : contains
+    CONVERSATIONS ||--o{ CONVERSATION_TURNS : has
+
+    USERS ||--o{ ALERT_SUBSCRIPTIONS : subscribes
+    ALERT_SUBSCRIPTIONS ||--o{ ALERTS : triggers
+
+    CANONICAL_VARIABLES ||--o{ VARIABLE_MAPPINGS : mapped_by
+    DATASETS ||--o{ VARIABLE_MAPPINGS : describes
+
+    COASTAL_GAZETTEER }o--|| MARINE_BOUNDARIES : within
+    GEOFENCES }o--|| MARINE_BOUNDARIES : overlaps
+    PORTS_HARBOURS }o--|| COASTAL_GAZETTEER : near</pre>
+  </div>
+  <div class="mermaid-code" id="doc4-mermaid-1-code" style="display:none;">
+    <pre><code>erDiagram
+    DATA_SOURCES ||--o{ DATASETS : provides
+    DATASETS ||--o{ INGESTION_RECORDS : ingested_as
+    INGESTION_RECORDS ||--|| VALIDATION_RECORDS : validated_by
+    VALIDATION_RECORDS ||--|| QUALITY_RECORDS : quality_checked_by
+    INGESTION_RECORDS ||--o{ EVIDENCE_RECORDS : produces
+    EVIDENCE_RECORDS ||--o{ CLAIMS : supports
+
+    WORKFLOWS ||--o{ TASKS : contains
+    TASKS ||--o{ TOOL_EXECUTIONS : executes
+    TOOL_EXECUTIONS ||--o{ EVIDENCE_RECORDS : generates
+    WORKFLOWS ||--|| MARINE_STATES : produces
+
+    USERS ||--o{ SESSIONS : owns
+    SESSIONS ||--o{ CONVERSATIONS : contains
+    CONVERSATIONS ||--o{ CONVERSATION_TURNS : has
+
+    USERS ||--o{ ALERT_SUBSCRIPTIONS : subscribes
+    ALERT_SUBSCRIPTIONS ||--o{ ALERTS : triggers
+
+    CANONICAL_VARIABLES ||--o{ VARIABLE_MAPPINGS : mapped_by
+    DATASETS ||--o{ VARIABLE_MAPPINGS : describes
+
+    COASTAL_GAZETTEER }o--|| MARINE_BOUNDARIES : within
+    GEOFENCES }o--|| MARINE_BOUNDARIES : overlaps
+    PORTS_HARBOURS }o--|| COASTAL_GAZETTEER : near</code></pre>
+  </div>
+</div>
+
+<hr>
+
+<h1 id="section-5">2. PostgreSQL + PostGIS — Complete Schema</h1>
+
+<h2 id="section-6">2.1 Extensions Required</h2>
+
+<pre><code class="language-sql">CREATE EXTENSION IF NOT EXISTS postgis;
+CREATE EXTENSION IF NOT EXISTS postgis_topology;
+CREATE EXTENSION IF NOT EXISTS pg_trgm;       -- fuzzy text search for gazetteer
+CREATE EXTENSION IF NOT EXISTS btree_gist;    -- exclusion constraints
+CREATE EXTENSION IF NOT EXISTS &quot;uuid-ossp&quot;;   -- UUID generation
+CREATE EXTENSION IF NOT EXISTS vector;         -- pgvector for semantic memory retrieval</code></pre>
+
+<hr>
+
+<h2 id="section-7">2.2 Data Pipeline Tables</h2>
+
+<h3 id="section-8">data_sources</h3>
+
+<p>The registry of all external data providers ORCA can connect to.</p>
+
+<pre><code class="language-sql">CREATE TABLE data_sources (
+    source_id           TEXT PRIMARY KEY,              -- e.g. &#x27;incois&#x27;, &#x27;mosdac&#x27;, &#x27;imd&#x27;
+    display_name        TEXT NOT NULL,                 -- e.g. &#x27;INCOIS&#x27;
+    organization        TEXT NOT NULL,                 -- e.g. &#x27;Indian National Centre for Ocean Information Services&#x27;
+    source_type         TEXT NOT NULL                  -- &#x27;government_ocean&#x27; | &#x27;government_weather&#x27; | &#x27;satellite&#x27; | &#x27;international&#x27; | &#x27;gis&#x27;
+                        CHECK (source_type IN (&#x27;government_ocean&#x27;,&#x27;government_weather&#x27;,&#x27;satellite&#x27;,&#x27;international&#x27;,&#x27;gis&#x27;,&#x27;research&#x27;)),
+    base_url            TEXT,                          -- e.g. &#x27;https://erddap.incois.gov.in&#x27;
+    access_method       TEXT NOT NULL                  -- &#x27;erddap&#x27; | &#x27;rest_api&#x27; | &#x27;ftp&#x27; | &#x27;wms&#x27; | &#x27;wfs&#x27; | &#x27;opendap&#x27; | &#x27;download&#x27;
+                        CHECK (access_method IN (&#x27;erddap&#x27;,&#x27;rest_api&#x27;,&#x27;ftp&#x27;,&#x27;wms&#x27;,&#x27;wfs&#x27;,&#x27;opendap&#x27;,&#x27;download&#x27;,&#x27;static&#x27;)),
+    authentication      TEXT DEFAULT &#x27;none&#x27;            -- &#x27;none&#x27; | &#x27;api_key&#x27; | &#x27;oauth&#x27; | &#x27;token&#x27;
+                        CHECK (authentication IN (&#x27;none&#x27;,&#x27;api_key&#x27;,&#x27;oauth&#x27;,&#x27;token&#x27;)),
+    trust_class         TEXT NOT NULL DEFAULT &#x27;STANDARD&#x27;
+                        CHECK (trust_class IN (&#x27;AUTHORITATIVE&#x27;,&#x27;OFFICIAL&#x27;,&#x27;STANDARD&#x27;,&#x27;SUPPLEMENTARY&#x27;,&#x27;RESEARCH&#x27;)),
+    rate_limit          TEXT,                          -- e.g. &#x27;10/min&#x27;, &#x27;100/hour&#x27;
+    health_status       TEXT DEFAULT &#x27;UNKNOWN&#x27;         -- &#x27;HEALTHY&#x27; | &#x27;DEGRADED&#x27; | &#x27;DOWN&#x27; | &#x27;UNKNOWN&#x27;
+                        CHECK (health_status IN (&#x27;HEALTHY&#x27;,&#x27;DEGRADED&#x27;,&#x27;DOWN&#x27;,&#x27;UNKNOWN&#x27;)),
+    last_health_check   TIMESTAMPTZ,
+    last_verified       DATE,
+    notes               TEXT,
+    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);</code></pre>
+
+<h3 id="section-9">datasets</h3>
+
+<p>The catalog of every dataset ORCA knows about — what variables, where, when, how.</p>
+
+<pre><code class="language-sql">CREATE TABLE datasets (
+    dataset_id              TEXT PRIMARY KEY,               -- e.g. &#x27;incois_sst_daily&#x27;
+    source_id               TEXT NOT NULL REFERENCES data_sources(source_id),
+    display_name            TEXT NOT NULL,                  -- e.g. &#x27;INCOIS Daily SST (L3)&#x27;
+    variables               TEXT[] NOT NULL,                -- e.g. &#x27;{sea_surface_temperature,quality_flag}&#x27;
+    category                TEXT NOT NULL                   -- &#x27;ocean&#x27; | &#x27;weather&#x27; | &#x27;fisheries&#x27; | &#x27;hazard&#x27; | &#x27;gis&#x27; | &#x27;bathymetry&#x27;
+                            CHECK (category IN (&#x27;ocean&#x27;,&#x27;weather&#x27;,&#x27;fisheries&#x27;,&#x27;hazard&#x27;,&#x27;gis&#x27;,&#x27;bathymetry&#x27;,&#x27;ecosystem&#x27;,&#x27;advisory&#x27;)),
+    data_type               TEXT NOT NULL                   -- &#x27;observation&#x27; | &#x27;forecast&#x27; | &#x27;advisory&#x27; | &#x27;reanalysis&#x27; | &#x27;static&#x27; | &#x27;historical&#x27;
+                            CHECK (data_type IN (&#x27;observation&#x27;,&#x27;forecast&#x27;,&#x27;advisory&#x27;,&#x27;reanalysis&#x27;,&#x27;static&#x27;,&#x27;historical&#x27;)),
+    processing_level        TEXT,                           -- &#x27;L1&#x27; | &#x27;L2&#x27; | &#x27;L3&#x27; | &#x27;L4&#x27; | &#x27;derived&#x27;
+    format                  TEXT NOT NULL,                  -- &#x27;netcdf&#x27; | &#x27;zarr&#x27; | &#x27;geotiff&#x27; | &#x27;hdf&#x27; | &#x27;grib&#x27; | &#x27;csv&#x27; | &#x27;json&#x27; | &#x27;geojson&#x27; | &#x27;shapefile&#x27;
+    spatial_coverage_bbox   DOUBLE PRECISION[4],            -- [lon_min, lat_min, lon_max, lat_max]
+    spatial_coverage_geom   GEOMETRY(Polygon, 4326),        -- PostGIS geometry for spatial queries
+    spatial_resolution_km   DOUBLE PRECISION,               -- e.g. 1.0, 4.0, 25.0
+    temporal_start          DATE,
+    temporal_end            DATE,                            -- NULL = ongoing/present
+    temporal_resolution     TEXT,                           -- &#x27;hourly&#x27; | &#x27;3hourly&#x27; | &#x27;6hourly&#x27; | &#x27;daily&#x27; | &#x27;weekly&#x27; | &#x27;monthly&#x27; | &#x27;static&#x27;
+    update_frequency        TEXT,                           -- &#x27;realtime&#x27; | &#x27;hourly&#x27; | &#x27;daily&#x27; | &#x27;weekly&#x27; | &#x27;monthly&#x27; | &#x27;on_demand&#x27;
+    access_endpoint         TEXT,                           -- specific API/URL for this dataset
+    access_protocol_detail  JSONB,                         -- protocol-specific config (ERDDAP dataset_id, API params etc.)
+    role                    TEXT DEFAULT &#x27;primary&#x27;          -- &#x27;primary&#x27; | &#x27;fallback&#x27; | &#x27;supplementary&#x27; | &#x27;reference&#x27;
+                            CHECK (role IN (&#x27;primary&#x27;,&#x27;fallback&#x27;,&#x27;supplementary&#x27;,&#x27;reference&#x27;)),
+    fallback_dataset_id     TEXT REFERENCES datasets(dataset_id),
+    quality_info            TEXT,
+    license                 TEXT,
+    version                 TEXT,
+    is_active               BOOLEAN DEFAULT TRUE,
+    last_verified           DATE,
+    created_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at              TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_datasets_source ON datasets(source_id);
+CREATE INDEX idx_datasets_category ON datasets(category);
+CREATE INDEX idx_datasets_variables ON datasets USING GIN(variables);
+CREATE INDEX idx_datasets_spatial ON datasets USING GIST(spatial_coverage_geom);</code></pre>
+
+<h3 id="section-10">ingestion_records</h3>
+
+<p>Every time ORCA retrieves data from a source, it creates an immutable ingestion record.</p>
+
+<pre><code class="language-sql">CREATE TABLE ingestion_records (
+    ingestion_id        UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    dataset_id          TEXT NOT NULL REFERENCES datasets(dataset_id),
+    workflow_id         UUID,                          -- which workflow triggered this retrieval
+    retrieval_id        UUID,                          -- retrieval request ID (for dedup)
+
+    -- Raw payload reference (S3/MinIO)
+    raw_payload_ref     TEXT NOT NULL,                  -- s3://orca-raw/incois/sst/2026-09-21/...
+    raw_checksum        TEXT NOT NULL,                  -- sha256:abc123...
+    raw_format          TEXT NOT NULL,                  -- &#x27;netcdf&#x27; | &#x27;zarr&#x27; | &#x27;geotiff&#x27; etc.
+    byte_size           BIGINT,
+
+    -- What was requested
+    request_region_bbox DOUBLE PRECISION[4],
+    request_region_geom GEOMETRY(Polygon, 4326),
+    request_time_start  TIMESTAMPTZ,
+    request_time_end    TIMESTAMPTZ,
+    request_variables   TEXT[],
+    request_depth       DOUBLE PRECISION,
+
+    -- What was received
+    received_variables  TEXT[],
+    received_time_start TIMESTAMPTZ,
+    received_time_end   TIMESTAMPTZ,
+    received_lat_min    DOUBLE PRECISION,
+    received_lat_max    DOUBLE PRECISION,
+    received_lon_min    DOUBLE PRECISION,
+    received_lon_max    DOUBLE PRECISION,
+    spatial_resolution  DOUBLE PRECISION,               -- degrees
+    time_dimensions     INTEGER,
+    lat_dimensions      INTEGER,
+    lon_dimensions      INTEGER,
+
+    -- Status
+    status              TEXT NOT NULL DEFAULT &#x27;INGESTED&#x27;
+                        CHECK (status IN (&#x27;INGESTED&#x27;,&#x27;VALIDATED&#x27;,&#x27;QUALITY_CHECKED&#x27;,&#x27;NORMALIZED&#x27;,&#x27;FAILED&#x27;,&#x27;REJECTED&#x27;)),
+    immutable           BOOLEAN NOT NULL DEFAULT TRUE,
+
+    ingested_at         TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    source_latency_ms   INTEGER                        -- how long the source took to respond
+);
+
+CREATE INDEX idx_ingestion_dataset ON ingestion_records(dataset_id);
+CREATE INDEX idx_ingestion_workflow ON ingestion_records(workflow_id);
+CREATE INDEX idx_ingestion_time ON ingestion_records(ingested_at);
+CREATE INDEX idx_ingestion_spatial ON ingestion_records USING GIST(request_region_geom);</code></pre>
+
+<h3 id="section-11">validation_records</h3>
+
+<p>Structural validation results (Step 2 of the pipeline).</p>
+
+<pre><code class="language-sql">CREATE TABLE validation_records (
+    validation_id       UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    ingestion_id        UUID NOT NULL REFERENCES ingestion_records(ingestion_id),
+
+    overall_status      TEXT NOT NULL                   -- &#x27;PASS&#x27; | &#x27;PARTIAL&#x27; | &#x27;FAIL&#x27;
+                        CHECK (overall_status IN (&#x27;PASS&#x27;,&#x27;PARTIAL&#x27;,&#x27;FAIL&#x27;)),
+
+    -- Individual checks stored as JSONB array
+    checks              JSONB NOT NULL,
+    /*
+        Example checks array:
+        [
+            {&quot;check&quot;: &quot;file_parse&quot;, &quot;status&quot;: &quot;PASS&quot;},
+            {&quot;check&quot;: &quot;required_variables&quot;, &quot;status&quot;: &quot;PASS&quot;, &quot;expected&quot;: [...], &quot;found&quot;: [...]},
+            {&quot;check&quot;: &quot;coordinates&quot;, &quot;status&quot;: &quot;PASS&quot;, &quot;found&quot;: [&quot;latitude&quot;,&quot;longitude&quot;]},
+            {&quot;check&quot;: &quot;time_dimension&quot;, &quot;status&quot;: &quot;PASS&quot;},
+            {&quot;check&quot;: &quot;dimensions&quot;, &quot;status&quot;: &quot;PASS&quot;, &quot;expected&quot;: {...}},
+            {&quot;check&quot;: &quot;schema_match&quot;, &quot;status&quot;: &quot;PASS&quot;, &quot;expected_schema_version&quot;: &quot;incois_sst_v2&quot;}
+        ]
+    */
+
+    failed_checks       TEXT[],                        -- list of check names that failed
+    warning_message     TEXT,
+
+    validated_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_validation_ingestion ON validation_records(ingestion_id);
+CREATE INDEX idx_validation_status ON validation_records(overall_status);</code></pre>
+
+<h3 id="section-12">quality_records</h3>
+
+<p>Scientific quality assessment results (Step 3 of the pipeline).</p>
+
+<pre><code class="language-sql">CREATE TABLE quality_records (
+    quality_id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    ingestion_id        UUID NOT NULL REFERENCES ingestion_records(ingestion_id),
+    variable            TEXT NOT NULL,                  -- which canonical variable was assessed
+
+    -- Quality assessment
+    overall_quality     TEXT NOT NULL                   -- &#x27;VALID&#x27; | &#x27;SUSPECT&#x27; | &#x27;MISSING&#x27; | &#x27;STALE&#x27; | &#x27;INVALID&#x27; | &#x27;UNAVAILABLE&#x27;
+                        CHECK (overall_quality IN (&#x27;VALID&#x27;,&#x27;SUSPECT&#x27;,&#x27;MISSING&#x27;,&#x27;STALE&#x27;,&#x27;INVALID&#x27;,&#x27;UNAVAILABLE&#x27;)),
+    quality_score       DOUBLE PRECISION,               -- 0.0 to 1.0
+
+    -- Range validity
+    range_check_status  TEXT,                           -- &#x27;PASS&#x27; | &#x27;FAIL&#x27; | &#x27;WARNING&#x27;
+    out_of_range_count  INTEGER DEFAULT 0,
+    total_points        INTEGER,
+
+    -- Quality flags from source
+    flag_valid_count    INTEGER,
+    flag_suspect_count  INTEGER,
+    flag_bad_count      INTEGER,
+    flag_missing_count  INTEGER,
+    valid_fraction      DOUBLE PRECISION,               -- fraction of valid observations
+
+    -- Temporal freshness
+    observation_time    TIMESTAMPTZ,
+    age_hours           DOUBLE PRECISION,
+    freshness           TEXT                            -- &#x27;FRESH&#x27; | &#x27;ACCEPTABLE&#x27; | &#x27;STALE&#x27; | &#x27;EXPIRED&#x27;
+                        CHECK (freshness IN (&#x27;FRESH&#x27;,&#x27;ACCEPTABLE&#x27;,&#x27;STALE&#x27;,&#x27;EXPIRED&#x27;)),
+    freshness_threshold_hours DOUBLE PRECISION,
+
+    -- Spatial coverage
+    coverage_fraction   DOUBLE PRECISION,               -- 0.0 to 1.0
+
+    -- Processing level
+    processing_level    TEXT,                           -- &#x27;L1&#x27; | &#x27;L2&#x27; | &#x27;L3&#x27; | &#x27;L4&#x27;
+
+    -- Full check details
+    checks_detail       JSONB,                         -- detailed per-check results
+
+    quality_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_quality_ingestion ON quality_records(ingestion_id);
+CREATE INDEX idx_quality_variable ON quality_records(variable);
+CREATE INDEX idx_quality_overall ON quality_records(overall_quality);</code></pre>
+
+<hr>
+
+<h2 id="section-13">2.3 Semantic Crosswalk Tables</h2>
+
+<h3 id="section-14">canonical_variables</h3>
+
+<p>The master list of ORCA's unified variable names and units.</p>
+
+<pre><code class="language-sql">CREATE TABLE canonical_variables (
+    canonical_name      TEXT PRIMARY KEY,               -- e.g. &#x27;sea_surface_temperature&#x27;
+    display_name        TEXT NOT NULL,                  -- e.g. &#x27;Sea Surface Temperature&#x27;
+    canonical_unit      TEXT NOT NULL,                  -- e.g. &#x27;degC&#x27;
+    category            TEXT NOT NULL,                  -- &#x27;ocean&#x27; | &#x27;weather&#x27; | &#x27;gis&#x27; | &#x27;ecosystem&#x27;
+    cf_standard_name    TEXT,                           -- CF convention standard_name if applicable
+    valid_range_min     DOUBLE PRECISION,               -- e.g. -2.0 for SST
+    valid_range_max     DOUBLE PRECISION,               -- e.g. 40.0 for SST
+    description         TEXT,
+    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);</code></pre>
+
+<h3 id="section-15">variable_mappings</h3>
+
+<p>How each provider's raw field maps to the canonical variable.</p>
+
+<pre><code class="language-sql">CREATE TABLE variable_mappings (
+    mapping_id          SERIAL PRIMARY KEY,
+    canonical_name      TEXT NOT NULL REFERENCES canonical_variables(canonical_name),
+    dataset_id          TEXT NOT NULL REFERENCES datasets(dataset_id),
+    source_field        TEXT NOT NULL,                  -- field name in source data (e.g. &#x27;thetao&#x27;, &#x27;sst&#x27;)
+    source_unit         TEXT NOT NULL,                  -- native unit (e.g. &#x27;K&#x27;, &#x27;degC&#x27;)
+    transform           TEXT NOT NULL DEFAULT &#x27;none&#x27;,   -- &#x27;none&#x27; | &#x27;subtract_273.15&#x27; | &#x27;multiply_0.01&#x27; etc.
+    transform_formula   TEXT,                           -- human-readable formula
+    notes               TEXT,
+    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+    UNIQUE(canonical_name, dataset_id, source_field)
+);
+
+CREATE INDEX idx_mapping_canonical ON variable_mappings(canonical_name);
+CREATE INDEX idx_mapping_dataset ON variable_mappings(dataset_id);</code></pre>
+
+<hr>
+
+<h2 id="section-16">2.4 Spatial / GIS Tables</h2>
+
+<h3 id="section-17">coastal_gazetteer</h3>
+
+<p>Curated list of 50–100 coastal landmarks for V1 (Gujarat focus).</p>
+
+<pre><code class="language-sql">CREATE TABLE coastal_gazetteer (
+    location_id         SERIAL PRIMARY KEY,
+    canonical_name      TEXT NOT NULL UNIQUE,           -- e.g. &#x27;veraval&#x27;, &#x27;porbandar&#x27;, &#x27;gulf_of_khambhat&#x27;
+    display_name        TEXT NOT NULL,                  -- e.g. &#x27;Veraval&#x27;
+    display_name_local  JSONB,                         -- {&quot;gu&quot;: &quot;વેરાવળ&quot;, &quot;hi&quot;: &quot;वेरावल&quot;}
+    aliases             TEXT[],                        -- alternate names, spellings
+    location_type       TEXT NOT NULL                   -- &#x27;port&#x27; | &#x27;harbour&#x27; | &#x27;coast&#x27; | &#x27;offshore&#x27; | &#x27;gulf&#x27; | &#x27;strait&#x27; | &#x27;island&#x27; | &#x27;landmark&#x27;
+                        CHECK (location_type IN (&#x27;port&#x27;,&#x27;harbour&#x27;,&#x27;coast&#x27;,&#x27;offshore&#x27;,&#x27;gulf&#x27;,&#x27;strait&#x27;,&#x27;island&#x27;,&#x27;landmark&#x27;,&#x27;fishing_centre&#x27;,&#x27;landing_centre&#x27;)),
+    point               GEOMETRY(Point, 4326) NOT NULL,
+    representative_bbox GEOMETRY(Polygon, 4326),        -- bounding box for &quot;near X&quot; queries
+    offshore_radius_km  DOUBLE PRECISION DEFAULT 50,    -- default search radius for marine queries
+    state               TEXT,                           -- &#x27;Gujarat&#x27;, &#x27;Maharashtra&#x27;, etc.
+    district            TEXT,
+    is_active           BOOLEAN DEFAULT TRUE,
+    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_gazetteer_point ON coastal_gazetteer USING GIST(point);
+CREATE INDEX idx_gazetteer_bbox ON coastal_gazetteer USING GIST(representative_bbox);
+CREATE INDEX idx_gazetteer_name ON coastal_gazetteer USING GIN(canonical_name gin_trgm_ops);
+CREATE INDEX idx_gazetteer_aliases ON coastal_gazetteer USING GIN(aliases);</code></pre>
+
+<h3 id="section-18">marine_boundaries</h3>
+
+<p>EEZ, territorial waters, MPA, restricted zones — all as PostGIS geometries.</p>
+
+<pre><code class="language-sql">CREATE TABLE marine_boundaries (
+    boundary_id         SERIAL PRIMARY KEY,
+    name                TEXT NOT NULL,                  -- e.g. &#x27;India EEZ&#x27;, &#x27;Gulf of Kutch MPA&#x27;
+    boundary_type       TEXT NOT NULL
+                        CHECK (boundary_type IN (&#x27;eez&#x27;,&#x27;territorial_sea&#x27;,&#x27;contiguous_zone&#x27;,&#x27;mpa&#x27;,&#x27;restricted&#x27;,&#x27;no_fishing&#x27;,&#x27;international_boundary&#x27;,&#x27;state_maritime&#x27;)),
+    authority           TEXT,                           -- e.g. &#x27;MoEFCC&#x27;, &#x27;Indian Navy&#x27;, &#x27;MarineRegions&#x27;
+    geometry            GEOMETRY(MultiPolygon, 4326) NOT NULL,
+    properties          JSONB,                         -- additional attributes
+    source              TEXT,                          -- e.g. &#x27;MarineRegions.org&#x27;, &#x27;ProtectedSeas&#x27;
+    effective_from      DATE,
+    effective_until     DATE,                           -- NULL = currently active
+    is_active           BOOLEAN DEFAULT TRUE,
+    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_boundaries_geom ON marine_boundaries USING GIST(geometry);
+CREATE INDEX idx_boundaries_type ON marine_boundaries(boundary_type);</code></pre>
+
+<h3 id="section-19">geofences</h3>
+
+<p>User-defined or system-defined alert boundaries.</p>
+
+<pre><code class="language-sql">CREATE TABLE geofences (
+    geofence_id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name                TEXT NOT NULL,
+    geofence_type       TEXT NOT NULL                   -- &#x27;alert_zone&#x27; | &#x27;monitoring_zone&#x27; | &#x27;exclusion_zone&#x27; | &#x27;custom&#x27;
+                        CHECK (geofence_type IN (&#x27;alert_zone&#x27;,&#x27;monitoring_zone&#x27;,&#x27;exclusion_zone&#x27;,&#x27;custom&#x27;)),
+    geometry            GEOMETRY(Polygon, 4326) NOT NULL,
+    created_by          UUID REFERENCES users(user_id),
+    reason              TEXT,
+    is_active           BOOLEAN DEFAULT TRUE,
+    effective_from      TIMESTAMPTZ DEFAULT NOW(),
+    effective_until     TIMESTAMPTZ,
+    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_geofences_geom ON geofences USING GIST(geometry);
+CREATE INDEX idx_geofences_type ON geofences(geofence_type);</code></pre>
+
+<h3 id="section-20">ports_harbours</h3>
+
+<p>Reference data for maritime infrastructure.</p>
+
+<pre><code class="language-sql">CREATE TABLE ports_harbours (
+    port_id             SERIAL PRIMARY KEY,
+    name                TEXT NOT NULL,
+    name_local          JSONB,                         -- {&quot;gu&quot;: &quot;...&quot;, &quot;hi&quot;: &quot;...&quot;}
+    port_type           TEXT NOT NULL                   -- &#x27;major&#x27; | &#x27;minor&#x27; | &#x27;fishing_harbour&#x27; | &#x27;landing_centre&#x27;
+                        CHECK (port_type IN (&#x27;major&#x27;,&#x27;minor&#x27;,&#x27;fishing_harbour&#x27;,&#x27;landing_centre&#x27;,&#x27;anchorage&#x27;)),
+    location            GEOMETRY(Point, 4326) NOT NULL,
+    state               TEXT,
+    district            TEXT,
+    gazette_ref         INTEGER REFERENCES coastal_gazetteer(location_id),
+    facilities          TEXT[],                        -- e.g. &#x27;{fuel,ice,repair,auction}&#x27;
+    communication       TEXT[],                        -- e.g. &#x27;{vhf,mobile}&#x27;
+    max_vessel_loa_m    DOUBLE PRECISION,
+    tidal_range_m       DOUBLE PRECISION,
+    approach_depth_m    DOUBLE PRECISION,
+    source              TEXT,
+    is_active           BOOLEAN DEFAULT TRUE,
+    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_ports_location ON ports_harbours USING GIST(location);
+CREATE INDEX idx_ports_type ON ports_harbours(port_type);</code></pre>
+
+<hr>
+
+<h2 id="section-21">2.5 Evidence & Provenance Tables</h2>
+
+<h3 id="section-22">evidence_records</h3>
+
+<p>Every piece of evidence ORCA produces — the audit trail from data to claim.</p>
+
+<pre><code class="language-sql">CREATE TABLE evidence_records (
+    evidence_id         TEXT PRIMARY KEY,               -- e.g. &#x27;EV-91&#x27;
+    workflow_id         UUID NOT NULL,
+    task_id             UUID,
+    ingestion_id        UUID REFERENCES ingestion_records(ingestion_id),
+
+    -- What evidence this is
+    evidence_type       TEXT NOT NULL                   -- &#x27;retrieval&#x27; | &#x27;analysis&#x27; | &#x27;derived&#x27; | &#x27;advisory&#x27; | &#x27;spatial&#x27; | &#x27;reconciliation&#x27;
+                        CHECK (evidence_type IN (&#x27;retrieval&#x27;,&#x27;analysis&#x27;,&#x27;derived&#x27;,&#x27;advisory&#x27;,&#x27;spatial&#x27;,&#x27;reconciliation&#x27;)),
+    variable            TEXT,                           -- canonical variable name
+    source_id           TEXT REFERENCES data_sources(source_id),
+    dataset_id          TEXT REFERENCES datasets(dataset_id),
+
+    -- Data type semantics
+    data_type           TEXT NOT NULL                   -- &#x27;observation&#x27; | &#x27;forecast&#x27; | &#x27;advisory&#x27; | &#x27;derived&#x27; | &#x27;historical&#x27; | &#x27;static&#x27;
+                        CHECK (data_type IN (&#x27;observation&#x27;,&#x27;forecast&#x27;,&#x27;advisory&#x27;,&#x27;derived&#x27;,&#x27;historical&#x27;,&#x27;static&#x27;)),
+
+    -- Temporal metadata
+    observation_time    TIMESTAMPTZ,                    -- when measurement happened
+    forecast_issue_time TIMESTAMPTZ,                    -- when forecast was generated
+    forecast_valid_time TIMESTAMPTZ,                    -- when forecast applies
+    lead_time_hours     DOUBLE PRECISION,
+    retrieval_time      TIMESTAMPTZ,                    -- when ORCA downloaded it
+
+    -- Freshness
+    freshness           TEXT                            -- &#x27;FRESH&#x27; | &#x27;ACCEPTABLE&#x27; | &#x27;STALE&#x27; | &#x27;EXPIRED&#x27;
+                        CHECK (freshness IN (&#x27;FRESH&#x27;,&#x27;ACCEPTABLE&#x27;,&#x27;STALE&#x27;,&#x27;EXPIRED&#x27;)),
+    age_hours           DOUBLE PRECISION,
+
+    -- Quality
+    quality_status      TEXT                            -- &#x27;VALID&#x27; | &#x27;SUSPECT&#x27; | &#x27;MISSING&#x27; | &#x27;STALE&#x27; | &#x27;INVALID&#x27;
+                        CHECK (quality_status IN (&#x27;VALID&#x27;,&#x27;SUSPECT&#x27;,&#x27;MISSING&#x27;,&#x27;STALE&#x27;,&#x27;INVALID&#x27;,&#x27;UNAVAILABLE&#x27;)),
+    quality_score       DOUBLE PRECISION,
+
+    -- Spatial reference
+    region_name         TEXT,
+    region_geom         GEOMETRY(Polygon, 4326),
+    spatial_coverage    DOUBLE PRECISION,               -- 0.0 to 1.0
+
+    -- Scientific result (compact)
+    result_summary      JSONB,                         -- the structured result the LLM sees
+    /*
+        Example:
+        {
+            &quot;mean&quot;: 28.2, &quot;min&quot;: 27.7, &quot;max&quot;: 28.8,
+            &quot;anomaly&quot;: 1.1, &quot;unit&quot;: &quot;degC&quot;,
+            &quot;method&quot;: &quot;regional_mean_anomaly&quot;,
+            &quot;baseline_years&quot;: 30
+        }
+    */
+
+    -- Engine reference (if derived)
+    engine              TEXT,                           -- &#x27;ocean_engine&#x27; | &#x27;weather_engine&#x27; | &#x27;risk_engine&#x27; etc.
+    method              TEXT,                           -- computation method name
+    method_version      TEXT,
+    input_evidence_ids  TEXT[],                         -- evidence this was derived from
+
+    -- Object storage reference for full result
+    full_result_ref     TEXT,                           -- s3://orca-derived/...
+
+    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_evidence_workflow ON evidence_records(workflow_id);
+CREATE INDEX idx_evidence_variable ON evidence_records(variable);
+CREATE INDEX idx_evidence_source ON evidence_records(source_id);
+CREATE INDEX idx_evidence_type ON evidence_records(evidence_type);
+CREATE INDEX idx_evidence_spatial ON evidence_records USING GIST(region_geom);
+CREATE INDEX idx_evidence_time ON evidence_records(created_at);</code></pre>
+
+<h3 id="section-23">claims</h3>
+
+<p>Every factual claim in an ORCA response, linked to supporting evidence.</p>
+
+<pre><code class="language-sql">CREATE TABLE claims (
+    claim_id            TEXT PRIMARY KEY,               -- e.g. &#x27;CLM-4&#x27;
+    workflow_id         UUID NOT NULL,
+    claim_text          TEXT NOT NULL,                  -- e.g. &#x27;SST is 28.4°C, which is 1.1°C above seasonal baseline&#x27;
+    claim_type          TEXT NOT NULL                   -- &#x27;observation&#x27; | &#x27;analysis&#x27; | &#x27;recommendation&#x27; | &#x27;warning&#x27; | &#x27;limitation&#x27;
+                        CHECK (claim_type IN (&#x27;observation&#x27;,&#x27;analysis&#x27;,&#x27;recommendation&#x27;,&#x27;warning&#x27;,&#x27;limitation&#x27;)),
+    evidence_ids        TEXT[] NOT NULL,                -- e.g. &#x27;{EV-91, EV-93}&#x27;
+    confidence          TEXT,                           -- &#x27;HIGH&#x27; | &#x27;MODERATE&#x27; | &#x27;LOW&#x27;
+    is_safety_critical  BOOLEAN DEFAULT FALSE,
+    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_claims_workflow ON claims(workflow_id);
+CREATE INDEX idx_claims_evidence ON claims USING GIN(evidence_ids);</code></pre>
+
+<hr>
+
+<h2 id="section-24">2.6 Workflow Engine Tables</h2>
+
+<h3 id="section-25">workflows</h3>
+
+<p>Top-level orchestration record for each user query.</p>
+
+<pre><code class="language-sql">CREATE TABLE workflows (
+    workflow_id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    conversation_id     UUID NOT NULL,
+    user_id             UUID REFERENCES users(user_id),
+
+    -- Intent
+    original_query      TEXT NOT NULL,
+    detected_language   TEXT,                           -- ISO 639-1 code
+    intent              TEXT,                           -- e.g. &#x27;safety_assessment&#x27;, &#x27;pfz_nearest&#x27;
+    decision_type       TEXT                            -- &#x27;WHERE&#x27; | &#x27;WHEN&#x27; | &#x27;WHY&#x27; | &#x27;WHAT_SHOULD_I_DO&#x27; | &#x27;WHAT_CHANGED&#x27;
+                        CHECK (decision_type IN (&#x27;WHERE&#x27;,&#x27;WHEN&#x27;,&#x27;WHY&#x27;,&#x27;WHAT_SHOULD_I_DO&#x27;,&#x27;WHAT_CHANGED&#x27;)),
+    complexity          TEXT                            -- &#x27;SIMPLE&#x27; | &#x27;MODERATE&#x27; | &#x27;COMPLEX&#x27; | &#x27;DEEP&#x27;
+                        CHECK (complexity IN (&#x27;SIMPLE&#x27;,&#x27;MODERATE&#x27;,&#x27;COMPLEX&#x27;,&#x27;DEEP&#x27;)),
+
+    -- Context
+    region_name         TEXT,
+    region_geom         GEOMETRY(Polygon, 4326),
+    target_time         TIMESTAMPTZ,
+    time_type           TEXT,                           -- &#x27;current&#x27; | &#x27;forecast&#x27; | &#x27;historical&#x27;
+
+    -- Execution
+    status              TEXT NOT NULL DEFAULT &#x27;PLANNING&#x27;
+                        CHECK (status IN (&#x27;PLANNING&#x27;,&#x27;EXECUTING&#x27;,&#x27;REPLANNING&#x27;,&#x27;VALIDATING&#x27;,&#x27;SYNTHESIZING&#x27;,&#x27;COMPLETED&#x27;,&#x27;FAILED&#x27;,&#x27;CANCELLED&#x27;,&#x27;TIMEOUT&#x27;)),
+    planned_task_count  INTEGER,
+    completed_task_count INTEGER DEFAULT 0,
+    replan_count        INTEGER DEFAULT 0,
+    max_replan          INTEGER DEFAULT 3,
+
+    -- Budget
+    budget_max_tools    INTEGER DEFAULT 15,
+    budget_used_tools   INTEGER DEFAULT 0,
+    budget_max_time_sec INTEGER DEFAULT 120,
+
+    -- Result
+    marine_state_id     UUID,
+    response_id         TEXT,
+    evidence_ids        TEXT[],
+    confidence          TEXT,                           -- &#x27;SUFFICIENT&#x27; | &#x27;SUFFICIENT_WITH_LIMITATIONS&#x27; | &#x27;INSUFFICIENT&#x27;
+
+    -- Timing
+    started_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    completed_at        TIMESTAMPTZ,
+    total_latency_ms    INTEGER
+);
+
+CREATE INDEX idx_workflows_user ON workflows(user_id);
+CREATE INDEX idx_workflows_conversation ON workflows(conversation_id);
+CREATE INDEX idx_workflows_status ON workflows(status);
+CREATE INDEX idx_workflows_time ON workflows(started_at);
+CREATE INDEX idx_workflows_spatial ON workflows USING GIST(region_geom);</code></pre>
+
+<h3 id="section-26">tasks</h3>
+
+<p>Individual tasks within a workflow (each maps to an agent action).</p>
+
+<pre><code class="language-sql">CREATE TABLE tasks (
+    task_id             UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    workflow_id         UUID NOT NULL REFERENCES workflows(workflow_id),
+    parent_task_id      UUID REFERENCES tasks(task_id),
+
+    -- Task definition
+    agent               TEXT NOT NULL,                  -- &#x27;data_agent&#x27; | &#x27;ocean_agent&#x27; | &#x27;weather_agent&#x27; | &#x27;geo_agent&#x27; | &#x27;risk_agent&#x27;
+    task_type           TEXT NOT NULL,                  -- &#x27;retrieval&#x27; | &#x27;analysis&#x27; | &#x27;spatial&#x27; | &#x27;risk&#x27; | &#x27;reconciliation&#x27;
+    description         TEXT,
+
+    -- Dependencies
+    depends_on          UUID[],                        -- task_ids this task waits for
+    execution_order     INTEGER,
+    is_parallel         BOOLEAN DEFAULT FALSE,
+
+    -- Status
+    status              TEXT NOT NULL DEFAULT &#x27;PENDING&#x27;
+                        CHECK (status IN (&#x27;PENDING&#x27;,&#x27;QUEUED&#x27;,&#x27;RUNNING&#x27;,&#x27;COMPLETED&#x27;,&#x27;FAILED&#x27;,&#x27;SKIPPED&#x27;,&#x27;CANCELLED&#x27;)),
+    retry_count         INTEGER DEFAULT 0,
+    max_retries         INTEGER DEFAULT 2,
+
+    -- Result
+    result_summary      JSONB,
+    evidence_ids        TEXT[],
+    error_message       TEXT,
+    error_code          TEXT,
+
+    -- Timing
+    queued_at           TIMESTAMPTZ,
+    started_at          TIMESTAMPTZ,
+    completed_at        TIMESTAMPTZ,
+    latency_ms          INTEGER
+);
+
+CREATE INDEX idx_tasks_workflow ON tasks(workflow_id);
+CREATE INDEX idx_tasks_status ON tasks(status);
+CREATE INDEX idx_tasks_agent ON tasks(agent);</code></pre>
+
+<h3 id="section-27">tool_executions</h3>
+
+<p>Detailed record of every tool call.</p>
+
+<pre><code class="language-sql">CREATE TABLE tool_executions (
+    execution_id        UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    task_id             UUID NOT NULL REFERENCES tasks(task_id),
+    workflow_id         UUID NOT NULL,
+
+    -- Tool info
+    tool_id             TEXT NOT NULL,                  -- e.g. &#x27;ocean.sst_lookup&#x27;
+    tool_class          TEXT NOT NULL                   -- &#x27;READ_ONLY&#x27; | &#x27;ANALYSIS&#x27; | &#x27;STATE_CHANGING&#x27; | &#x27;SIDE_EFFECT&#x27;
+                        CHECK (tool_class IN (&#x27;READ_ONLY&#x27;,&#x27;ANALYSIS&#x27;,&#x27;STATE_CHANGING&#x27;,&#x27;SIDE_EFFECT&#x27;)),
+
+    -- Input/Output
+    input_params        JSONB,                         -- tool input parameters
+    output_summary      JSONB,                         -- compact result
+    output_ref          TEXT,                           -- s3 reference for large results
+
+    -- Execution details
+    status              TEXT NOT NULL DEFAULT &#x27;PENDING&#x27;
+                        CHECK (status IN (&#x27;PENDING&#x27;,&#x27;RUNNING&#x27;,&#x27;COMPLETED&#x27;,&#x27;FAILED&#x27;,&#x27;TIMEOUT&#x27;,&#x27;SKIPPED&#x27;)),
+    cache_hit           BOOLEAN DEFAULT FALSE,
+    source_id           TEXT,                           -- which data source was queried
+    dataset_id          TEXT,
+
+    -- Error handling
+    error_code          TEXT,
+    error_message       TEXT,
+    retry_count         INTEGER DEFAULT 0,
+    fallback_used       BOOLEAN DEFAULT FALSE,
+    fallback_tool_id    TEXT,
+
+    -- Timing
+    started_at          TIMESTAMPTZ,
+    completed_at        TIMESTAMPTZ,
+    latency_ms          INTEGER,
+
+    -- Evidence produced
+    evidence_id         TEXT
+);
+
+CREATE INDEX idx_tool_exec_task ON tool_executions(task_id);
+CREATE INDEX idx_tool_exec_workflow ON tool_executions(workflow_id);
+CREATE INDEX idx_tool_exec_tool ON tool_executions(tool_id);
+CREATE INDEX idx_tool_exec_time ON tool_executions(started_at);</code></pre>
+
+<hr>
+
+<h2 id="section-28">2.7 Marine State Table</h2>
+
+<h3 id="section-29">marine_states</h3>
+
+<p>The central intermediate representation — every completed workflow produces one.</p>
+
+<pre><code class="language-sql">CREATE TABLE marine_states (
+    marine_state_id     UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    workflow_id         UUID NOT NULL UNIQUE REFERENCES workflows(workflow_id),
+
+    -- Context
+    region_name         TEXT,
+    region_geom         GEOMETRY(Polygon, 4326),
+    reference_time      TIMESTAMPTZ NOT NULL,
+    time_type           TEXT NOT NULL,                  -- &#x27;current&#x27; | &#x27;forecast_valid&#x27; | &#x27;historical&#x27;
+
+    -- Marine State content (structured JSONB)
+    ocean_state         JSONB,
+    /*  {
+            &quot;sst&quot;: {&quot;value&quot;: 28.2, &quot;unit&quot;: &quot;degC&quot;, &quot;evidence_id&quot;: &quot;EV-91&quot;, &quot;type&quot;: &quot;observation&quot;},
+            &quot;sst_anomaly&quot;: {&quot;value&quot;: 1.1, &quot;unit&quot;: &quot;degC&quot;, &quot;evidence_id&quot;: &quot;EV-93&quot;},
+            &quot;chlorophyll&quot;: {&quot;value&quot;: 0.8, &quot;unit&quot;: &quot;mg/m3&quot;, &quot;evidence_id&quot;: &quot;EV-94&quot;},
+            &quot;chlorophyll_anomaly&quot;: {&quot;value&quot;: -0.31, &quot;unit&quot;: &quot;fraction&quot;},
+            &quot;current_speed&quot;: null,
+            &quot;current_note&quot;: &quot;Unavailable (source timeout)&quot;
+        }
+    */
+
+    atmosphere_state    JSONB,
+    /*  {
+            &quot;wind_speed&quot;: {&quot;value&quot;: 8.2, &quot;unit&quot;: &quot;m/s&quot;, &quot;evidence_id&quot;: &quot;EV-96&quot;},
+            &quot;wave_height&quot;: {&quot;value&quot;: 2.1, &quot;unit&quot;: &quot;m&quot;, &quot;evidence_id&quot;: &quot;EV-97&quot;},
+            &quot;marine_warning&quot;: {&quot;active&quot;: true, &quot;severity&quot;: &quot;MODERATE&quot;, &quot;source&quot;: &quot;IMD&quot;},
+            &quot;cyclone_active&quot;: false,
+            &quot;lightning_proximity&quot;: null
+        }
+    */
+
+    ecosystem_state     JSONB,
+    /*  {
+            &quot;productivity_state&quot;: &quot;BELOW_BASELINE&quot;,
+            &quot;pfz_available&quot;: true,
+            &quot;pfz_count&quot;: 2,
+            &quot;front_detected&quot;: false,
+            &quot;hab_indicator&quot;: &quot;NONE&quot;
+        }
+    */
+
+    geography_state     JSONB,
+    /*  {
+            &quot;eez_status&quot;: &quot;WITHIN_INDIA&quot;,
+            &quot;mpa_nearby&quot;: false,
+            &quot;restricted_zones_nearby&quot;: true,
+            &quot;nearest_port&quot;: {&quot;name&quot;: &quot;Veraval&quot;, &quot;distance_km&quot;: 42},
+            &quot;bathymetry_range&quot;: {&quot;min_m&quot;: 15, &quot;max_m&quot;: 200}
+        }
+    */
+
+    temporal_state      JSONB,
+    /*  {
+            &quot;query_refers_to&quot;: &quot;future&quot;,
+            &quot;lead_time_hours&quot;: 30,
+            &quot;data_freshness&quot;: {&quot;ocean&quot;: &quot;ACCEPTABLE&quot;, &quot;weather&quot;: &quot;FRESH&quot;, &quot;advisory&quot;: &quot;ACTIVE&quot;}
+        }
+    */
+
+    -- Coverage &amp; confidence
+    coverage            JSONB,
+    /*  {
+            &quot;available_variables&quot;: 8,
+            &quot;unavailable_variables&quot;: 1,
+            &quot;coverage_fraction&quot;: 0.89,
+            &quot;limitations&quot;: [&quot;No current observation&quot;, &quot;No nearby buoy&quot;]
+        }
+    */
+
+    evidence_ids        TEXT[] NOT NULL,
+    confidence          TEXT                            -- &#x27;SUFFICIENT&#x27; | &#x27;SUFFICIENT_WITH_LIMITATIONS&#x27; | &#x27;INSUFFICIENT&#x27;
+                        CHECK (confidence IN (&#x27;SUFFICIENT&#x27;,&#x27;SUFFICIENT_WITH_LIMITATIONS&#x27;,&#x27;INSUFFICIENT&#x27;)),
+
+    constructed_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_marine_state_workflow ON marine_states(workflow_id);
+CREATE INDEX idx_marine_state_spatial ON marine_states USING GIST(region_geom);
+CREATE INDEX idx_marine_state_time ON marine_states(reference_time);</code></pre>
+
+<hr>
+
+<h2 id="section-30">2.8 Alert System Tables</h2>
+
+<h3 id="section-31">alert_subscriptions</h3>
+
+<p>What users want to be notified about.</p>
+
+<pre><code class="language-sql">CREATE TABLE alert_subscriptions (
+    subscription_id     UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id             UUID NOT NULL REFERENCES users(user_id),
+    event_type          TEXT NOT NULL                   -- &#x27;cyclone&#x27; | &#x27;marine_warning&#x27; | &#x27;geofence&#x27; | &#x27;pfz&#x27; | &#x27;hazard&#x27; | &#x27;weather_change&#x27;
+                        CHECK (event_type IN (&#x27;cyclone&#x27;,&#x27;marine_warning&#x27;,&#x27;geofence&#x27;,&#x27;pfz&#x27;,&#x27;hazard&#x27;,&#x27;weather_change&#x27;,&#x27;custom&#x27;)),
+    region_geom         GEOMETRY(Polygon, 4326),        -- geographic area of interest
+    region_name         TEXT,
+    severity_threshold  TEXT DEFAULT &#x27;WARNING&#x27;          -- &#x27;INFO&#x27; | &#x27;WARNING&#x27; | &#x27;SEVERE&#x27; | &#x27;CRITICAL&#x27;
+                        CHECK (severity_threshold IN (&#x27;INFO&#x27;,&#x27;WARNING&#x27;,&#x27;SEVERE&#x27;,&#x27;CRITICAL&#x27;)),
+    delivery_channels   TEXT[] DEFAULT &#x27;{push}&#x27;,        -- &#x27;{push,sms,email,voice}&#x27;
+    is_active           BOOLEAN DEFAULT TRUE,
+    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_alert_sub_user ON alert_subscriptions(user_id);
+CREATE INDEX idx_alert_sub_region ON alert_subscriptions USING GIST(region_geom);
+CREATE INDEX idx_alert_sub_type ON alert_subscriptions(event_type);</code></pre>
+
+<h3 id="section-32">alerts</h3>
+
+<p>Generated alerts with deduplication fingerprint.</p>
+
+<pre><code class="language-sql">CREATE TABLE alerts (
+    alert_id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    subscription_id     UUID REFERENCES alert_subscriptions(subscription_id),
+    user_id             UUID NOT NULL REFERENCES users(user_id),
+
+    -- Event
+    event_type          TEXT NOT NULL,
+    severity            TEXT NOT NULL
+                        CHECK (severity IN (&#x27;INFO&#x27;,&#x27;WARNING&#x27;,&#x27;SEVERE&#x27;,&#x27;CRITICAL&#x27;)),
+    title               TEXT NOT NULL,
+    body                TEXT NOT NULL,
+    body_local          JSONB,                         -- localized body text
+
+    -- Source
+    source_id           TEXT,
+    evidence_id         TEXT,
+    source_event_id     TEXT,                          -- original warning ID from IMD/INCOIS
+
+    -- Spatial
+    region_name         TEXT,
+    region_geom         GEOMETRY(Polygon, 4326),
+
+    -- Temporal
+    valid_from          TIMESTAMPTZ,
+    valid_until         TIMESTAMPTZ,
+
+    -- Deduplication fingerprint
+    dedup_fingerprint   TEXT NOT NULL,                  -- hash of: event_type + region + severity + time_window + source
+    /*
+        Example:  sha256(&quot;cyclone:arabian_sea:SEVERE:2026-09-23T00:00Z-2026-09-25T00:00Z:imd&quot;)
+        Same fingerprint = same event, do NOT re-alert
+    */
+
+    -- Delivery status
+    delivery_status     TEXT NOT NULL DEFAULT &#x27;PENDING&#x27;
+                        CHECK (delivery_status IN (&#x27;PENDING&#x27;,&#x27;SENT&#x27;,&#x27;DELIVERED&#x27;,&#x27;FAILED&#x27;,&#x27;ACKNOWLEDGED&#x27;,&#x27;DISMISSED&#x27;)),
+    delivery_channel    TEXT,                           -- &#x27;push&#x27; | &#x27;sms&#x27; | &#x27;in_app&#x27; | &#x27;voice&#x27;
+    delivered_at        TIMESTAMPTZ,
+    acknowledged_at     TIMESTAMPTZ,
+
+    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_alerts_user ON alerts(user_id);
+CREATE INDEX idx_alerts_type ON alerts(event_type);
+CREATE INDEX idx_alerts_severity ON alerts(severity);
+CREATE INDEX idx_alerts_dedup ON alerts(dedup_fingerprint);
+CREATE INDEX idx_alerts_delivery ON alerts(delivery_status);
+CREATE INDEX idx_alerts_spatial ON alerts USING GIST(region_geom);
+CREATE UNIQUE INDEX idx_alerts_dedup_unique ON alerts(dedup_fingerprint, user_id) WHERE delivery_status != &#x27;DISMISSED&#x27;;</code></pre>
+
+<hr>
+
+<h2 id="section-33">2.9 User & Session Tables</h2>
+
+<h3 id="section-34">users</h3>
+
+<pre><code class="language-sql">CREATE TABLE users (
+    user_id             UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    role                TEXT NOT NULL DEFAULT &#x27;fisherman&#x27;
+                        CHECK (role IN (&#x27;fisherman&#x27;,&#x27;researcher&#x27;,&#x27;coastal_authority&#x27;,&#x27;disaster_mgmt&#x27;,&#x27;maritime_operator&#x27;,&#x27;environmental&#x27;,&#x27;admin&#x27;)),
+    display_name        TEXT,
+    preferred_language  TEXT DEFAULT &#x27;en&#x27;,              -- ISO 639-1
+    preferred_region    TEXT,                           -- default region for queries
+    preferred_region_geom GEOMETRY(Point, 4326),
+    vessel_type         TEXT,                           -- &#x27;mechanized&#x27; | &#x27;motorized&#x27; | &#x27;traditional&#x27; | &#x27;commercial&#x27; | NULL
+    risk_tolerance      TEXT DEFAULT &#x27;moderate&#x27;         -- &#x27;conservative&#x27; | &#x27;moderate&#x27; | &#x27;aggressive&#x27;
+                        CHECK (risk_tolerance IN (&#x27;conservative&#x27;,&#x27;moderate&#x27;,&#x27;aggressive&#x27;)),
+    notification_prefs  JSONB DEFAULT &#x27;{&quot;push&quot;: true, &quot;sms&quot;: false, &quot;voice&quot;: false}&#x27;,
+    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    last_active_at      TIMESTAMPTZ
+);</code></pre>
+
+<h3 id="section-35">sessions</h3>
+
+<pre><code class="language-sql">CREATE TABLE sessions (
+    session_id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id             UUID NOT NULL REFERENCES users(user_id),
+    device_type         TEXT,                           -- &#x27;web&#x27; | &#x27;mobile&#x27; | &#x27;voice&#x27;
+    started_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    last_activity_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    is_active           BOOLEAN DEFAULT TRUE,
+    session_context     JSONB                          -- cached preferences, active region, etc.
+);
+
+CREATE INDEX idx_sessions_user ON sessions(user_id);
+CREATE INDEX idx_sessions_active ON sessions(is_active) WHERE is_active = TRUE;</code></pre>
+
+<h3 id="section-36">conversations</h3>
+
+<pre><code class="language-sql">CREATE TABLE conversations (
+    conversation_id     UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    session_id          UUID NOT NULL REFERENCES sessions(session_id),
+    user_id             UUID NOT NULL REFERENCES users(user_id),
+    started_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    last_turn_at        TIMESTAMPTZ,
+    turn_count          INTEGER DEFAULT 0,
+
+    -- Accumulated context
+    active_region       TEXT,
+    active_region_geom  GEOMETRY(Polygon, 4326),
+    active_time_context TEXT,                           -- &#x27;current&#x27; | &#x27;tomorrow_morning&#x27; etc.
+    active_map_layers   TEXT[],
+    detected_language   TEXT,
+
+    is_active           BOOLEAN DEFAULT TRUE
+);
+
+CREATE INDEX idx_conversations_session ON conversations(session_id);
+CREATE INDEX idx_conversations_user ON conversations(user_id);</code></pre>
+
+<h3 id="section-37">conversation_turns</h3>
+
+<pre><code class="language-sql">CREATE TABLE conversation_turns (
+    turn_id             UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    conversation_id     UUID NOT NULL REFERENCES conversations(conversation_id),
+    turn_number         INTEGER NOT NULL,
+
+    -- User input
+    user_input_text     TEXT,
+    user_input_voice    BOOLEAN DEFAULT FALSE,
+    detected_language   TEXT,
+
+    -- System response
+    workflow_id         UUID REFERENCES workflows(workflow_id),
+    response_text       TEXT,
+    response_language   TEXT,
+    response_voice_text TEXT,                           -- simplified text for TTS
+
+    -- Response metadata
+    confidence          TEXT,
+    evidence_count      INTEGER,
+    map_updates         JSONB,                         -- map commands generated
+    follow_up_suggestions TEXT[],
+    warnings            TEXT[],
+    limitations         TEXT[],
+
+    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    response_latency_ms INTEGER
+);
+
+CREATE INDEX idx_turns_conversation ON conversation_turns(conversation_id);
+CREATE INDEX idx_turns_workflow ON conversation_turns(workflow_id);</code></pre>
+
+<hr>
+
+<h1 id="section-38">3. Object Storage — S3/MinIO Bucket Structure</h1>
+
+<pre><code class="language-text">orca-raw/
+├── incois/
+│   ├── sst/
+│   │   └── 2026-09-21/
+│   │       └── sst_daily_ard_20260921.nc
+│   ├── chlorophyll/
+│   ├── currents/
+│   ├── pfz/
+│   ├── argo/
+│   └── buoy/
+├── mosdac/
+│   ├── ocm3/
+│   ├── scatsat/
+│   └── insat/
+├── imd/
+│   ├── forecasts/
+│   ├── warnings/
+│   ├── cyclone/
+│   └── lightning/
+├── copernicus/
+│   ├── sst/
+│   └── currents/
+├── gebco/
+│   └── bathymetry/
+└── gis/
+    ├── boundaries/
+    └── coastlines/
+
+orca-normalized/
+├── sst/
+│   └── 2026-09-21/
+│       └── gujarat_sst.zarr/           ← Zarr chunks
+├── chlorophyll/
+├── currents/
+├── wind/
+└── waves/
+
+orca-derived/
+├── anomalies/
+│   ├── sst_anomaly_20260921.zarr
+│   └── chl_anomaly_20260921.zarr
+├── fronts/
+├── risk/
+├── routes/
+└── marine_states/
+    └── MS-1201.json
+
+orca-tiles/
+├── sst/
+│   └── 2026-09-21/
+│       └── {z}/{x}/{y}.png             ← Pre-rendered raster tiles
+├── chlorophyll/
+├── wave_height/
+├── bathymetry/
+└── risk/
+
+orca-climatology/
+├── sst/
+│   └── monthly_means_30yr.zarr
+├── chlorophyll/
+│   └── monthly_means_20yr.zarr
+└── currents/
+    └── monthly_means_20yr.zarr</code></pre>
+
+<h3 id="section-39">Bucket Rules</h3>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>Bucket</th><th>Mutability</th><th>Retention</th><th>Purpose</th></tr></thead>
+<tbody><tr><td><code>orca-raw</code></td><td><strong>IMMUTABLE</strong> — never modified after write</td><td>90 days (then archive)</td><td>Provenance, reproducibility</td></tr>
+<tr><td><code>orca-normalized</code></td><td>Replace on re-ingestion</td><td>30 days</td><td>Working analytical data</td></tr>
+<tr><td><code>orca-derived</code></td><td>Replace on re-computation</td><td>14 days</td><td>Scientific engine outputs</td></tr>
+<tr><td><code>orca-tiles</code></td><td>Replace on re-render</td><td>7 days</td><td>Map visualization cache</td></tr>
+<tr><td><code>orca-climatology</code></td><td>Updated monthly/quarterly</td><td>Permanent</td><td>Baseline reference</td></tr>
+</tbody></table></div>
+
+<h3 id="section-40">Object Naming Convention</h3>
+
+<pre><code class="language-text">s3://orca-{layer}/{source}/{variable}/{date}/{filename}.{ext}
+
+Examples:
+s3://orca-raw/incois/sst/2026-09-21/sst_daily_ard_20260921.nc
+s3://orca-normalized/mosdac/chlorophyll/2026-09-21/gujarat_chl.zarr
+s3://orca-derived/anomalies/sst_anomaly_20260921_gujarat.zarr
+s3://orca-tiles/sst/2026-09-21/8/173/114.png</code></pre>
+
+<hr>
+
+<h1 id="section-41">4. Parquet — Analytical Tables</h1>
+
+<p>Stored on object storage but queried via DuckDB or Spark.</p>
+
+<pre><code class="language-text">parquet/
+├── observations/
+│   ├── sst_timeseries_gujarat.parquet
+│   ├── chlorophyll_timeseries_gujarat.parquet
+│   └── wave_timeseries_gujarat.parquet
+├── climatology/
+│   ├── sst_monthly_means.parquet
+│   └── chlorophyll_monthly_means.parquet
+├── events/
+│   ├── cyclone_tracks.parquet
+│   └── marine_warnings_history.parquet
+├── fisheries/
+│   └── pfz_history.parquet
+└── analytics/
+    └── workflow_metrics.parquet</code></pre>
+
+<h3 id="section-42">Observation Time-Series Schema (Parquet)</h3>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>Column</th><th>Type</th><th>Description</th></tr></thead>
+<tbody><tr><td><code>timestamp</code></td><td>TIMESTAMP</td><td>Observation/valid time (UTC)</td></tr>
+<tr><td><code>variable</code></td><td>STRING</td><td>Canonical variable name</td></tr>
+<tr><td><code>latitude</code></td><td>FLOAT64</td><td>Latitude</td></tr>
+<tr><td><code>longitude</code></td><td>FLOAT64</td><td>Longitude</td></tr>
+<tr><td><code>value</code></td><td>FLOAT64</td><td>Measured/forecast value</td></tr>
+<tr><td><code>unit</code></td><td>STRING</td><td>Canonical unit</td></tr>
+<tr><td><code>data_type</code></td><td>STRING</td><td>observation / forecast</td></tr>
+<tr><td><code>source_id</code></td><td>STRING</td><td>INCOIS / MOSDAC / IMD</td></tr>
+<tr><td><code>dataset_id</code></td><td>STRING</td><td>Specific dataset</td></tr>
+<tr><td><code>quality</code></td><td>STRING</td><td>VALID / SUSPECT / MISSING</td></tr>
+<tr><td><code>ingestion_id</code></td><td>STRING</td><td>Link to PostgreSQL</td></tr>
+</tbody></table></div>
+
+<h3 id="section-43">Climatology Schema (Parquet)</h3>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>Column</th><th>Type</th><th>Description</th></tr></thead>
+<tbody><tr><td><code>month</code></td><td>INT32</td><td>Calendar month (1-12)</td></tr>
+<tr><td><code>variable</code></td><td>STRING</td><td>Canonical variable name</td></tr>
+<tr><td><code>latitude</code></td><td>FLOAT64</td><td>Grid latitude</td></tr>
+<tr><td><code>longitude</code></td><td>FLOAT64</td><td>Grid longitude</td></tr>
+<tr><td><code>mean</code></td><td>FLOAT64</td><td>Climatological mean</td></tr>
+<tr><td><code>std</code></td><td>FLOAT64</td><td>Standard deviation</td></tr>
+<tr><td><code>percentile_10</code></td><td>FLOAT64</td><td>10th percentile</td></tr>
+<tr><td><code>percentile_90</code></td><td>FLOAT64</td><td>90th percentile</td></tr>
+<tr><td><code>sample_years</code></td><td>INT32</td><td>Years in computation</td></tr>
+<tr><td><code>source</code></td><td>STRING</td><td>Source dataset</td></tr>
+</tbody></table></div>
+
+<hr>
+
+<h1 id="section-44">5. Redis — Ephemeral State</h1>
+
+<p>Redis stores <strong>nothing that must survive a restart</strong>. All durable state lives in PostgreSQL.</p>
+
+<h3 id="section-45">Key Patterns</h3>
+
+<pre><code class="language-text">CACHE KEYS
+─────────────────────────────────────────────────────────────
+cache:retrieval:{dataset}:{region}:{time}:{vars}   → cached retrieval result ref
+cache:evidence:{evidence_id}                       → compact evidence JSON
+cache:marine_state:{region}:{time_bucket}          → recent marine state
+cache:pfz:{date}                                   → current PFZ advisory
+cache:weather:{region}:{valid_time}                → weather forecast cache
+cache:tile:{layer}:{z}:{x}:{y}                     → tile cache pointer
+
+WORKFLOW STATE
+─────────────────────────────────────────────────────────────
+wf:{workflow_id}:status                            → current workflow status
+wf:{workflow_id}:tasks                             → task list with status
+wf:{workflow_id}:budget                            → remaining budget counters
+
+SESSION STATE
+─────────────────────────────────────────────────────────────
+session:{session_id}:context                       → active context JSON
+session:{session_id}:map_state                     → current map layers/viewport
+session:{session_id}:language                      → detected language
+
+IN-FLIGHT DEDUPLICATION
+─────────────────────────────────────────────────────────────
+inflight:{cache_key_hash}                          → retrieval already in progress
+                                                     (prevents duplicate API calls)
+
+RATE LIMITING
+─────────────────────────────────────────────────────────────
+ratelimit:{source_id}:minute                       → counter (expires 60s)
+ratelimit:{source_id}:hour                         → counter (expires 3600s)
+ratelimit:user:{user_id}:minute                    → user rate limit
+
+IDEMPOTENCY
+─────────────────────────────────────────────────────────────
+idempotency:{request_hash}                         → previous response ref</code></pre>
+
+<h3 id="section-46">TTL Policies</h3>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>Key Pattern</th><th>TTL</th><th>Rationale</th></tr></thead>
+<tbody><tr><td><code>cache:retrieval:*</code></td><td>1–6 hours</td><td>Marine data changes at most every few hours</td></tr>
+<tr><td><code>cache:evidence:*</code></td><td>2 hours</td><td>Evidence is workflow-specific</td></tr>
+<tr><td><code>cache:marine_state:*</code></td><td>1 hour</td><td>Marine state updates frequently</td></tr>
+<tr><td><code>cache:pfz:*</code></td><td>12 hours</td><td>PFZ advisories issued daily</td></tr>
+<tr><td><code>cache:weather:*</code></td><td>3 hours</td><td>Forecasts update every 6 hours</td></tr>
+<tr><td><code>cache:tile:*</code></td><td>1 hour</td><td>Tiles regenerate on new data</td></tr>
+<tr><td><code>wf:*</code></td><td>30 minutes</td><td>Workflows complete within minutes</td></tr>
+<tr><td><code>session:*</code></td><td>2 hours</td><td>Session inactivity timeout</td></tr>
+<tr><td><code>inflight:*</code></td><td>60 seconds</td><td>Retrieval should complete in <60s</td></tr>
+<tr><td><code>ratelimit:*</code></td><td>Per-window</td><td>Auto-expiring counters</td></tr>
+<tr><td><code>idempotency:*</code></td><td>5 minutes</td><td>Prevent rapid duplicate submissions</td></tr>
+</tbody></table></div>
+
+<h3 id="section-47">What NEVER Goes in Redis</h3>
+
+<pre><code class="language-text">✗ Multi-gigabyte scientific arrays
+✗ Raw NetCDF/Zarr data
+✗ Evidence audit trail (must be durable)
+✗ Workflow history (must be durable)
+✗ User data (must be durable)
+✗ Alert history (must be durable)</code></pre>
+
+<hr>
+
+<h1 id="section-48">6. Indexing Strategy</h1>
+
+<h2 id="section-49">PostgreSQL Indexes Summary</h2>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>Table</th><th>Index</th><th>Type</th><th>Purpose</th></tr></thead>
+<tbody><tr><td><code>datasets</code></td><td><code>spatial_coverage_geom</code></td><td><strong>GiST</strong></td><td>"Find datasets covering this region"</td></tr>
+<tr><td><code>datasets</code></td><td><code>variables</code></td><td><strong>GIN</strong></td><td>"Find datasets with SST variable"</td></tr>
+<tr><td><code>ingestion_records</code></td><td><code>request_region_geom</code></td><td><strong>GiST</strong></td><td>"Find ingestions for this area"</td></tr>
+<tr><td><code>coastal_gazetteer</code></td><td><code>point</code></td><td><strong>GiST</strong></td><td>"Find nearest port/harbour"</td></tr>
+<tr><td><code>coastal_gazetteer</code></td><td><code>canonical_name</code></td><td><strong>GIN (trigram)</strong></td><td>"Fuzzy name search: Veraval, Veravl, verawal"</td></tr>
+<tr><td><code>marine_boundaries</code></td><td><code>geometry</code></td><td><strong>GiST</strong></td><td><code>ST_Intersects</code> and <code>ST_DWithin</code> queries</td></tr>
+<tr><td><code>evidence_records</code></td><td><code>region_geom</code></td><td><strong>GiST</strong></td><td>"Evidence for this region"</td></tr>
+<tr><td><code>alerts</code></td><td><code>dedup_fingerprint, user_id</code></td><td><strong>Unique partial</strong></td><td>Prevent duplicate alerts (WHERE not dismissed)</td></tr>
+<tr><td><code>workflows</code></td><td><code>status</code></td><td><strong>B-tree</strong></td><td>Active workflow monitoring</td></tr>
+<tr><td><code>tool_executions</code></td><td><code>tool_id</code></td><td><strong>B-tree</strong></td><td>Tool usage analytics</td></tr>
+</tbody></table></div>
+
+<h2 id="section-50">Critical Query Patterns</h2>
+
+<pre><code class="language-sql">-- 1. Dataset discovery: &quot;Find SST datasets covering Gujarat&quot;
+SELECT * FROM datasets
+WHERE &#x27;sea_surface_temperature&#x27; = ANY(variables)
+  AND ST_Intersects(spatial_coverage_geom, ST_MakeEnvelope(65, 18, 73, 24, 4326))
+  AND is_active = TRUE
+ORDER BY CASE role WHEN &#x27;primary&#x27; THEN 1 WHEN &#x27;fallback&#x27; THEN 2 ELSE 3 END;
+
+-- 2. Location resolution: &quot;Find Veraval&quot;
+SELECT * FROM coastal_gazetteer
+WHERE canonical_name % &#x27;veraval&#x27;     -- trigram similarity
+   OR &#x27;veraval&#x27; = ANY(aliases)
+ORDER BY similarity(canonical_name, &#x27;veraval&#x27;) DESC
+LIMIT 5;
+
+-- 3. Boundary check: &quot;Is this point inside EEZ?&quot;
+SELECT boundary_type, name FROM marine_boundaries
+WHERE ST_Contains(geometry, ST_SetSRID(ST_MakePoint(71.0, 20.7), 4326))
+  AND is_active = TRUE;
+
+-- 4. Evidence for workflow
+SELECT * FROM evidence_records
+WHERE workflow_id = &#x27;W-100&#x27;
+ORDER BY created_at;
+
+-- 5. Alert dedup check
+SELECT alert_id FROM alerts
+WHERE dedup_fingerprint = &#x27;sha256:...&#x27;
+  AND user_id = &#x27;...&#x27;
+  AND delivery_status != &#x27;DISMISSED&#x27;;
+
+-- 6. Nearby ports
+SELECT name, port_type,
+       ST_Distance(location::geography, ST_SetSRID(ST_MakePoint(71.0, 20.7), 4326)::geography) / 1000 AS distance_km
+FROM ports_harbours
+WHERE ST_DWithin(location::geography, ST_SetSRID(ST_MakePoint(71.0, 20.7), 4326)::geography, 100000)
+ORDER BY distance_km
+LIMIT 5;
+
+-- 7. Recent ingestions for a dataset
+SELECT * FROM ingestion_records
+WHERE dataset_id = &#x27;incois_sst_daily&#x27;
+  AND ingested_at &gt; NOW() - INTERVAL &#x27;24 hours&#x27;
+  AND status != &#x27;FAILED&#x27;
+ORDER BY ingested_at DESC;
+
+-- 8. Workflow analytics
+SELECT date_trunc(&#x27;hour&#x27;, started_at) AS hour,
+       complexity,
+       COUNT(*) AS workflow_count,
+       AVG(total_latency_ms) AS avg_latency_ms,
+       AVG(budget_used_tools) AS avg_tools_used
+FROM workflows
+WHERE started_at &gt; NOW() - INTERVAL &#x27;7 days&#x27;
+  AND status = &#x27;COMPLETED&#x27;
+GROUP BY 1, 2
+ORDER BY 1;</code></pre>
+
+<hr>
+
+<h1 id="section-51">7. Data Lifecycle & Retention</h1>
+
+<pre><code class="language-text">┌──────────────────────────────────────────────────────────────────┐
+│                    DATA LIFECYCLE                                  │
+├────────────────┬──────────────┬───────────────┬──────────────────┤
+│   HOT          │   WARM       │   COLD        │   ARCHIVE        │
+│   (0-24h)      │   (1-30d)    │   (30-90d)    │   (90d+)         │
+├────────────────┼──────────────┼───────────────┼──────────────────┤
+│ Redis cache    │ PostgreSQL   │ Parquet       │ S3 Glacier       │
+│ Active wf      │ Recent       │ Historical    │ Compressed raw   │
+│ Current data   │ evidence     │ observations  │ Audit logs       │
+│ Session state  │ Recent wf    │ Old workflows │                  │
+│ Live tiles     │ Normalized   │ Old evidence  │                  │
+│                │ data         │               │                  │
+└────────────────┴──────────────┴───────────────┴──────────────────┘</code></pre>
+
+<h3 id="section-52">Retention Policy</h3>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>Data Type</th><th>Hot</th><th>Warm</th><th>Cold</th><th>Archive</th></tr></thead>
+<tbody><tr><td>Redis cache</td><td>TTL-based</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>Workflow records</td><td>Active</td><td>30 days</td><td>90 days</td><td>Parquet export</td></tr>
+<tr><td>Evidence records</td><td>Active</td><td>30 days</td><td>90 days</td><td>Parquet export</td></tr>
+<tr><td>Tool execution logs</td><td>Active</td><td>14 days</td><td>60 days</td><td>Parquet export</td></tr>
+<tr><td>Ingestion records</td><td>Active</td><td>30 days</td><td>90 days</td><td>Delete metadata, keep raw</td></tr>
+<tr><td>Raw scientific files</td><td>—</td><td>30 days S3</td><td>90 days S3</td><td>Glacier</td></tr>
+<tr><td>Normalized data</td><td>—</td><td>30 days</td><td>Delete</td><td>—</td></tr>
+<tr><td>Derived data</td><td>—</td><td>14 days</td><td>Delete</td><td>—</td></tr>
+<tr><td>Tiles</td><td>7 days</td><td>Delete</td><td>—</td><td>—</td></tr>
+<tr><td>Climatology</td><td>Permanent</td><td>Permanent</td><td>—</td><td>—</td></tr>
+<tr><td>GIS boundaries</td><td>Permanent</td><td>Permanent</td><td>—</td><td>—</td></tr>
+<tr><td>Gazetteer</td><td>Permanent</td><td>Permanent</td><td>—</td><td>—</td></tr>
+<tr><td>User records</td><td>Permanent</td><td>Permanent</td><td>—</td><td>—</td></tr>
+<tr><td>Conversations</td><td>Active</td><td>90 days</td><td>1 year</td><td>Delete</td></tr>
+</tbody></table></div>
+
+<hr>
+
+<h1 id="section-53">8. Pipeline Step ↔ Database Mapping</h1>
+
+<p>This shows exactly which storage each pipeline step reads from and writes to:</p>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>Pipeline Step</th><th>Reads From</th><th>Writes To</th></tr></thead>
+<tbody><tr><td><strong>1. Data Discovery</strong></td><td><code>datasets</code>, <code>data_sources</code>, <code>variable_mappings</code> (PG)</td><td>—</td></tr>
+<tr><td><strong>2. Retrieval</strong></td><td><code>datasets</code> (PG), external APIs</td><td><code>orca-raw/</code> (S3), <code>ingestion_records</code> (PG)</td></tr>
+<tr><td><strong>3. Structural Validation</strong></td><td><code>orca-raw/</code> (S3), <code>ingestion_records</code> (PG)</td><td><code>validation_records</code> (PG)</td></tr>
+<tr><td><strong>4. Quality Check</strong></td><td><code>orca-raw/</code> (S3), <code>ingestion_records</code> (PG)</td><td><code>quality_records</code> (PG)</td></tr>
+<tr><td><strong>5. Normalization</strong></td><td><code>orca-raw/</code> (S3), <code>variable_mappings</code> (PG)</td><td><code>orca-normalized/</code> (S3/Zarr)</td></tr>
+<tr><td><strong>6. Spatial Alignment</strong></td><td><code>orca-normalized/</code> (S3), <code>marine_boundaries</code> (PG)</td><td>Analytical arrays (memory/Zarr)</td></tr>
+<tr><td><strong>7. Temporal Alignment</strong></td><td><code>orca-normalized/</code> (S3)</td><td>Analytical arrays (memory/Zarr)</td></tr>
+<tr><td><strong>8. Missing Data</strong></td><td>All pipeline results</td><td><code>evidence_records</code> (PG) with gap notes</td></tr>
+<tr><td><strong>9. Reconciliation</strong></td><td>Multiple normalized sources</td><td><code>evidence_records</code> (PG)</td></tr>
+<tr><td><strong>10. Derived Features</strong></td><td>Normalized data, <code>orca-climatology/</code> (S3)</td><td><code>orca-derived/</code> (S3), <code>evidence_records</code> (PG)</td></tr>
+<tr><td><strong>11. Scientific Engines</strong></td><td>Derived data, Marine State inputs</td><td><code>evidence_records</code> (PG)</td></tr>
+<tr><td><strong>12. Marine State</strong></td><td>All evidence</td><td><code>marine_states</code> (PG), <code>orca-derived/marine_states/</code> (S3)</td></tr>
+<tr><td><strong>13. Evidence Gate</strong></td><td><code>evidence_records</code> (PG)</td><td><code>claims</code> (PG)</td></tr>
+<tr><td><strong>14. LLM Synthesis</strong></td><td><code>marine_states</code> (PG), <code>evidence_records</code> (PG)</td><td><code>conversation_turns</code> (PG)</td></tr>
+<tr><td><strong>15. Visualization</strong></td><td><code>orca-tiles/</code> (S3), <code>orca-derived/</code> (S3)</td><td>Map tile cache (Redis)</td></tr>
+<tr><td><strong>16. Alerts</strong></td><td>Monitoring engine, <code>alert_subscriptions</code> (PG)</td><td><code>alerts</code> (PG), push/SMS</td></tr>
+</tbody></table></div>
+
+<hr>
+
+<h1 id="section-54">9. Seed Data — V1 Gujarat Prototype</h1>
+
+<h3 id="section-55">Data Sources (Seed)</h3>
+
+<pre><code class="language-sql">INSERT INTO data_sources (source_id, display_name, organization, source_type, base_url, access_method, trust_class) VALUES
+(&#x27;incois&#x27;,      &#x27;INCOIS&#x27;,       &#x27;Indian National Centre for Ocean Information Services&#x27;, &#x27;government_ocean&#x27;,   &#x27;https://erddap.incois.gov.in&#x27;,      &#x27;erddap&#x27;,   &#x27;AUTHORITATIVE&#x27;),
+(&#x27;mosdac&#x27;,      &#x27;MOSDAC&#x27;,       &#x27;ISRO Meteorological &amp; Oceanographic Satellite Data&#x27;,   &#x27;satellite&#x27;,          &#x27;https://www.mosdac.gov.in&#x27;,          &#x27;rest_api&#x27;, &#x27;AUTHORITATIVE&#x27;),
+(&#x27;imd&#x27;,         &#x27;IMD&#x27;,          &#x27;India Meteorological Department&#x27;,                       &#x27;government_weather&#x27;, &#x27;https://mausam.imd.gov.in&#x27;,          &#x27;rest_api&#x27;, &#x27;AUTHORITATIVE&#x27;),
+(&#x27;copernicus&#x27;,  &#x27;Copernicus&#x27;,   &#x27;Copernicus Marine Service&#x27;,                             &#x27;international&#x27;,      &#x27;https://data.marine.copernicus.eu&#x27;,  &#x27;rest_api&#x27;, &#x27;OFFICIAL&#x27;),
+(&#x27;noaa&#x27;,        &#x27;NOAA&#x27;,         &#x27;US National Oceanic and Atmospheric Administration&#x27;,    &#x27;international&#x27;,      &#x27;https://coastwatch.pfeg.noaa.gov&#x27;,   &#x27;erddap&#x27;,   &#x27;OFFICIAL&#x27;),
+(&#x27;gebco&#x27;,       &#x27;GEBCO&#x27;,        &#x27;General Bathymetric Chart of the Oceans&#x27;,               &#x27;international&#x27;,      &#x27;https://www.gebco.net&#x27;,              &#x27;download&#x27;, &#x27;OFFICIAL&#x27;),
+(&#x27;marineregions&#x27;,&#x27;MarineRegions&#x27;,&#x27;Flanders Marine Institute&#x27;,                             &#x27;gis&#x27;,                &#x27;https://www.marineregions.org&#x27;,       &#x27;wfs&#x27;,     &#x27;STANDARD&#x27;);</code></pre>
+
+<h3 id="section-56">Canonical Variables (Seed)</h3>
+
+<pre><code class="language-sql">INSERT INTO canonical_variables (canonical_name, display_name, canonical_unit, category, cf_standard_name, valid_range_min, valid_range_max) VALUES
+(&#x27;sea_surface_temperature&#x27;,  &#x27;Sea Surface Temperature&#x27;,     &#x27;degC&#x27;,  &#x27;ocean&#x27;,   &#x27;sea_surface_temperature&#x27;,                    -2.0,   40.0),
+(&#x27;chlorophyll_a&#x27;,            &#x27;Chlorophyll-a&#x27;,               &#x27;mg/m3&#x27;, &#x27;ocean&#x27;,   &#x27;mass_concentration_of_chlorophyll_a_in_sea_water&#x27;, 0.0, 100.0),
+(&#x27;current_speed&#x27;,            &#x27;Ocean Current Speed&#x27;,         &#x27;m/s&#x27;,   &#x27;ocean&#x27;,   &#x27;sea_water_speed&#x27;,                             0.0,    5.0),
+(&#x27;current_direction&#x27;,        &#x27;Ocean Current Direction&#x27;,     &#x27;degrees&#x27;,&#x27;ocean&#x27;,  NULL,                                           0.0,  360.0),
+(&#x27;wind_speed&#x27;,               &#x27;Wind Speed&#x27;,                 &#x27;m/s&#x27;,   &#x27;weather&#x27;, &#x27;wind_speed&#x27;,                                   0.0,  100.0),
+(&#x27;wind_direction&#x27;,           &#x27;Wind Direction&#x27;,              &#x27;degrees&#x27;,&#x27;weather&#x27;,&#x27;wind_from_direction&#x27;,                           0.0,  360.0),
+(&#x27;wind_gust&#x27;,                &#x27;Wind Gust&#x27;,                   &#x27;m/s&#x27;,   &#x27;weather&#x27;, &#x27;wind_speed_of_gust&#x27;,                           0.0,  150.0),
+(&#x27;significant_wave_height&#x27;,  &#x27;Significant Wave Height&#x27;,     &#x27;m&#x27;,     &#x27;weather&#x27;, &#x27;sea_surface_wave_significant_height&#x27;,          0.0,   30.0),
+(&#x27;wave_period&#x27;,              &#x27;Wave Period&#x27;,                 &#x27;s&#x27;,     &#x27;weather&#x27;, &#x27;sea_surface_wave_mean_period&#x27;,                  0.0,   30.0),
+(&#x27;swell_height&#x27;,             &#x27;Swell Height&#x27;,                &#x27;m&#x27;,     &#x27;weather&#x27;, &#x27;sea_surface_swell_wave_significant_height&#x27;,    0.0,   20.0),
+(&#x27;swell_direction&#x27;,          &#x27;Swell Direction&#x27;,             &#x27;degrees&#x27;,&#x27;weather&#x27;,NULL,                                            0.0,  360.0),
+(&#x27;rainfall_rate&#x27;,            &#x27;Rainfall Rate&#x27;,               &#x27;mm/hr&#x27;, &#x27;weather&#x27;, &#x27;rainfall_rate&#x27;,                                0.0,  500.0),
+(&#x27;sea_level_pressure&#x27;,       &#x27;Sea Level Pressure&#x27;,          &#x27;hPa&#x27;,   &#x27;weather&#x27;, &#x27;air_pressure_at_mean_sea_level&#x27;,             850.0, 1100.0),
+(&#x27;depth&#x27;,                    &#x27;Bathymetric Depth&#x27;,           &#x27;m&#x27;,     &#x27;gis&#x27;,     &#x27;sea_floor_depth_below_sea_surface&#x27;,            0.0, 11000.0);</code></pre>
+
+<hr>
+
+<h1 id="section-57">10. Summary — Database Design Principles</h1>
+
+<pre><code class="language-text">1. FOUR TECHNOLOGIES, EACH FOR ITS PURPOSE
+   PostgreSQL: relationships, metadata, spatial, provenance
+   S3/MinIO:   immutable scientific files, tiles, derived artifacts
+   Parquet:    large analytical time-series, historical data
+   Redis:      ephemeral cache, session, dedup, rate limits
+
+2. RAW IS IMMUTABLE
+   orca-raw/ bucket is never modified after write.
+   Every value is traceable back to its source file.
+
+3. EVERY EVIDENCE HAS A RECORD
+   evidence_records table is the audit trail from data to claim.
+   No claim in ORCA response exists without an evidence_id.
+
+4. SPATIAL IS FIRST-CLASS
+   PostGIS geometry columns on datasets, ingestions, evidence,
+   marine states, alerts, boundaries, gazetteer, geofences.
+   Spatial queries are deterministic SQL, not LLM reasoning.
+
+5. TEMPORAL SEMANTICS ARE PRESERVED
+   observation_time ≠ forecast_issue_time ≠ forecast_valid_time
+   ≠ retrieval_time. The schema preserves all four.
+
+6. DEDUPLICATION AT EVERY LEVEL
+   Retrieval dedup:  Redis in-flight keys
+   Alert dedup:      fingerprint unique index
+   Cache dedup:      normalized cache keys
+
+7. LIFECYCLE IS EXPLICIT
+   Hot → Warm → Cold → Archive with clear TTL and retention.
+
+8. SEED DATA ENABLES V1 DEMO
+   7 data sources, 14 canonical variables, Gujarat gazetteer
+   are pre-loaded. No runtime discovery needed for demo.
+
+9. EVERY TABLE HAS A PIPELINE STEP OWNER
+   Section 8 maps each pipeline step to its read/write tables.
+   No orphan tables, no unused schemas.
+
+10. THE DATABASE SERVES THE SCIENCE
+    Storage is not an afterthought — it is the backbone of
+    RAW → VALIDATED → NORMALIZED → ALIGNED → DERIVED → MARINE STATE.</code></pre>
+
+<hr>
+
+<h1 id="section-58">11. PS Fulfillment Verification - Database Document</h1>
+
+<pre><code class="language-text">V PS-6  Autonomous data discovery and retrieval
+        -&gt; data_sources: registry of all providers ORCA can query
+        -&gt; datasets: catalog with spatial coverage, variables, access endpoints
+        -&gt; variable_mappings: semantic crosswalk from provider fields to canonical names
+        -&gt; ingestion_records: immutable audit trail of every retrieval
+
+V PS-7  Spatial-temporal reasoning
+        -&gt; PostGIS geometry columns on: datasets, ingestion_records, evidence_records,
+          marine_states, alerts, marine_boundaries, coastal_gazetteer, geofences
+        -&gt; Temporal semantics: observation_time != forecast_issue_time != forecast_valid_time
+        -&gt; GiST indexes enable sub-millisecond spatial queries
+
+V PS-8  Evidence-grounded decision
+        -&gt; evidence_records: every piece of evidence with provenance, quality, freshness
+        -&gt; claims: every factual statement linked to evidence_ids
+        -&gt; No-Evidence -&gt; No-Claim enforced at the database level
+        -&gt; marine_states: unified snapshot with coverage + confidence assessment
+
+V PS-5  Multi-source correlation
+        -&gt; canonical_variables: unified naming across all providers
+        -&gt; quality_records: per-variable quality assessment enables cross-source comparison
+        -&gt; reconciliation evidence_type: tracks agreement/disagreement between sources
+
+V PS-9  Explainable visualization
+        -&gt; orca-tiles/ bucket: pre-rendered raster tiles for map display
+        -&gt; orca-derived/ bucket: scientific engine outputs for chart generation
+        -&gt; Redis cache: tile caching + session map state
+
+V PS-10 Proactive operations
+        -&gt; alert_subscriptions: what users want to be notified about
+        -&gt; alerts: generated alerts with dedup fingerprint (prevents spam)
+        -&gt; geofences: user-defined and system-defined monitoring boundaries
+
+V PS-1  Natural language understanding
+        -&gt; coastal_gazetteer: fuzzy name matching (pg_trgm) for &quot;Veraval&quot;, &quot;verawal&quot;, &quot;veravl&quot;
+        -&gt; conversations + conversation_turns: multi-turn context tracking
+
+V PS-3  Autonomous planning
+        -&gt; workflows: task plan with complexity, budget, replan count
+        -&gt; tasks: individual task execution with dependencies and parallel flag
+        -&gt; tool_executions: detailed audit of every tool call with timing</code></pre>
+
+<h3 id="section-59">Database Tables -> Hero Investigation Loop</h3>
+
+<pre><code class="language-text">Hero Loop Step              Primary Tables Used
+
+ASK + UNDERSTAND         -&gt;  users, sessions, conversations, conversation_turns
+                             coastal_gazetteer (location resolution)
+PLAN                     -&gt;  workflows (created), tasks (planned)
+DISCOVER DATA            -&gt;  data_sources, datasets, variable_mappings
+RETRIEVE                 -&gt;  ingestion_records, orca-raw/ (S3)
+VALIDATE                 -&gt;  validation_records, quality_records
+CORRELATE                -&gt;  canonical_variables, orca-normalized/ (S3)
+OBSERVE STATE            -&gt;  marine_states, evidence_records
+EVIDENCE GATE            -&gt;  evidence_records, claims
+REPLAN                   -&gt;  workflows (replan_count++), tasks (new tasks)
+DECIDE + EXPLAIN         -&gt;  claims, marine_states, conversation_turns
+VISUALIZE                -&gt;  orca-tiles/, orca-derived/ (S3), Redis tile cache
+ALERT                    -&gt;  alert_subscriptions, alerts, geofences</code></pre>
+
+<blockquote><strong>The database serves the investigation. Every table exists because a step in the hero loop needs it.</strong></blockquote>
+
+<hr>
+
+<h1 id="section-60">12. NEW DATABASE TABLES: Event, Decision, Scenario, Uncertainty, Investigation</h1>
+
+<blockquote>These tables extend the existing schema. They are ADDITIONS, not replacements.</blockquote>
+
+<h2 id="section-61">12.1 Event Intelligence Tables</h2>
+
+<pre><code class="language-sql">-- Marine events detected by the Event and Change Engine
+CREATE TABLE marine_events (
+    event_id UUID PRIMARY KEY,
+    event_type TEXT NOT NULL,
+    -- PRODUCTIVITY_DECLINE, MARINE_HEAT_ANOMALY, CYCLONE_APPROACH,
+    -- CHLOROPHYLL_ANOMALY, HIGH_WAVE_EVENT, GEOFENCE_ENTRY, etc.
+    status TEXT NOT NULL,
+    -- CANDIDATE, VALIDATING, ACTIVE, EVOLVING, ENDED, ARCHIVED, REJECTED
+    geometry GEOMETRY(Geometry, 4326),
+    start_time TIMESTAMPTZ,
+    end_time TIMESTAMPTZ,
+    detected_at TIMESTAMPTZ NOT NULL,
+    reference_time TIMESTAMPTZ,
+    magnitude JSONB,
+    -- {&quot;value&quot;: -0.31, &quot;unit&quot;: &quot;fraction&quot;}
+    baseline JSONB,
+    -- {&quot;type&quot;: &quot;seasonal_climatology&quot;, &quot;version&quot;: &quot;v1&quot;}
+    persistence_seconds BIGINT,
+    uncertainty JSONB,
+    confidence TEXT,
+    -- HIGH, MODERATE, LOW
+    detection_method TEXT,
+    detection_method_version TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_events_geometry ON marine_events USING GIST(geometry);
+CREATE INDEX idx_events_time ON marine_events(start_time);
+CREATE INDEX idx_events_type ON marine_events(event_type);
+CREATE INDEX idx_events_status ON marine_events(status);
+
+-- Links events to their supporting evidence
+CREATE TABLE event_evidence (
+    id UUID PRIMARY KEY,
+    event_id UUID REFERENCES marine_events(event_id),
+    evidence_id UUID REFERENCES evidence_records(evidence_id),
+    relationship TEXT NOT NULL,
+    -- PRIMARY, CORROBORATING, CONTRADICTING
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Tracks relationships between events
+CREATE TABLE event_relationships (
+    id UUID PRIMARY KEY,
+    parent_event_id UUID REFERENCES marine_events(event_id),
+    child_event_id UUID REFERENCES marine_events(event_id),
+    relationship_type TEXT NOT NULL,
+    -- CAUSED_BY, ASSOCIATED_WITH, PRECEDED_BY, EVOLVED_INTO
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);</code></pre>
+
+<h2 id="section-62">12.2 Decision Trade-off Tables</h2>
+
+<pre><code class="language-sql">-- Options evaluated in a decision
+CREATE TABLE decision_options (
+    option_id UUID PRIMARY KEY,
+    workflow_id UUID REFERENCES workflows(workflow_id),
+    option_type TEXT NOT NULL,
+    -- ROUTE, FISHING_ZONE, DEPARTURE_TIME, LOCATION
+    option_data JSONB NOT NULL,
+    feasible BOOLEAN NOT NULL,
+    infeasibility_reason TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Criteria used to evaluate options
+CREATE TABLE decision_criteria (
+    criterion_id UUID PRIMARY KEY,
+    workflow_id UUID REFERENCES workflows(workflow_id),
+    criterion_name TEXT NOT NULL,
+    -- operational_risk, travel_time, distance, wave_exposure, fishing_suitability
+    criterion_type TEXT NOT NULL,
+    -- HARD_CONSTRAINT, SOFT_OBJECTIVE
+    weight DOUBLE PRECISION,
+    direction TEXT,
+    -- MINIMIZE, MAXIMIZE
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Hard constraints applied
+CREATE TABLE decision_constraints (
+    constraint_id UUID PRIMARY KEY,
+    workflow_id UUID REFERENCES workflows(workflow_id),
+    constraint_type TEXT NOT NULL,
+    -- RESTRICTED_ZONE, EEZ_BOUNDARY, VESSEL_CAPABILITY, OFFICIAL_WARNING
+    constraint_data JSONB,
+    options_eliminated INTEGER DEFAULT 0,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- User/stakeholder preference profiles
+CREATE TABLE decision_preferences (
+    preference_id UUID PRIMARY KEY,
+    user_id UUID REFERENCES users(user_id),
+    stakeholder_type TEXT NOT NULL,
+    objectives JSONB NOT NULL,
+    -- {&quot;operational_risk&quot;: 0.45, &quot;fishing_suitability&quot;: 0.30, ...}
+    is_default BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Scores for each option against each criterion
+CREATE TABLE decision_scores (
+    score_id UUID PRIMARY KEY,
+    option_id UUID REFERENCES decision_options(option_id),
+    criterion_id UUID REFERENCES decision_criteria(criterion_id),
+    raw_value DOUBLE PRECISION,
+    normalized_value DOUBLE PRECISION,
+    weighted_value DOUBLE PRECISION,
+    evidence_ids UUID[],
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Trade-off analysis results
+CREATE TABLE decision_tradeoffs (
+    tradeoff_id UUID PRIMARY KEY,
+    workflow_id UUID REFERENCES workflows(workflow_id),
+    selected_option_id UUID REFERENCES decision_options(option_id),
+    pareto_set UUID[],
+    -- array of non-dominated option_ids
+    sensitivity JSONB,
+    -- {&quot;risk_priority_high&quot;: &quot;Route B&quot;, &quot;risk_priority_medium&quot;: &quot;Route A&quot;}
+    explanation TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);</code></pre>
+
+<h2 id="section-63">12.3 Scenario Tables</h2>
+
+<pre><code class="language-sql">-- Scenario comparison runs
+CREATE TABLE scenario_runs (
+    scenario_id UUID PRIMARY KEY,
+    workflow_id UUID REFERENCES workflows(workflow_id),
+    scenario_type TEXT NOT NULL,
+    -- TEMPORAL_SHIFT, SPATIAL_SHIFT, PARAMETER_CHANGE, WHAT_IF_EVENT
+    baseline_state_id UUID,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Parameters for each scenario variant
+CREATE TABLE scenario_parameters (
+    id UUID PRIMARY KEY,
+    scenario_id UUID REFERENCES scenario_runs(scenario_id),
+    variant_name TEXT NOT NULL,
+    -- &quot;departure_6am&quot;, &quot;departure_9am&quot;
+    parameter_changes JSONB NOT NULL,
+    -- {&quot;time_window&quot;: {&quot;start&quot;: &quot;06:00&quot;, &quot;end&quot;: &quot;12:00&quot;}}
+    result_state_id UUID,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Results comparison
+CREATE TABLE scenario_results (
+    id UUID PRIMARY KEY,
+    scenario_id UUID REFERENCES scenario_runs(scenario_id),
+    comparison_data JSONB NOT NULL,
+    -- differences between variants
+    recommendation TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);</code></pre>
+
+<h2 id="section-64">12.4 Marine State Versioning Tables</h2>
+
+<pre><code class="language-sql">-- Versioned marine state snapshots
+CREATE TABLE marine_state_versions (
+    state_id UUID PRIMARY KEY,
+    parent_state_id UUID REFERENCES marine_state_versions(state_id),
+    region_geom GEOMETRY(Geometry, 4326),
+    reference_time TIMESTAMPTZ NOT NULL,
+    state_type TEXT NOT NULL,
+    -- current, forecast, historical, derived
+    forecast_issue_time TIMESTAMPTZ,
+    forecast_valid_time TIMESTAMPTZ,
+    depth_min_m DOUBLE PRECISION,
+    depth_max_m DOUBLE PRECISION,
+    source_set_hash TEXT,
+    processing_version TEXT,
+    quality JSONB,
+    uncertainty JSONB,
+    payload_ref TEXT,
+    -- S3/MinIO path to Zarr/NetCDF payload
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_state_geometry ON marine_state_versions USING GIST(region_geom);
+CREATE INDEX idx_state_time ON marine_state_versions(reference_time);
+
+-- Tracks what changed between state versions
+CREATE TABLE marine_state_deltas (
+    delta_id UUID PRIMARY KEY,
+    from_state_id UUID REFERENCES marine_state_versions(state_id),
+    to_state_id UUID REFERENCES marine_state_versions(state_id),
+    changed_variables JSONB NOT NULL,
+    -- {&quot;wave_height&quot;: {&quot;old&quot;: 1.2, &quot;new&quot;: 2.1}, ...}
+    trigger_evidence_ids UUID[],
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);</code></pre>
+
+<h2 id="section-65">12.5 Uncertainty Tables</h2>
+
+<pre><code class="language-sql">-- Uncertainty records for evidence and decisions
+CREATE TABLE uncertainty_records (
+    uncertainty_id UUID PRIMARY KEY,
+    target_type TEXT NOT NULL,
+    -- EVIDENCE, MARINE_STATE, DECISION, EVENT
+    target_id UUID NOT NULL,
+    freshness_score DOUBLE PRECISION,
+    spatial_score DOUBLE PRECISION,
+    quality_score DOUBLE PRECISION,
+    source_agreement_score DOUBLE PRECISION,
+    composite_confidence DOUBLE PRECISION,
+    uncertainty_sources JSONB,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- V2: Propagation run tracking
+CREATE TABLE uncertainty_propagation_runs (
+    run_id UUID PRIMARY KEY,
+    workflow_id UUID REFERENCES workflows(workflow_id),
+    method TEXT NOT NULL,
+    -- WEIGHTED_MEAN, MONTE_CARLO, ENSEMBLE
+    input_uncertainties UUID[],
+    output_uncertainty_id UUID REFERENCES uncertainty_records(uncertainty_id),
+    parameters JSONB,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);</code></pre>
+
+<h2 id="section-66">12.6 Investigation Event Tables</h2>
+
+<pre><code class="language-sql">-- Backend events streamed to Investigation Activity UI
+CREATE TABLE investigation_events (
+    event_id UUID PRIMARY KEY,
+    workflow_id UUID REFERENCES workflows(workflow_id),
+    sequence INTEGER NOT NULL,
+    event_type TEXT NOT NULL,
+    -- REQUEST_RECEIVED, REQUEST_UNDERSTOOD, CONTEXT_RESOLVED,
+    -- PLAN_CREATED, TASK_STARTED, TASK_COMPLETED, TASK_FAILED,
+    -- DATASET_DISCOVERED, DATASET_SELECTED, RETRIEVAL_STARTED,
+    -- RETRIEVAL_COMPLETED, PROCESSING_STARTED, PROCESSING_COMPLETED,
+    -- EVENT_DETECTED, STATE_UPDATED, EVIDENCE_GAP_DETECTED,
+    -- REPLAN_STARTED, REPLAN_COMPLETED, SCENARIO_STARTED,
+    -- SCENARIO_COMPLETED, VALIDATION_STARTED, VALIDATION_PASSED,
+    -- VALIDATION_FAILED, DECISION_READY, VISUALIZATION_UPDATED,
+    -- ALERT_CREATED, WORKFLOW_COMPLETED
+    display_title TEXT NOT NULL,
+    status TEXT NOT NULL,
+    -- pending, running, completed, failed, skipped
+    timestamp TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    evidence_refs UUID[],
+    user_visible BOOLEAN NOT NULL DEFAULT TRUE
+);
+
+CREATE INDEX idx_investigation_workflow ON investigation_events(workflow_id);
+CREATE INDEX idx_investigation_sequence ON investigation_events(workflow_id, sequence);</code></pre>
+
+<h2 id="section-67">12.7 Updated Table Summary</h2>
+
+<pre><code class="language-text">EXISTING TABLES (unchanged):
+  users, sessions, conversations, conversation_turns
+  data_sources, datasets, variable_mappings, canonical_variables
+  ingestion_records, validation_records, quality_records
+  evidence_records, claims, marine_states
+  workflows, tasks, tool_executions
+  alert_subscriptions, alerts, geofences
+  marine_boundaries, coastal_gazetteer, system_config
+
+NEW TABLES (added):
+  marine_events                    - Event lifecycle tracking
+  event_evidence                   - Event-to-evidence links
+  event_relationships              - Event-to-event relationships
+  decision_options                 - Feasible/infeasible options
+  decision_criteria                - Scoring criteria
+  decision_constraints             - Hard constraint tracking
+  decision_preferences             - Stakeholder objective profiles
+  decision_scores                  - Option-criterion scores
+  decision_tradeoffs               - Pareto + sensitivity results
+  scenario_runs                    - Scenario comparisons
+  scenario_parameters              - Variant parameters
+  scenario_results                 - Comparison outcomes
+  marine_state_versions            - Versioned state snapshots
+  marine_state_deltas              - State change tracking
+  uncertainty_records              - Confidence scoring
+  uncertainty_propagation_runs     - V2 propagation tracking
+  investigation_events             - UI activity stream events
+
+TOTAL: 17 new tables extending the existing schema</code></pre>
+
+<hr>
+
+<h1 id="section-68">13. MEMORY AND CONTEXT TABLES (from Doc 6 Integration)</h1>
+
+<blockquote>These tables integrate the Memory & Context Architecture (Document 6) into the main database schema. pgvector extension required.</blockquote>
+
+<h2 id="section-69">13.1 Additional Extension Required</h2>
+
+<pre><code class="language-sql">-- Add to the extensions block in Section 2.1
+CREATE EXTENSION IF NOT EXISTS vector;  -- pgvector for semantic memory retrieval</code></pre>
+
+<h2 id="section-70">13.2 Memory Items</h2>
+
+<p>The core memory table. Stores all durable memories across all planes (user preferences, investigation summaries, saved locations, evidence references, scenario state, conversation summaries).</p>
+
+<pre><code class="language-sql">CREATE TABLE memory_items (
+    memory_id           UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+
+    -- Scope
+    tenant_id           TEXT NOT NULL DEFAULT &#x27;default&#x27;,
+    user_id             UUID REFERENCES users(user_id),
+    session_id          UUID,
+    conversation_id     UUID,
+
+    -- Classification
+    memory_type         TEXT NOT NULL
+                        CHECK (memory_type IN (
+                            &#x27;USER_PREFERENCE&#x27;, &#x27;SAVED_LOCATION&#x27;, &#x27;VESSEL_PROFILE&#x27;,
+                            &#x27;OPERATIONAL_PREFERENCE&#x27;, &#x27;NOTIFICATION_PREFERENCE&#x27;,
+                            &#x27;CONVERSATION_SUMMARY&#x27;, &#x27;INVESTIGATION_SUMMARY&#x27;,
+                            &#x27;SCENARIO_RECORD&#x27;, &#x27;EVIDENCE_REFERENCE&#x27;,
+                            &#x27;DECISION_RECORD&#x27;, &#x27;EVENT_RECORD&#x27;,
+                            &#x27;USER_OBSERVATION&#x27;, &#x27;CORRECTION&#x27;
+                        )),
+    key                 TEXT,                            -- e.g. &#x27;preferred_language&#x27;, &#x27;default_departure&#x27;
+    value               TEXT,                            -- scalar value
+    value_json          JSONB,                           -- structured value
+
+    -- Human-readable text for semantic search
+    text                TEXT,                            -- e.g. &#x27;User prefers Gujarati responses.&#x27;
+
+    -- Source / Provenance
+    source_type         TEXT NOT NULL
+                        CHECK (source_type IN (
+                            &#x27;EXPLICIT_USER&#x27;, &#x27;INFERRED&#x27;, &#x27;SYSTEM&#x27;,
+                            &#x27;INVESTIGATION&#x27;, &#x27;CORRECTION&#x27;, &#x27;MIGRATION&#x27;
+                        )),
+    source_turn_id      UUID,                           -- which conversation turn
+    source_workflow_id  UUID,                           -- which workflow produced this
+    extraction_method   TEXT,                            -- &#x27;memory_extractor_v1&#x27;
+
+    -- Trust and Confidence
+    confidence          DOUBLE PRECISION DEFAULT 1.0,
+    explicitness        TEXT DEFAULT &#x27;EXPLICIT&#x27;
+                        CHECK (explicitness IN (&#x27;EXPLICIT&#x27;, &#x27;INFERRED&#x27;, &#x27;REPEATED_INFERENCE&#x27;)),
+    trust_tier          TEXT DEFAULT &#x27;USER_CONFIRMED&#x27;
+                        CHECK (trust_tier IN (
+                            &#x27;USER_EXPLICIT_CONFIRMED&#x27;, &#x27;USER_EXPLICIT_STATEMENT&#x27;,
+                            &#x27;REPEATED_INFERENCE&#x27;, &#x27;SINGLE_INFERENCE&#x27;,
+                            &#x27;SYSTEM_GENERATED&#x27;, &#x27;USER_CONFIRMED&#x27;
+                        )),
+    sensitivity         TEXT DEFAULT &#x27;NORMAL&#x27;
+                        CHECK (sensitivity IN (&#x27;NORMAL&#x27;, &#x27;SENSITIVE&#x27;, &#x27;RESTRICTED&#x27;)),
+
+    -- Temporal Validity
+    valid_from          TIMESTAMPTZ,
+    valid_until         TIMESTAMPTZ,
+    observed_at         TIMESTAMPTZ,                    -- when the underlying fact was observed
+    forecast_cycle      TIMESTAMPTZ,                    -- which forecast produced this
+    expires_at          TIMESTAMPTZ,                    -- auto-expiry time
+
+    -- Lifecycle
+    status              TEXT NOT NULL DEFAULT &#x27;ACTIVE&#x27;
+                        CHECK (status IN (&#x27;ACTIVE&#x27;, &#x27;SUPERSEDED&#x27;, &#x27;EXPIRED&#x27;, &#x27;DELETED&#x27;, &#x27;REVIEW_REQUIRED&#x27;)),
+    supersedes_memory_id UUID REFERENCES memory_items(memory_id),
+    superseded_at       TIMESTAMPTZ,
+    version             INTEGER DEFAULT 1,
+
+    -- Spatial (for location-based memories)
+    geometry            GEOMETRY(Geometry, 4326),
+
+    -- Evidence references (for scientific memory)
+    evidence_ids        UUID[],
+    marine_state_id     UUID,
+    investigation_id    UUID,
+    scenario_id         UUID,
+
+    -- Timestamps
+    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_memory_user ON memory_items(user_id);
+CREATE INDEX idx_memory_type ON memory_items(memory_type);
+CREATE INDEX idx_memory_key ON memory_items(key);
+CREATE INDEX idx_memory_status ON memory_items(status);
+CREATE INDEX idx_memory_spatial ON memory_items USING GIST(geometry);
+CREATE INDEX idx_memory_created ON memory_items(created_at);
+CREATE INDEX idx_memory_valid ON memory_items(valid_from, valid_until);
+CREATE INDEX idx_memory_user_type ON memory_items(user_id, memory_type, status);</code></pre>
+
+<h2 id="section-71">13.3 Memory Embeddings</h2>
+
+<p>Semantic vectors for memory retrieval via pgvector.</p>
+
+<pre><code class="language-sql">CREATE TABLE memory_embeddings (
+    embedding_id        UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    memory_id           UUID NOT NULL REFERENCES memory_items(memory_id) ON DELETE CASCADE,
+    embedding           vector(768),                    -- dimension depends on model (768 for many embeddings)
+    model_id            TEXT NOT NULL,                   -- &#x27;text-embedding-004&#x27; etc.
+    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- HNSW index for fast approximate nearest neighbor search
+CREATE INDEX idx_memory_embedding_hnsw ON memory_embeddings
+    USING hnsw (embedding vector_cosine_ops)
+    WITH (m = 16, ef_construction = 64);
+
+CREATE INDEX idx_memory_embedding_memory ON memory_embeddings(memory_id);</code></pre>
+
+<h2 id="section-72">13.4 Memory Links</h2>
+
+<p>Explicit relationships between memories, investigations, evidence, and scenarios.</p>
+
+<pre><code class="language-sql">CREATE TABLE memory_links (
+    link_id             UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    source_memory_id    UUID NOT NULL REFERENCES memory_items(memory_id),
+    target_memory_id    UUID REFERENCES memory_items(memory_id),
+    target_type         TEXT NOT NULL,
+    -- MEMORY, INVESTIGATION, EVIDENCE, SCENARIO, DECISION, EVENT, LOCATION
+    target_id           UUID NOT NULL,
+    relationship        TEXT NOT NULL,
+    -- SUPERSEDES, RELATED_TO, DERIVED_FROM, USES, LOCATED_IN,
+    -- PRODUCED_BY, CONTRADICTS, CORROBORATES
+    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_memory_link_source ON memory_links(source_memory_id);
+CREATE INDEX idx_memory_link_target ON memory_links(target_id);
+CREATE INDEX idx_memory_link_relationship ON memory_links(relationship);</code></pre>
+
+<h2 id="section-73">13.5 Memory Events</h2>
+
+<p>Audit log for all memory operations (write, read, update, supersede, delete).</p>
+
+<pre><code class="language-sql">CREATE TABLE memory_events (
+    event_id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    memory_id           UUID REFERENCES memory_items(memory_id),
+    user_id             UUID REFERENCES users(user_id),
+    event_type          TEXT NOT NULL
+                        CHECK (event_type IN (
+                            &#x27;CREATED&#x27;, &#x27;RETRIEVED&#x27;, &#x27;UPDATED&#x27;, &#x27;SUPERSEDED&#x27;,
+                            &#x27;EXPIRED&#x27;, &#x27;DELETED&#x27;, &#x27;FORGET_REQUESTED&#x27;,
+                            &#x27;CONFLICT_DETECTED&#x27;, &#x27;CONFLICT_RESOLVED&#x27;,
+                            &#x27;FRESHNESS_CHECK_PASSED&#x27;, &#x27;FRESHNESS_CHECK_FAILED&#x27;,
+                            &#x27;POISONING_BLOCKED&#x27;
+                        )),
+    details             JSONB,
+    workflow_id         UUID,
+    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_memory_event_memory ON memory_events(memory_id);
+CREATE INDEX idx_memory_event_user ON memory_events(user_id);
+CREATE INDEX idx_memory_event_type ON memory_events(event_type);
+CREATE INDEX idx_memory_event_time ON memory_events(created_at);</code></pre>
+
+<h2 id="section-74">13.6 Updated Storage Architecture Overview</h2>
+
+<pre><code class="language-text">POSTGRESQL + POSTGIS + PGVECTOR
+|
++-- Core Data Pipeline
+|   +-- data_sources, datasets, variable_mappings, canonical_variables
+|   +-- ingestion_records, validation_records, quality_records
+|
++-- Evidence &amp; Claims
+|   +-- evidence_records, claims
+|
++-- Marine State
+|   +-- marine_states
+|   +-- marine_state_versions, marine_state_deltas       (from Section 12.4)
+|
++-- Events &amp; Decisions
+|   +-- marine_events, event_evidence, event_relationships (from Section 12.1)
+|   +-- decision_options, decision_criteria, decision_constraints,
+|       decision_preferences, decision_scores, decision_tradeoffs (from Section 12.2)
+|
++-- Scenarios
+|   +-- scenario_runs, scenario_parameters, scenario_results (from Section 12.3)
+|
++-- Uncertainty
+|   +-- uncertainty_records, uncertainty_propagation_runs (from Section 12.5)
+|
++-- Workflows &amp; Tasks
+|   +-- workflows, tasks, tool_executions
+|   +-- investigation_events                              (from Section 12.6)
+|
++-- Users &amp; Sessions
+|   +-- users, sessions, conversations, conversation_turns
+|
++-- Alerts
+|   +-- alert_subscriptions, alerts
+|
++-- GIS &amp; Boundaries
+|   +-- marine_boundaries (EEZ, MPA, ESZ, restricted, international)
+|   +-- geofences, coastal_gazetteer, ports_harbours
+|
++-- MEMORY &amp; CONTEXT                                      (NEW - from Doc 6)
+|   +-- memory_items                                       (core memory store)
+|   +-- memory_embeddings                                  (pgvector semantic index)
+|   +-- memory_links                                       (relationship graph)
+|   +-- memory_events                                      (audit log)
+|
++-- System
+    +-- system_config</code></pre>
+
+<hr>
+
+<h1 id="section-75">14. ECOLOGICALLY SENSITIVE ZONES (PS Explicit Requirement)</h1>
+
+<blockquote>The PS explicitly requires: "international maritime boundaries, restricted waters, marine protected areas, ecologically sensitive zones, and other operational boundaries."</blockquote>
+
+<h2 id="section-76">14.1 Updated Spatial Constraint Layers</h2>
+
+<pre><code class="language-text">SPATIAL CONSTRAINT LAYERS
+|
++-- Indian EEZ
++-- International Maritime Boundaries
++-- Restricted / Prohibited Waters
++-- Marine Protected Areas (MPA)
++-- Ecologically Sensitive Zones (ESZ)     &lt;-- NEW: PS explicit requirement
++-- Fishing Restrictions / Seasonal Bans
++-- Port / Navigation Constraints
++-- User-defined Geofences</code></pre>
+
+<h2 id="section-77">14.2 Updated marine_boundaries Boundary Types</h2>
+
+<p>The marine_boundaries table boundary_type CHECK constraint should include:</p>
+
+<pre><code class="language-sql">-- Updated boundary_type values for marine_boundaries table
+-- Add &#x27;ecologically_sensitive&#x27; to the CHECK constraint:
+CHECK (boundary_type IN (
+    &#x27;eez&#x27;,
+    &#x27;international_maritime&#x27;,
+    &#x27;restricted_zone&#x27;,
+    &#x27;marine_protected_area&#x27;,
+    &#x27;ecologically_sensitive&#x27;,       -- NEW
+    &#x27;fishing_restriction&#x27;,          -- NEW (seasonal bans)
+    &#x27;navigation_constraint&#x27;,
+    &#x27;custom&#x27;
+))</code></pre>
+
+<h2 id="section-78">14.3 Ecologically Sensitive Zones Data</h2>
+
+<pre><code class="language-text">Source: Ministry of Environment, Forest and Climate Change (MoEFCC)
+Type:  Coastal Regulation Zone (CRZ), Ecologically Sensitive Areas (ESA)
+
+ESZ Types for ORCA:
+  - Coral reef areas (Gulf of Kutch, Lakshadweep)
+  - Mangrove areas
+  - Sea turtle nesting grounds
+  - Bird breeding / roosting areas
+  - Inter-tidal zones
+  - Sandy beaches designated as ESZ
+  - Mudflats and salt marshes
+  - National Marine Parks</code></pre>
+
+<h2 id="section-79">14.4 Updated Geospatial Agent Tools</h2>
+
+<pre><code class="language-text">geo.eez_check                        - Is the point within India&#x27;s EEZ?
+geo.international_boundary_check     - Any international boundary violations?
+geo.restricted_zone_check            - Is the area restricted/prohibited?
+geo.mpa_check                        - Is the area a Marine Protected Area?
+geo.ecologically_sensitive_check     - Is the area ecologically sensitive?  &lt;-- NEW
+geo.fishing_restriction_check        - Any seasonal fishing bans?           &lt;-- NEW
+geo.geofence_check                   - User-defined geofence violations?</code></pre>
+
+<p>The ecologically_sensitive_check should return:</p>
+
+<pre><code class="language-json">{
+  &quot;in_esz&quot;: true,
+  &quot;esz_type&quot;: &quot;coral_reef_area&quot;,
+  &quot;esz_name&quot;: &quot;Gulf of Kutch Marine National Park&quot;,
+  &quot;restriction_level&quot;: &quot;restricted_fishing&quot;,
+  &quot;source&quot;: &quot;MoEFCC&quot;,
+  &quot;advisory&quot;: &quot;Fishing activity restricted in this ecologically sensitive zone.&quot;
+}</code></pre>
+
+    </div>
+
+    <div class="page-nav">
+      <a href="doc3.html">
+      <span class="page-nav-label">&#8592; Previous</span>
+      <span class="page-nav-title">Doc 3: Data Pipeline</span>
+    </a>
+      <a href="doc5.html" class="next">
+      <span class="page-nav-label">Next &#8594;</span>
+      <span class="page-nav-title">Doc 5: Implementation</span>
+    </a>
+    </div>
+  </div>
+</div>
+
+<footer class="container">
+  <strong>ORCA</strong> &#183; Marine EcOsystem Reasoning with Collaborative Agents &#183; SIH 2026 &#183; PS 26176
+</footer>
+
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
+
+<script>
+// Back to top button
+window.addEventListener('scroll', function() {
+  var btn = document.getElementById('backToTop');
+  if (window.scrollY > 300) { btn.classList.add('visible'); }
+  else { btn.classList.remove('visible'); }
+});
+
+// Scroll-spy: highlight active TOC link
+(function() {
+  var tocLinks = document.querySelectorAll('#tocList a');
+  if (!tocLinks.length) return;
+
+  var headingEls = [];
+  tocLinks.forEach(function(link) {
+    var target = link.getAttribute('data-target');
+    var el = document.getElementById(target);
+    if (el) headingEls.push({ el: el, link: link });
+  });
+
+  function updateActive() {
+    var scrollY = window.scrollY + 80;
+    var current = null;
+
+    for (var i = 0; i < headingEls.length; i++) {
+      if (headingEls[i].el.offsetTop <= scrollY) {
+        current = headingEls[i];
+      }
+    }
+
+    tocLinks.forEach(function(l) { l.classList.remove('active'); });
+    if (current) {
+      current.link.classList.add('active');
+      // Scroll TOC to keep active item visible
+      var tocSticky = current.link.closest('.toc-sticky');
+      if (tocSticky) {
+        var linkTop = current.link.offsetTop - tocSticky.offsetTop;
+        var stickyHeight = tocSticky.clientHeight;
+        if (linkTop < tocSticky.scrollTop || linkTop > tocSticky.scrollTop + stickyHeight - 40) {
+          tocSticky.scrollTop = linkTop - stickyHeight / 3;
+        }
+      }
+    }
+  }
+
+  window.addEventListener('scroll', updateActive);
+  updateActive();
+})();
+
+// --- Mermaid Diagram Compiler & Interactive Viewer ---
+(function() {
+  if (typeof mermaid === 'undefined') return;
+
+  try {
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'neutral',
+      securityLevel: 'loose',
+      fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+      maxTextSize: 100000,
+      flowchart: {
+        htmlLabels: true,
+        curve: 'basis',
+        useMaxWidth: true
+      },
+      er: {
+        useMaxWidth: true
+      }
+    });
+  } catch (e) {
+    console.error('Mermaid init error:', e);
+  }
+
+  window.mmZoomState = window.mmZoomState || {};
+
+  async function compileMermaidDiagrams() {
+    var containers = document.querySelectorAll('.mermaid-container');
+    if (!containers.length) return;
+
+    for (var i = 0; i < containers.length; i++) {
+      var container = containers[i];
+      var id = container.id;
+      var preEl = container.querySelector('pre.mermaid-source');
+      var stageEl = document.getElementById(id + '-stage');
+      if (!preEl || !stageEl) continue;
+
+      var code = preEl.textContent.trim();
+      mmZoomState[id] = 1.0;
+
+      try {
+        var renderId = 'mm-svg-' + id.replace(/[^a-zA-Z0-9_-]/g, '_') + '-' + i;
+        var res = await mermaid.render(renderId, code);
+        stageEl.innerHTML = res.svg;
+        var svgEl = stageEl.querySelector('svg');
+        if (svgEl) {
+          svgEl.style.maxWidth = '100%';
+          svgEl.style.height = 'auto';
+          svgEl.style.display = 'block';
+          svgEl.style.margin = '0 auto';
+          svgEl.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+        }
+      } catch (err) {
+        console.error('Mermaid render error for ' + id + ':', err);
+        stageEl.innerHTML = '<div class="mermaid-error">' +
+          '<div class="mermaid-error-title">&#9888; Diagram Compilation Notice</div>' +
+          '<p>' + (err.message || String(err)) + '</p>' +
+          '</div>';
+      }
+    }
+  }
+
+  window.mermaidZoom = function(id, factor) {
+    var stage = document.getElementById(id + '-stage');
+    if (!stage) return;
+    var svg = stage.querySelector('svg');
+    if (!svg) return;
+    mmZoomState[id] = (mmZoomState[id] || 1.0) * factor;
+    if (mmZoomState[id] < 0.25) mmZoomState[id] = 0.25;
+    if (mmZoomState[id] > 4.0) mmZoomState[id] = 4.0;
+    stage.style.transform = 'scale(' + mmZoomState[id] + ')';
+    if (mmZoomState[id] > 1.0) {
+      svg.style.maxWidth = 'none';
+    } else {
+      svg.style.maxWidth = '100%';
+    }
+  };
+
+  window.mermaidReset = function(id) {
+    var stage = document.getElementById(id + '-stage');
+    if (!stage) return;
+    var svg = stage.querySelector('svg');
+    if (!svg) return;
+    mmZoomState[id] = 1.0;
+    stage.style.transform = 'scale(1)';
+    svg.style.maxWidth = '100%';
+  };
+
+  window.mermaidToggleCode = function(id) {
+    var codeDiv = document.getElementById(id + '-code');
+    if (!codeDiv) return;
+    codeDiv.style.display = (codeDiv.style.display === 'none') ? 'block' : 'none';
+  };
+
+  window.mermaidCopy = function(id) {
+    var container = document.getElementById(id);
+    if (!container) return;
+    var codePre = container.querySelector('.mermaid-code pre code') || container.querySelector('pre.mermaid-source');
+    if (!codePre) return;
+    navigator.clipboard.writeText(codePre.textContent).then(function() {
+      var btn = container.querySelector('.mm-btn-copy');
+      if (btn) {
+        var orig = btn.innerHTML;
+        btn.innerHTML = '&#10003; Copied!';
+        btn.style.color = '#137333';
+        setTimeout(function() { btn.innerHTML = orig; btn.style.color = ''; }, 2000);
+      }
+    });
+  };
+
+  window.mermaidFullscreen = function(id) {
+    var container = document.getElementById(id);
+    if (!container) return;
+    if (!document.fullscreenElement) {
+      if (container.requestFullscreen) {
+        container.requestFullscreen().catch(function() { container.classList.toggle('is-fullscreen'); });
+      } else {
+        container.classList.toggle('is-fullscreen');
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  };
+
+  document.addEventListener('fullscreenchange', function() {
+    var containers = document.querySelectorAll('.mermaid-container');
+    containers.forEach(function(c) {
+      if (c === document.fullscreenElement) {
+        c.classList.add('is-fullscreen');
+      } else {
+        c.classList.remove('is-fullscreen');
+      }
+    });
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', compileMermaidDiagrams);
+  } else {
+    compileMermaidDiagrams();
+  }
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,4237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Fisher-Facing Product Research & Field Validation | ORCA Research Dossier</title>
+<meta name="description" content="ORCA &#8212; Fisher-Facing Product Research & Field Validation. Complete research and architecture documentation.">
+<link rel="stylesheet" type="text/css" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="mermaid.min.js"></script>
+<script>
+if (typeof mermaid === 'undefined') {
+  document.write('<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"><\/script>');
+}
+</script>
+</head>
+<body>
+
+<header id="dhead" class="container">
+  <div class="row">
+    <div id="dpic">
+      <img src="ORCA_architecture.svg" class="ppic" alt="ORCA" onerror="this.style.background='#f0f0f0'" />
+    </div>
+    <div id="ddesc">
+      <h1>ORCA</h1>
+      <h2>Fisher-Facing Product Research & Field Validation</h2>
+      <nav class="doc-nav">
+        <a href="index.html">Home</a>
+<a href="architecture.html">Architecture Diagram</a>
+<a href="doc1.html">User Flows</a>
+<a href="doc2.html">Agentic System</a>
+<a href="doc3.html">Data Pipeline</a>
+<a href="doc4.html">Database</a>
+<a href="doc5.html">Implementation</a>
+<a href="doc6.html">Memory & Context</a>
+<a href="fisher.html" class="active">Fisher Research</a>
+<a href="data-sources.html">Data Sources</a>
+
+      </nav>
+    </div>
+  </div>
+</header>
+
+<hr>
+
+<div class="page-with-toc">
+  <!-- Sidebar TOC -->
+  <aside class="toc-sidebar">
+    <div class="toc-sticky">
+      <div class="toc-header">
+        <span class="toc-label">&#9679; Table of Contents</span>
+        <a class="toc-top-link" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593; TOP</a>
+      </div>
+      <ul class="toc-list" id="tocList">
+        <li><a href="#section-1" data-target="section-1">ORCA — Fisher-Facing Product Research & Field Validation Reference</a></li>
+<li><a href="#section-2" data-target="section-2">1. Why this document was made</a></li>
+<li><a href="#section-3" data-target="section-3">2. Research method and limits</a></li>
+<li><a href="#section-4" class="toc-h3" data-target="section-4">Important limitation</a></li>
+<li><a href="#section-5" data-target="section-5">3. The main conclusion</a></li>
+<li><a href="#section-6" data-target="section-6">India does not mainly have a shortage of marine information</a></li>
+<li><a href="#section-7" class="toc-h3" data-target="section-7">Better problem statement for ORCA</a></li>
+<li><a href="#section-8" data-target="section-8">4. The central product idea</a></li>
+<li><a href="#section-9" data-target="section-9">ORCA should feel like a trip companion, not a data portal</a></li>
+<li><a href="#section-10" class="toc-h3" data-target="section-10">The simple front end</a></li>
+<li><a href="#section-11" class="toc-h3" data-target="section-11">The complex back end</a></li>
+<li><a href="#section-12" data-target="section-12">5. What research tells us about the fisherman and the phone</a></li>
+<li><a href="#section-13" data-target="section-13">5.1 Digital skill is not the same as owning a smartphone</a></li>
+<li><a href="#section-14" data-target="section-14">5.2 Small screens and reading burden matter</a></li>
+<li><a href="#section-15" data-target="section-15">5.3 The newest INCOIS app research gives an even stronger lesson</a></li>
+<li><a href="#section-16" data-target="section-16">6. The biggest product lesson: complexity should stay inside ORCA</a></li>
+<li><a href="#section-17" class="toc-h3" data-target="section-17">The fisherman should see</a></li>
+<li><a href="#section-18" class="toc-h3" data-target="section-18">The system should handle</a></li>
+<li><a href="#section-19" data-target="section-19">7. What the fisherman actually needs during a trip</a></li>
+<li><a href="#section-20" data-target="section-20">Stage 1 — Before leaving</a></li>
+<li><a href="#section-21" data-target="section-21">Stage 2 — Travelling to the fishing area</a></li>
+<li><a href="#section-22" data-target="section-22">Stage 3 — Fishing</a></li>
+<li><a href="#section-23" data-target="section-23">Stage 4 — Return</a></li>
+<li><a href="#section-24" data-target="section-24">Stage 5 — After the trip</a></li>
+<li><a href="#section-25" data-target="section-25">8. Navigation research and what ORCA should do about it</a></li>
+<li><a href="#section-26" data-target="section-26">8.1 Navigation is not only “GPS”</a></li>
+<li><a href="#section-27" class="toc-h3" data-target="section-27">Finding a fishing area</a></li>
+<li><a href="#section-28" class="toc-h3" data-target="section-28">Reaching the fishing area</a></li>
+<li><a href="#section-29" class="toc-h3" data-target="section-29">Returning home</a></li>
+<li><a href="#section-30" class="toc-h3" data-target="section-30">Navigating when visibility is poor</a></li>
+<li><a href="#section-31" data-target="section-31">8.2 Existing navigation systems already cover parts of this</a></li>
+<li><a href="#section-32" class="toc-h3" data-target="section-32">ORCA should add context</a></li>
+<li><a href="#section-33" data-target="section-33">9. Recommended navigation experience</a></li>
+<li><a href="#section-34" data-target="section-34">Two main route actions</a></li>
+<li><a href="#section-35" class="toc-h3" data-target="section-35">GO TO FISHING AREA</a></li>
+<li><a href="#section-36" class="toc-h3" data-target="section-36">RETURN TO HARBOUR</a></li>
+<li><a href="#section-37" data-target="section-37">Compass-style view</a></li>
+<li><a href="#section-38" data-target="section-38">10. PFZ: why it matters</a></li>
+<li><a href="#section-39" class="toc-h3" data-target="section-39">Important point</a></li>
+<li><a href="#section-40" data-target="section-40">11. PFZ should not be just a map dot</a></li>
+<li><a href="#section-41" data-target="section-41">PFZ card</a></li>
+<li><a href="#section-42" class="toc-h3" data-target="section-42">PFZ 01</a></li>
+<li><a href="#section-43" class="toc-h3" data-target="section-43">PFZ 02</a></li>
+<li><a href="#section-44" data-target="section-44">12. PFZ freshness is important</a></li>
+<li><a href="#section-45" data-target="section-45">13. PFZ should be combined with distance and travel cost</a></li>
+<li><a href="#section-46" data-target="section-46">14. Save the fisherman's own fishing grounds</a></li>
+<li><a href="#section-47" data-target="section-47">MY FISHING GROUNDS</a></li>
+<li><a href="#section-48" data-target="section-48">15. Weather and sea conditions: show what changes a decision</a></li>
+<li><a href="#section-49" class="toc-h3" data-target="section-49">WIND</a></li>
+<li><a href="#section-50" class="toc-h3" data-target="section-50">WAVES</a></li>
+<li><a href="#section-51" class="toc-h3" data-target="section-51">RAIN</a></li>
+<li><a href="#section-52" class="toc-h3" data-target="section-52">CURRENT</a></li>
+<li><a href="#section-53" class="toc-h3" data-target="section-53">WARNING</a></li>
+<li><a href="#section-54" class="toc-h3" data-target="section-54">NEXT MAJOR CHANGE</a></li>
+<li><a href="#section-55" data-target="section-55">16. Use “NOW” and “NEXT” instead of scientific tables</a></li>
+<li><a href="#section-56" data-target="section-56">NOW</a></li>
+<li><a href="#section-57" data-target="section-57">NEXT 3 HOURS</a></li>
+<li><a href="#section-58" data-target="section-58">NEXT 6 HOURS</a></li>
+<li><a href="#section-59" data-target="section-59">TODAY</a></li>
+<li><a href="#section-60" data-target="section-60">17. Official warnings must always be treated differently</a></li>
+<li><a href="#section-61" data-target="section-61">18. Alerts need priority, not volume</a></li>
+<li><a href="#section-62" data-target="section-62">CRITICAL</a></li>
+<li><a href="#section-63" data-target="section-63">IMPORTANT</a></li>
+<li><a href="#section-64" data-target="section-64">CAUTION</a></li>
+<li><a href="#section-65" data-target="section-65">INFORMATION</a></li>
+<li><a href="#section-66" data-target="section-66">19. Offline mode should be a main feature, not a backup feature</a></li>
+<li><a href="#section-67" data-target="section-67">Trip pack</a></li>
+<li><a href="#section-68" data-target="section-68">20. Show “last updated” clearly</a></li>
+<li><a href="#section-69" data-target="section-69">21. Phone use on a fishing boat is a special design problem</a></li>
+<li><a href="#section-70" class="toc-h3" data-target="section-70">UI rules</a></li>
+<li><a href="#section-71" data-target="section-71">22. Voice is important, but voice alone is not enough</a></li>
+<li><a href="#section-72" class="toc-h3" data-target="section-72">CAUTION</a></li>
+<li><a href="#section-73" data-target="section-73">23. Local language is not an optional extra</a></li>
+<li><a href="#section-74" class="toc-h3" data-target="section-74">First field prototype</a></li>
+<li><a href="#section-75" data-target="section-75">24. “Ask ORCA” should be a focused tool, not a general chatbot</a></li>
+<li><a href="#section-76" class="toc-h3" data-target="section-76">User</a></li>
+<li><a href="#section-77" class="toc-h3" data-target="section-77">System work</a></li>
+<li><a href="#section-78" class="toc-h3" data-target="section-78">User sees</a></li>
+<li><a href="#section-79" data-target="section-79">25. Every important decision should have “WHY?”</a></li>
+<li><a href="#section-80" class="toc-h3" data-target="section-80">WHY?</a></li>
+<li><a href="#section-81" data-target="section-81">26. Geofencing and restricted areas</a></li>
+<li><a href="#section-82" data-target="section-82">27. Safety should include more than storms</a></li>
+<li><a href="#section-83" data-target="section-83">28. Return-to-harbour should be a first-class action</a></li>
+<li><a href="#section-84" class="toc-h3" data-target="section-84">RETURN TO HARBOUR</a></li>
+<li><a href="#section-85" data-target="section-85">29. Add “what will change?”</a></li>
+<li><a href="#section-86" data-target="section-86">WHAT WILL CHANGE?</a></li>
+<li><a href="#section-87" data-target="section-87">30. Boat profile</a></li>
+<li><a href="#section-88" class="toc-h3" data-target="section-88">Boat profile</a></li>
+<li><a href="#section-89" data-target="section-89">31. Fuel and effort comparison</a></li>
+<li><a href="#section-90" class="toc-h3" data-target="section-90">PFZ A</a></li>
+<li><a href="#section-91" class="toc-h3" data-target="section-91">PFZ B</a></li>
+<li><a href="#section-92" class="toc-h3" data-target="section-92">ORCA view</a></li>
+<li><a href="#section-93" data-target="section-93">32. Local knowledge should be part of the system</a></li>
+<li><a href="#section-94" data-target="section-94">33. A simple post-trip feedback loop</a></li>
+<li><a href="#section-95" class="toc-h3" data-target="section-95">HOW WAS THE TRIP?</a></li>
+<li><a href="#section-96" class="toc-h3" data-target="section-96">CATCH</a></li>
+<li><a href="#section-97" data-target="section-97">34. The learning loop for ORCA</a></li>
+<li><a href="#section-98" data-target="section-98">35. Historical comparison</a></li>
+<li><a href="#section-99" data-target="section-99">MY GROUND — THEN VS NOW</a></li>
+<li><a href="#section-100" data-target="section-100">36. Climate and changing fish patterns</a></li>
+<li><a href="#section-101" class="toc-h3" data-target="section-101">“What changed in my usual fishing area?”</a></li>
+<li><a href="#section-102" class="toc-h3" data-target="section-102">“What is the temperature today?”</a></li>
+<li><a href="#section-103" data-target="section-103">37. Pollution and environmental hazards</a></li>
+<li><a href="#section-104" data-target="section-104">38. Economic problems are important, but should not make the app too large</a></li>
+<li><a href="#section-105" class="toc-h3" data-target="section-105">Product decision</a></li>
+<li><a href="#section-106" data-target="section-106">SHORE</a></li>
+<li><a href="#section-107" data-target="section-107">39. Fisherwomen and shore users</a></li>
+<li><a href="#section-108" class="toc-h3" data-target="section-108">Fisher mode</a></li>
+<li><a href="#section-109" class="toc-h3" data-target="section-109">Shore mode</a></li>
+<li><a href="#section-110" class="toc-h3" data-target="section-110">Research mode</a></li>
+<li><a href="#section-111" data-target="section-111">40. Trust and location privacy</a></li>
+<li><a href="#section-112" class="toc-h3" data-target="section-112">Private</a></li>
+<li><a href="#section-113" class="toc-h3" data-target="section-113">Shared with selected people</a></li>
+<li><a href="#section-114" class="toc-h3" data-target="section-114">Community</a></li>
+<li><a href="#section-115" class="toc-h3" data-target="section-115">Public/scientific</a></li>
+<li><a href="#section-116" data-target="section-116">41. The fisherman should not need a complicated registration process</a></li>
+<li><a href="#section-117" data-target="section-117">42. One-screen fisherman home design</a></li>
+<li><a href="#section-118" data-target="section-118">43. Fisher app navigation structure</a></li>
+<li><a href="#section-119" data-target="section-119">HOME</a></li>
+<li><a href="#section-120" data-target="section-120">MAP</a></li>
+<li><a href="#section-121" data-target="section-121">ASK ORCA</a></li>
+<li><a href="#section-122" data-target="section-122">ALERTS</a></li>
+<li><a href="#section-123" data-target="section-123">44. The map should open for a reason</a></li>
+<li><a href="#section-124" class="toc-h3" data-target="section-124">From PFZ</a></li>
+<li><a href="#section-125" class="toc-h3" data-target="section-125">From alert</a></li>
+<li><a href="#section-126" class="toc-h3" data-target="section-126">From return</a></li>
+<li><a href="#section-127" class="toc-h3" data-target="section-127">From saved location</a></li>
+<li><a href="#section-128" data-target="section-128">45. Map layers</a></li>
+<li><a href="#section-129" class="toc-h3" data-target="section-129">Suggested layers</a></li>
+<li><a href="#section-130" data-target="section-130">46. “SEA NOW” screen</a></li>
+<li><a href="#section-131" data-target="section-131">SEA NOW</a></li>
+<li><a href="#section-132" class="toc-h3" data-target="section-132">WIND</a></li>
+<li><a href="#section-133" class="toc-h3" data-target="section-133">WAVES</a></li>
+<li><a href="#section-134" class="toc-h3" data-target="section-134">CURRENT</a></li>
+<li><a href="#section-135" class="toc-h3" data-target="section-135">RAIN</a></li>
+<li><a href="#section-136" class="toc-h3" data-target="section-136">VISIBILITY</a></li>
+<li><a href="#section-137" class="toc-h3" data-target="section-137">WARNING</a></li>
+<li><a href="#section-138" class="toc-h3" data-target="section-138">NEXT CHANGE</a></li>
+<li><a href="#section-139" data-target="section-139">47. “TRIP DECISION” is a core ORCA feature</a></li>
+<li><a href="#section-140" class="toc-h3" data-target="section-140">FAVOURABLE</a></li>
+<li><a href="#section-141" class="toc-h3" data-target="section-141">CAUTION</a></li>
+<li><a href="#section-142" class="toc-h3" data-target="section-142">AVOID / RETURN</a></li>
+<li><a href="#section-143" data-target="section-143">48. The system should explain the difference between data, evidence and a dec...</a></li>
+<li><a href="#section-144" class="toc-h3" data-target="section-144">DATA</a></li>
+<li><a href="#section-145" class="toc-h3" data-target="section-145">EVIDENCE</a></li>
+<li><a href="#section-146" class="toc-h3" data-target="section-146">DECISION SUPPORT</a></li>
+<li><a href="#section-147" data-target="section-147">49. What ORCA can realistically solve</a></li>
+<li><a href="#section-148" data-target="section-148">50. What ORCA should NOT promise</a></li>
+<li><a href="#section-149" data-target="section-149">51. Existing products ORCA must be compared against</a></li>
+<li><a href="#section-150" data-target="section-150">INCOIS PFZ service</a></li>
+<li><a href="#section-151" class="toc-h3" data-target="section-151">ORCA opportunity</a></li>
+<li><a href="#section-152" data-target="section-152">SAMUDRA</a></li>
+<li><a href="#section-153" class="toc-h3" data-target="section-153">ORCA opportunity</a></li>
+<li><a href="#section-154" data-target="section-154">Fisher Friend</a></li>
+<li><a href="#section-155" class="toc-h3" data-target="section-155">ORCA opportunity</a></li>
+<li><a href="#section-156" data-target="section-156">FISH by INCOIS</a></li>
+<li><a href="#section-157" class="toc-h3" data-target="section-157">ORCA opportunity</a></li>
+<li><a href="#section-158" data-target="section-158">Nabhmitra / VCSS / NavIC-related fisher systems</a></li>
+<li><a href="#section-159" class="toc-h3" data-target="section-159">ORCA opportunity</a></li>
+<li><a href="#section-160" data-target="section-160">National Fisheries Digital Platform</a></li>
+<li><a href="#section-161" class="toc-h3" data-target="section-161">ORCA opportunity</a></li>
+<li><a href="#section-162" data-target="section-162">52. A key product gap: “one screen for the decision”</a></li>
+<li><a href="#section-163" data-target="section-163">53. The field survey should test real behavior, not opinions about ORCA</a></li>
+<li><a href="#section-164" data-target="section-164">54. Recommended Dholai fisherman survey</a></li>
+<li><a href="#section-165" data-target="section-165">Part A — Background</a></li>
+<li><a href="#section-166" data-target="section-166">Part B — Navigation</a></li>
+<li><a href="#section-167" data-target="section-167">Part C — Weather and ocean information</a></li>
+<li><a href="#section-168" data-target="section-168">Part D — PFZ and fishing location</a></li>
+<li><a href="#section-169" data-target="section-169">Part E — Phone use</a></li>
+<li><a href="#section-170" data-target="section-170">Part F — Network and power</a></li>
+<li><a href="#section-171" data-target="section-171">Part G — Safety</a></li>
+<li><a href="#section-172" data-target="section-172">Part H — Open questions</a></li>
+<li><a href="#section-173" data-target="section-173">55. Observe phone skill instead of only asking about it</a></li>
+<li><a href="#section-174" data-target="section-174">56. The strongest field question</a></li>
+<li><a href="#section-175" class="toc-h3" data-target="section-175">GET IT</a></li>
+<li><a href="#section-176" class="toc-h3" data-target="section-176">UNDERSTAND IT</a></li>
+<li><a href="#section-177" class="toc-h3" data-target="section-177">ACT ON IT</a></li>
+<li><a href="#section-178" data-target="section-178">57. Another strong field question</a></li>
+<li><a href="#section-179" data-target="section-179">58. Dholai-specific field context</a></li>
+<li><a href="#section-180" data-target="section-180">59. Suggested sample for the first Dholai field study</a></li>
+<li><a href="#section-181" class="toc-h3" data-target="section-181">20 respondents — minimum useful first pass</a></li>
+<li><a href="#section-182" class="toc-h3" data-target="section-182">30–40 — good for a hackathon field study</a></li>
+<li><a href="#section-183" class="toc-h3" data-target="section-183">50+ — strong field evidence if time allows</a></li>
+<li><a href="#section-184" data-target="section-184">60. Secondary stakeholder interviews</a></li>
+<li><a href="#section-185" data-target="section-185">Fisheries professor/researcher</a></li>
+<li><a href="#section-186" data-target="section-186">Meteorologist</a></li>
+<li><a href="#section-187" data-target="section-187">Ocean-data scientist</a></li>
+<li><a href="#section-188" data-target="section-188">Fisheries officer</a></li>
+<li><a href="#section-189" data-target="section-189">Harbour/port/safety person</a></li>
+<li><a href="#section-190" data-target="section-190">61. Feature priority for the first fisherman prototype</a></li>
+<li><a href="#section-191" data-target="section-191">P0 — Must have</a></li>
+<li><a href="#section-192" data-target="section-192">P1 — Very useful</a></li>
+<li><a href="#section-193" data-target="section-193">P2 — Future</a></li>
+<li><a href="#section-194" data-target="section-194">62. Recommended fisherman app structure</a></li>
+<li><a href="#section-195" data-target="section-195">63. One-screen information architecture</a></li>
+<li><a href="#section-196" data-target="section-196">1. TRIP STATUS</a></li>
+<li><a href="#section-197" data-target="section-197">2. CURRENT CONDITIONS</a></li>
+<li><a href="#section-198" data-target="section-198">3. BEST AVAILABLE FISHING OPTION</a></li>
+<li><a href="#section-199" data-target="section-199">4. NEXT CHANGE</a></li>
+<li><a href="#section-200" data-target="section-200">64. Recommended visual design for the fisherman app</a></li>
+<li><a href="#section-201" class="toc-h3" data-target="section-201">Design character</a></li>
+<li><a href="#section-202" data-target="section-202">65. Do not make it look like Google Maps for the ocean</a></li>
+<li><a href="#section-203" data-target="section-203">66. The role of “Ask ORCA” on the main screen</a></li>
+<li><a href="#section-204" data-target="section-204">ASK ORCA</a></li>
+<li><a href="#section-205" data-target="section-205">67. Why the language model should not make the scientific decision by itself</a></li>
+<li><a href="#section-206" data-target="section-206">68. Source hierarchy for the fisherman product</a></li>
+<li><a href="#section-207" class="toc-h3" data-target="section-207">Safety warnings</a></li>
+<li><a href="#section-208" class="toc-h3" data-target="section-208">PFZ</a></li>
+<li><a href="#section-209" class="toc-h3" data-target="section-209">Ocean state</a></li>
+<li><a href="#section-210" class="toc-h3" data-target="section-210">Weather</a></li>
+<li><a href="#section-211" class="toc-h3" data-target="section-211">Geofences</a></li>
+<li><a href="#section-212" class="toc-h3" data-target="section-212">Navigation</a></li>
+<li><a href="#section-213" class="toc-h3" data-target="section-213">Historical/context data</a></li>
+<li><a href="#section-214" data-target="section-214">69. Data freshness rules</a></li>
+<li><a href="#section-215" data-target="section-215">70. Connectivity design</a></li>
+<li><a href="#section-216" data-target="section-216">Online</a></li>
+<li><a href="#section-217" data-target="section-217">Weak network</a></li>
+<li><a href="#section-218" data-target="section-218">Offline</a></li>
+<li><a href="#section-219" data-target="section-219">Connection returns</a></li>
+<li><a href="#section-220" data-target="section-220">71. Emergency design</a></li>
+<li><a href="#section-221" data-target="section-221">EMERGENCY</a></li>
+<li><a href="#section-222" class="toc-h3" data-target="section-222">CURRENT LOCATION</a></li>
+<li><a href="#section-223" class="toc-h3" data-target="section-223">NEAREST HARBOUR / SAFE POINT</a></li>
+<li><a href="#section-224" class="toc-h3" data-target="section-224">CALL</a></li>
+<li><a href="#section-225" class="toc-h3" data-target="section-225">SOS / EXISTING EMERGENCY LINK</a></li>
+<li><a href="#section-226" class="toc-h3" data-target="section-226">RETURN ROUTE</a></li>
+<li><a href="#section-227" data-target="section-227">72. Family / shore sharing</a></li>
+<li><a href="#section-228" data-target="section-228">SHARE TRIP</a></li>
+<li><a href="#section-229" data-target="section-229">73. Catch and trip feedback should be tiny</a></li>
+<li><a href="#section-230" class="toc-h3" data-target="section-230">HOW WAS THE TRIP?</a></li>
+<li><a href="#section-231" class="toc-h3" data-target="section-231">WAS THE PFZ USEFUL?</a></li>
+<li><a href="#section-232" class="toc-h3" data-target="section-232">OPTIONAL CATCH</a></li>
+<li><a href="#section-233" data-target="section-233">74. What should make ORCA different</a></li>
+<li><a href="#section-234" class="toc-h3" data-target="section-234">Existing systems</a></li>
+<li><a href="#section-235" class="toc-h3" data-target="section-235">ORCA</a></li>
+<li><a href="#section-236" data-target="section-236">75. What should be different on the researcher app</a></li>
+<li><a href="#section-237" data-target="section-237">76. The fisherman and researcher views should use the same evidence</a></li>
+<li><a href="#section-238" data-target="section-238">Researcher</a></li>
+<li><a href="#section-239" data-target="section-239">Fisherman</a></li>
+<li><a href="#section-240" data-target="section-240">77. What we should test in the first ORCA field prototype</a></li>
+<li><a href="#section-241" class="toc-h3" data-target="section-241">Test 1 — Can the fisherman understand the home screen in 10 seconds?</a></li>
+<li><a href="#section-242" class="toc-h3" data-target="section-242">Test 2 — Can he find the best PFZ without training?</a></li>
+<li><a href="#section-243" class="toc-h3" data-target="section-243">Test 3 — Can he understand the route?</a></li>
+<li><a href="#section-244" class="toc-h3" data-target="section-244">Test 4 — Can he ask a question by voice?</a></li>
+<li><a href="#section-245" class="toc-h3" data-target="section-245">Test 5 — Can he understand an alert?</a></li>
+<li><a href="#section-246" class="toc-h3" data-target="section-246">Test 6 — Can he return to the harbour function without help?</a></li>
+<li><a href="#section-247" data-target="section-247">78. Usability test method at Dholai</a></li>
+<li><a href="#section-248" data-target="section-248">Task A</a></li>
+<li><a href="#section-249" data-target="section-249">Task B</a></li>
+<li><a href="#section-250" data-target="section-250">Task C</a></li>
+<li><a href="#section-251" data-target="section-251">Task D</a></li>
+<li><a href="#section-252" data-target="section-252">Task E</a></li>
+<li><a href="#section-253" data-target="section-253">79. Metrics to collect from the field</a></li>
+<li><a href="#section-254" data-target="section-254">80. The survey should produce direct product evidence</a></li>
+<li><a href="#section-255" data-target="section-255">81. Questions to ask boat owners separately</a></li>
+<li><a href="#section-256" data-target="section-256">82. Questions to ask fish traders</a></li>
+<li><a href="#section-257" data-target="section-257">83. Questions to ask fisheries researchers</a></li>
+<li><a href="#section-258" data-target="section-258">84. Questions to ask weather experts</a></li>
+<li><a href="#section-259" data-target="section-259">85. Questions to ask satellite/ocean-data experts</a></li>
+<li><a href="#section-260" data-target="section-260">86. Questions to ask fisheries officers</a></li>
+<li><a href="#section-261" data-target="section-261">87. What we learned from Dholai/Bilimora specifically</a></li>
+<li><a href="#section-262" class="toc-h3" data-target="section-262">Morning</a></li>
+<li><a href="#section-263" class="toc-h3" data-target="section-263">Later morning</a></li>
+<li><a href="#section-264" class="toc-h3" data-target="section-264">Separate appointments</a></li>
+<li><a href="#section-265" data-target="section-265">88. Dholai fisherman population: how to quote it safely</a></li>
+<li><a href="#section-266" data-target="section-266">89. What the research says about adoption</a></li>
+<li><a href="#section-267" data-target="section-267">90. ORCA success metrics</a></li>
+<li><a href="#section-268" class="toc-h3" data-target="section-268">Usefulness</a></li>
+<li><a href="#section-269" class="toc-h3" data-target="section-269">Time</a></li>
+<li><a href="#section-270" class="toc-h3" data-target="section-270">Help required</a></li>
+<li><a href="#section-271" class="toc-h3" data-target="section-271">Trust</a></li>
+<li><a href="#section-272" class="toc-h3" data-target="section-272">Action</a></li>
+<li><a href="#section-273" class="toc-h3" data-target="section-273">Repeat use</a></li>
+<li><a href="#section-274" class="toc-h3" data-target="section-274">Offline success</a></li>
+<li><a href="#section-275" data-target="section-275">91. What the first version should look like</a></li>
+<li><a href="#section-276" data-target="section-276">Home</a></li>
+<li><a href="#section-277" data-target="section-277">PFZ</a></li>
+<li><a href="#section-278" data-target="section-278">Map</a></li>
+<li><a href="#section-279" data-target="section-279">Ask</a></li>
+<li><a href="#section-280" data-target="section-280">Alerts</a></li>
+<li><a href="#section-281" data-target="section-281">Offline</a></li>
+<li><a href="#section-282" data-target="section-282">Feedback</a></li>
+<li><a href="#section-283" data-target="section-283">92. What can wait</a></li>
+<li><a href="#section-284" data-target="section-284">93. Recommended ORCA fisherman journey</a></li>
+<li><a href="#section-285" data-target="section-285">94. Recommended ORCA decision flow</a></li>
+<li><a href="#section-286" data-target="section-286">95. The most important product rule</a></li>
+<li><a href="#section-287" data-target="section-287">96. The key research-backed product principles</a></li>
+<li><a href="#section-288" data-target="section-288">Principle 1 — Local language first</a></li>
+<li><a href="#section-289" data-target="section-289">Principle 2 — Offline first</a></li>
+<li><a href="#section-290" data-target="section-290">Principle 3 — Reduce typing</a></li>
+<li><a href="#section-291" data-target="section-291">Principle 4 — One decision at a time</a></li>
+<li><a href="#section-292" data-target="section-292">Principle 5 — Keep the scientific detail behind “WHY?”</a></li>
+<li><a href="#section-293" data-target="section-293">Principle 6 — Show data freshness</a></li>
+<li><a href="#section-294" data-target="section-294">Principle 7 — Prefer official warnings for safety</a></li>
+<li><a href="#section-295" data-target="section-295">Principle 8 — PFZ needs context, not just coordinates</a></li>
+<li><a href="#section-296" data-target="section-296">Principle 9 — Navigation should include return-to-harbour</a></li>
+<li><a href="#section-297" data-target="section-297">Principle 10 — Local knowledge should be captured, not ignored</a></li>
+<li><a href="#section-298" data-target="section-298">Principle 11 — Do not overpromise fish prediction or safety</a></li>
+<li><a href="#section-299" data-target="section-299">Principle 12 — Adoption depends on clear personal value</a></li>
+<li><a href="#section-300" data-target="section-300">97. The strongest ORCA feature set in one place</a></li>
+<li><a href="#section-301" class="toc-h3" data-target="section-301">1. TODAY AT SEA</a></li>
+<li><a href="#section-302" class="toc-h3" data-target="section-302">2. GO / CAUTION / AVOID</a></li>
+<li><a href="#section-303" class="toc-h3" data-target="section-303">3. PFZ SCOUT</a></li>
+<li><a href="#section-304" class="toc-h3" data-target="section-304">4. BEST OPTION FOR THIS TRIP</a></li>
+<li><a href="#section-305" class="toc-h3" data-target="section-305">5. GO TO PFZ</a></li>
+<li><a href="#section-306" class="toc-h3" data-target="section-306">6. RETURN TO HARBOUR</a></li>
+<li><a href="#section-307" class="toc-h3" data-target="section-307">7. SEA NOW</a></li>
+<li><a href="#section-308" class="toc-h3" data-target="section-308">8. WHAT WILL CHANGE?</a></li>
+<li><a href="#section-309" class="toc-h3" data-target="section-309">9. OFFICIAL ALERTS</a></li>
+<li><a href="#section-310" class="toc-h3" data-target="section-310">10. ASK ORCA</a></li>
+<li><a href="#section-311" class="toc-h3" data-target="section-311">11. WHY?</a></li>
+<li><a href="#section-312" class="toc-h3" data-target="section-312">12. OFFLINE TRIP PACK</a></li>
+<li><a href="#section-313" class="toc-h3" data-target="section-313">13. LAST UPDATED</a></li>
+<li><a href="#section-314" class="toc-h3" data-target="section-314">14. MY FISHING GROUNDS</a></li>
+<li><a href="#section-315" class="toc-h3" data-target="section-315">15. BOAT PROFILE</a></li>
+<li><a href="#section-316" class="toc-h3" data-target="section-316">16. TRIP FEEDBACK</a></li>
+<li><a href="#section-317" data-target="section-317">98. What makes the platform different</a></li>
+<li><a href="#section-318" data-target="section-318">99. What to validate at Dholai before finalizing the UI</a></li>
+<li><a href="#section-319" data-target="section-319">100. Final product definition</a></li>
+<li><a href="#section-320" data-target="section-320">ORCA Fisher</a></li>
+<li><a href="#section-321" class="toc-h3" data-target="section-321">The fisherman sees</a></li>
+<li><a href="#section-322" class="toc-h3" data-target="section-322">The system handles</a></li>
+<li><a href="#section-323" class="toc-h3" data-target="section-323">The central design sentence</a></li>
+<li><a href="#section-324" data-target="section-324">101. Final recommendations for the first UI prototype</a></li>
+<li><a href="#section-325" data-target="section-325">Home</a></li>
+<li><a href="#section-326" data-target="section-326">Map</a></li>
+<li><a href="#section-327" data-target="section-327">Ask</a></li>
+<li><a href="#section-328" data-target="section-328">Alerts</a></li>
+<li><a href="#section-329" data-target="section-329">Profile</a></li>
+<li><a href="#section-330" data-target="section-330">102. What I would deliberately avoid in V1</a></li>
+<li><a href="#section-331" data-target="section-331">103. Research-backed answer to the original product question</a></li>
+<li><a href="#section-332" data-target="section-332">104. References and sources</a></li>
+<li><a href="#section-333" data-target="section-333">Government, science institutions and official systems</a></li>
+<li><a href="#section-334" data-target="section-334">Recent research on digital use, fisher apps and usability</a></li>
+<li><a href="#section-335" data-target="section-335">PFZ and fisheries science</a></li>
+<li><a href="#section-336" data-target="section-336">Recent Dholai / Bilimora material</a></li>
+<li><a href="#section-337" data-target="section-337">Safety, climate and livelihood studies</a></li>
+<li><a href="#section-338" data-target="section-338">105. Source quality notes</a></li>
+<li><a href="#section-339" class="toc-h3" data-target="section-339">Strongest sources for ORCA product decisions</a></li>
+<li><a href="#section-340" class="toc-h3" data-target="section-340">Use with caution</a></li>
+<li><a href="#section-341" class="toc-h3" data-target="section-341">Rule for ORCA</a></li>
+<li><a href="#section-342" data-target="section-342">106. Final internal product checklist</a></li>
+<li><a href="#section-343" class="toc-h3" data-target="section-343">Simplicity</a></li>
+<li><a href="#section-344" class="toc-h3" data-target="section-344">Language</a></li>
+<li><a href="#section-345" class="toc-h3" data-target="section-345">Navigation</a></li>
+<li><a href="#section-346" class="toc-h3" data-target="section-346">PFZ</a></li>
+<li><a href="#section-347" class="toc-h3" data-target="section-347">Safety</a></li>
+<li><a href="#section-348" class="toc-h3" data-target="section-348">Offline</a></li>
+<li><a href="#section-349" class="toc-h3" data-target="section-349">Trust</a></li>
+<li><a href="#section-350" class="toc-h3" data-target="section-350">Adoption</a></li>
+<li><a href="#section-351" data-target="section-351">107. Final research conclusion</a></li>
+<li><a href="#section-352" class="toc-h3" data-target="section-352">One simple screen</a></li>
+<li><a href="#section-353" class="toc-h3" data-target="section-353">One map</a></li>
+<li><a href="#section-354" class="toc-h3" data-target="section-354">One voice interface</a></li>
+<li><a href="#section-355" class="toc-h3" data-target="section-355">One alert system</a></li>
+<li><a href="#section-356" class="toc-h3" data-target="section-356">One return action</a></li>
+<li><a href="#section-357" data-target="section-357">END OF RESEARCH REFERENCE</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <div class="toc-content">
+    <div class="breadcrumb"><a href="index.html">Home</a> / Fisher-Facing Product Research & Field Validation</div>
+
+    <div class="md-content">
+<h1 id="section-1">ORCA — Fisher-Facing Product Research & Field Validation Reference</h1>
+
+<p><strong>Project:</strong> ORCA — Marine EcOsystem Reasoning with Collaborative Agents</p>
+<p><strong>Focus of this document:</strong> Fisher-facing product only</p>
+<p><strong>Primary geography for first field validation:</strong> Dholai / Bilimora / Navsari, Gujarat</p>
+<p><strong>Broader scope:</strong> Marine fishing communities across India</p>
+<p><strong>Research window emphasized:</strong> October 2024 – October 2026, with a small number of older sources retained where they are still useful for product design or provide a long-running baseline.</p>
+<p><strong>Purpose:</strong> Research reference for product design, fisherman survey, field interviews, PFZ use, navigation, safety, language, phone usability, connectivity, and feature planning.</p>
+
+<hr>
+
+<h2 id="section-2">1. Why this document was made</h2>
+
+<p>ORCA should not be designed as a collection of features decided in advance. The fisherman-facing product needs to start from the way fishing is actually done in India:</p>
+
+<ul>
+<li>how a trip is planned,</li>
+<li>how a fishing area is chosen,</li>
+<li>how a boat travels,</li>
+<li>how weather and sea conditions are checked,</li>
+<li>how fishing information is received,</li>
+<li>how PFZ information is understood,</li>
+<li>how a fisherman uses a phone on a moving boat,</li>
+<li>what happens when mobile internet is not available,</li>
+<li>how warnings reach the boat,</li>
+<li>how the fisherman returns to the harbour,</li>
+<li>and what information is useful after the trip.</li>
+</ul>
+
+<p>The central question for ORCA is therefore not:</p>
+
+<blockquote><strong>“What information can we show?”</strong></blockquote>
+
+<p>It is:</p>
+
+<blockquote><strong>“What information does a fisherman need at a particular moment, and how can we make that information easy to understand and act on?”</strong></blockquote>
+
+<p>This document combines the research, product conclusions, field-survey questions, Dholai-specific information, PFZ findings, navigation findings, phone-usability findings, connectivity findings, safety findings, and feature ideas discussed during the ORCA work.</p>
+
+<hr>
+
+<h1 id="section-3">2. Research method and limits</h1>
+
+<p>This is a practical product research document, not a formal systematic literature review.</p>
+
+<p>For the recent research work, a broad search was carried out across government sources, Indian research journals, fisheries institutions, university publications, marine-safety sources, app documentation, and recent field studies. More than 100 search-result candidates were screened, with the strongest and most directly useful sources selected for closer reading and inclusion here.</p>
+
+<p>The most important sources were prioritized in this order:</p>
+
+<ol>
+<li>Government and government-science sources such as INCOIS, ISRO, IMD-related material, Department of Fisheries, Fishery Survey of India, DG Shipping and CMFRI.</li>
+<li>Peer-reviewed Indian fisheries and marine studies.</li>
+<li>Recent studies that directly tested digital tools with fishermen or fish farmers.</li>
+<li>Current descriptions of deployed applications such as SAMUDRA, Fisher Friend, FISH, and Nabhmitra-related systems.</li>
+<li>Local studies around Dholai, Bilimora and Navsari.</li>
+</ol>
+
+<h3 id="section-4">Important limitation</h3>
+
+<p>The evidence is geographically and operationally diverse. A study in Kerala, Odisha, Andhra Pradesh or the Sundarbans should not automatically be treated as proof that every fisherman in Gujarat behaves in exactly the same way.</p>
+
+<p>Use the broader research to form hypotheses, then use the Dholai field survey to verify them locally.</p>
+
+<hr>
+
+<h1 id="section-5">3. The main conclusion</h1>
+
+<h2 id="section-6">India does not mainly have a shortage of marine information</h2>
+
+<p>India already has many sources of information:</p>
+
+<ul>
+<li>Potential Fishing Zone (PFZ) advisories,</li>
+<li>ocean-state forecasts,</li>
+<li>wind and wave information,</li>
+<li>tides,</li>
+<li>currents,</li>
+<li>sea-surface temperature,</li>
+<li>chlorophyll,</li>
+<li>cyclone and high-wave warnings,</li>
+<li>marine heat-wave information,</li>
+<li>fishing-vessel communication systems,</li>
+<li>navigation systems,</li>
+<li>geofencing,</li>
+<li>government schemes,</li>
+<li>market information,</li>
+<li>and fisheries databases.</li>
+</ul>
+
+<p>INCOIS provides PFZ and ocean-state services, and SAMUDRA exposes PFZ, tides, marine heat waves, currents, winds, waves, swell and other warnings. The national VCSS plan also combines satellite communication with safety alerts, no-fishing-zone information, IMBL geofencing and Nabhmitra integration. The National Fisheries Digital Platform covers registration, schemes, credit, insurance, training, marketing and other fisheries functions. [R01][R02][R03][R04]</p>
+
+<p>Therefore, ORCA should not try to win by saying:</p>
+
+<blockquote>“We put weather, PFZ and GPS in one application.”</blockquote>
+
+<p>That is not enough because important parts of that already exist.</p>
+
+<h3 id="section-7">Better problem statement for ORCA</h3>
+
+<blockquote><strong>Information is available, but the fisherman still has to collect it, understand it, compare it, decide what matters, and turn it into an action.</strong></blockquote>
+
+<p>ORCA should solve that last part.</p>
+
+<hr>
+
+<h1 id="section-8">4. The central product idea</h1>
+
+<h2 id="section-9">ORCA should feel like a trip companion, not a data portal</h2>
+
+<p>For the fisherman, the product should answer a small set of simple questions:</p>
+
+<ol>
+<li><strong>Can I go?</strong></li>
+<li><strong>Where should I go?</strong></li>
+<li><strong>What will the sea be like during the trip?</strong></li>
+<li><strong>What should I avoid?</strong></li>
+<li><strong>How do I get there?</strong></li>
+<li><strong>How do I return?</strong></li>
+<li><strong>Why is ORCA telling me this?</strong></li>
+</ol>
+
+<p>The complex work should happen in the background.</p>
+
+<h3 id="section-10">The simple front end</h3>
+
+<blockquote><strong>ASK → UNDERSTAND → DECIDE → ACT</strong></blockquote>
+
+<h3 id="section-11">The complex back end</h3>
+
+<blockquote>collect information → check freshness → compare sources → calculate → check restrictions → evaluate evidence → recommend → explain</blockquote>
+
+<p>This separation is one of the strongest product ideas for ORCA.</p>
+
+<hr>
+
+<h1 id="section-12">5. What research tells us about the fisherman and the phone</h1>
+
+<h2 id="section-13">5.1 Digital skill is not the same as owning a smartphone</h2>
+
+<p>A recent 2026 study on digital information systems for small-scale fisheries in the Sundarbans found that information is still spread across basic phones, radio, television, local communication and smartphones. It also reported limits around digital adoption, local information and language. This supports the idea that an application cannot assume that every fisherman is a comfortable smartphone user.</p>
+
+<p>A 2026 Indian study of fish farmers in Andhra Pradesh found <strong>usability</strong> to be the strongest constraint dimension for digital/social-media information use, with an RBQ of 70.05. The largest individual constraint was the <strong>lack of content in the user's preferred local language</strong>, with an RBQ of 84.50. [R05]</p>
+
+<p>This is strong evidence for designing ORCA around:</p>
+
+<ul>
+<li>local language,</li>
+<li>clear wording,</li>
+<li>large controls,</li>
+<li>simple screens,</li>
+<li>voice input,</li>
+<li>audio output,</li>
+<li>and very little typing.</li>
+</ul>
+
+<h2 id="section-14">5.2 Small screens and reading burden matter</h2>
+
+<p>A long-running Fisher Friend field study in Tamil Nadu, republished in 2025, identified practical phone problems such as:</p>
+
+<ul>
+<li>small screen size,</li>
+<li>too many scrolls,</li>
+<li>slow scrolling,</li>
+<li>small font size,</li>
+<li>and limited time available to use the device.</li>
+</ul>
+
+<p>The same study reported preference for GPS integration, voice-enabled messages, water-resistant equipment, stronger batteries and simpler interaction. [R06]</p>
+
+<p>Even though the original field study is older, these findings remain useful because the physical conditions of using a phone on a boat have not disappeared.</p>
+
+<h2 id="section-15">5.3 The newest INCOIS app research gives an even stronger lesson</h2>
+
+<p>The 2026 FISH app paper is especially important for ORCA. INCOIS originally considered a more detailed data-collection flow, but after consultations it simplified the app. The paper explicitly says simpler interaction was prioritized because overly complex processes could discourage fishermen from using the app. The application was localized into English, Hindi, Gujarati, Marathi, Kannada, Malayalam, Tamil, Telugu, Odia and Bengali and was designed to work offline because fishers frequently operate outside mobile-network coverage. [R07]</p>
+
+<p>This is direct evidence from an Indian marine-service deployment:</p>
+
+<blockquote><strong>More functionality does not automatically mean a better fisherman application.</strong></blockquote>
+
+<hr>
+
+<h1 id="section-16">6. The biggest product lesson: complexity should stay inside ORCA</h1>
+
+<p>A fisherman should not have to understand:</p>
+
+<ul>
+<li>satellite products,</li>
+<li>SST,</li>
+<li>chlorophyll,</li>
+<li>ocean current models,</li>
+<li>several weather models,</li>
+<li>data-source differences,</li>
+<li>map layers,</li>
+<li>geospatial files,</li>
+<li>model confidence numbers,</li>
+<li>or which government organization provides which dataset.</li>
+</ul>
+
+<p>Those things can exist in the system, but they should normally be hidden from the main interface.</p>
+
+<h3 id="section-17">The fisherman should see</h3>
+
+<ul>
+<li><strong>GO</strong></li>
+<li><strong>WAIT</strong></li>
+<li><strong>CAUTION</strong></li>
+<li><strong>RETURN</strong></li>
+<li><strong>GO TO PFZ</strong></li>
+<li><strong>OPEN MAP</strong></li>
+<li><strong>ASK ORCA</strong></li>
+<li><strong>HELP</strong></li>
+</ul>
+
+<h3 id="section-18">The system should handle</h3>
+
+<ul>
+<li>multiple data sources,</li>
+<li>source checks,</li>
+<li>time alignment,</li>
+<li>spatial alignment,</li>
+<li>route checks,</li>
+<li>hazard checks,</li>
+<li>PFZ evaluation,</li>
+<li>uncertainty,</li>
+<li>freshness,</li>
+<li>and explanations.</li>
+</ul>
+
+<p>This is the simplest way to express the central design rule:</p>
+
+<blockquote><strong>Complexity belongs inside ORCA, not in the fisherman's hands.</strong></blockquote>
+
+<hr>
+
+<h1 id="section-19">7. What the fisherman actually needs during a trip</h1>
+
+<p>The fishing trip can be understood in five stages.</p>
+
+<h2 id="section-20">Stage 1 — Before leaving</h2>
+
+<p>Questions:</p>
+
+<ul>
+<li>Is it a good time to leave?</li>
+<li>What is the weather?</li>
+<li>What are the waves like?</li>
+<li>Is there any official warning?</li>
+<li>Is there a useful PFZ nearby?</li>
+<li>How far away is it?</li>
+<li>Will conditions change later in the trip?</li>
+<li>Is there a restricted area on the way?</li>
+</ul>
+
+<h2 id="section-21">Stage 2 — Travelling to the fishing area</h2>
+
+<p>Questions:</p>
+
+<ul>
+<li>Which direction?</li>
+<li>How far?</li>
+<li>How long will it take?</li>
+<li>Is the planned route crossing a danger/restricted zone?</li>
+<li>Are conditions getting worse?</li>
+</ul>
+
+<h2 id="section-22">Stage 3 — Fishing</h2>
+
+<p>Questions:</p>
+
+<ul>
+<li>Is the fishing area still worth considering?</li>
+<li>Did the PFZ information become old?</li>
+<li>Are there hazards nearby?</li>
+<li>Have sea conditions changed?</li>
+<li>Should the fisherman stay, move, or return?</li>
+</ul>
+
+<h2 id="section-23">Stage 4 — Return</h2>
+
+<p>Questions:</p>
+
+<ul>
+<li>Which direction is the harbour?</li>
+<li>How far is it?</li>
+<li>How long will it take?</li>
+<li>Will weather get worse before arrival?</li>
+<li>Is there a safer or more practical return route?</li>
+</ul>
+
+<h2 id="section-24">Stage 5 — After the trip</h2>
+
+<p>Questions:</p>
+
+<ul>
+<li>Was the trip successful?</li>
+<li>What was actually caught?</li>
+<li>Was the PFZ useful?</li>
+<li>What happened compared with the forecast?</li>
+<li>Can the fisherman save this ground for later?</li>
+</ul>
+
+<p>The product should follow this trip, rather than forcing the fisherman to think in terms of software modules.</p>
+
+<hr>
+
+<h1 id="section-25">8. Navigation research and what ORCA should do about it</h1>
+
+<h2 id="section-26">8.1 Navigation is not only “GPS”</h2>
+
+<p>There are several different navigation problems:</p>
+
+<h3 id="section-27">Finding a fishing area</h3>
+
+<p>The fisherman may combine:</p>
+
+<ul>
+<li>personal experience,</li>
+<li>traditional fishing grounds,</li>
+<li>previous successful locations,</li>
+<li>other fishermen,</li>
+<li>PFZ information,</li>
+<li>GPS,</li>
+<li>mobile maps,</li>
+<li>landmarks,</li>
+<li>or a boat navigation system.</li>
+</ul>
+
+<h3 id="section-28">Reaching the fishing area</h3>
+
+<p>The direct shortest route is not always the best operational route.</p>
+
+<p>The route can be affected by:</p>
+
+<ul>
+<li>weather,</li>
+<li>waves,</li>
+<li>current,</li>
+<li>restricted zones,</li>
+<li>international maritime boundaries,</li>
+<li>fishing areas,</li>
+<li>and vessel capabilities.</li>
+</ul>
+
+<h3 id="section-29">Returning home</h3>
+
+<p>Returning is a separate need and should have a dedicated action:</p>
+
+<blockquote><strong>RETURN TO HARBOUR</strong></blockquote>
+
+<h3 id="section-30">Navigating when visibility is poor</h3>
+
+<p>Ask fishermen what happens during:</p>
+
+<ul>
+<li>night,</li>
+<li>heavy rain,</li>
+<li>fog,</li>
+<li>reduced shore visibility,</li>
+<li>rough sea,</li>
+<li>or equipment failure.</li>
+</ul>
+
+<h2 id="section-31">8.2 Existing navigation systems already cover parts of this</h2>
+
+<p>ISRO documents a MapmyIndia/NavIC message receiver application that works offline, provides PFZ locations and waypoint navigation, displays live location, gives IMBL proximity alerts, and can receive emergency messages from INCOIS. [R08]</p>
+
+<p>Nabhmitra and the national VCSS plan also cover vessel communication, adverse-weather alerts, no-fishing zones and geofencing. [R03][R09]</p>
+
+<p>Therefore ORCA should <strong>not</strong> claim that it invented offline navigation or basic geofencing.</p>
+
+<h3 id="section-32">ORCA should add context</h3>
+
+<p>Instead of:</p>
+
+<blockquote>“PFZ A is here.”</blockquote>
+
+<p>ORCA can answer:</p>
+
+<blockquote>“PFZ A is closer, but the route has worse sea conditions. PFZ B is farther but is the better option for this trip.”</blockquote>
+
+<p>That is a more meaningful decision problem.</p>
+
+<hr>
+
+<h1 id="section-33">9. Recommended navigation experience</h1>
+
+<h2 id="section-34">Two main route actions</h2>
+
+<h3 id="section-35">GO TO FISHING AREA</h3>
+
+<p>The user chooses a PFZ or saved fishing ground.</p>
+
+<p>The screen should show:</p>
+
+<ul>
+<li>direction,</li>
+<li>distance,</li>
+<li>estimated travel time,</li>
+<li>route line,</li>
+<li>active restrictions,</li>
+<li>current hazards,</li>
+<li>and a large map button.</li>
+</ul>
+
+<h3 id="section-36">RETURN TO HARBOUR</h3>
+
+<p>This action should always be easy to reach.</p>
+
+<p>Show:</p>
+
+<ul>
+<li>harbour direction,</li>
+<li>remaining distance,</li>
+<li>estimated time,</li>
+<li>route condition,</li>
+<li>active hazards.</li>
+</ul>
+
+<h2 id="section-37">Compass-style view</h2>
+
+<p>A large directional arrow can be more useful than a complicated map when the main question is “which way?”</p>
+
+<p>Example:</p>
+
+<blockquote><strong>Keep NE</strong><br><strong>042°</strong><br><strong>11.4 km</strong></blockquote>
+
+<p>The map should still be available below or through a single button.</p>
+
+<hr>
+
+<h1 id="section-38">10. PFZ: why it matters</h1>
+
+<p>Potential Fishing Zone (PFZ) advisories are an important existing Indian service. INCOIS explains that PFZ information is generated using satellite-derived sea-surface temperature and chlorophyll information, and that advisories are intended to reduce search time, fuel use and fishing effort. PFZ information is provided in local languages and can include location, depth, distance and direction from recognizable coastal points. Wind direction and speed are included because PFZ features can move. [R10][R11]</p>
+
+<p>A 2025 peer-reviewed study along the southwest coast of India reported a positive relationship between PFZ advisories and daily village fish landings and discussed the usefulness of daily landing observations for PFZ validation and future fisheries forecasting. [R12]</p>
+
+<p>A 2024 study also explored additional environmental signals such as chlorophyll, SST fronts, wind, currents, Ekman transport and eddies to improve PFZ interpretation. [R13]</p>
+
+<h3 id="section-39">Important point</h3>
+
+<p>PFZ means a <strong>potential</strong> fishing zone. It does not mean:</p>
+
+<blockquote>“Fish are guaranteed here.”</blockquote>
+
+<p>ORCA should preserve that distinction.</p>
+
+<hr>
+
+<h1 id="section-40">11. PFZ should not be just a map dot</h1>
+
+<p>A simple PFZ map is already available in existing services.</p>
+
+<p>ORCA can make PFZ more useful by giving a complete trip context.</p>
+
+<h2 id="section-41">PFZ card</h2>
+
+<p>Example:</p>
+
+<h3 id="section-42">PFZ 01</h3>
+
+<p><strong>11.4 km from harbour</strong></p>
+<p><strong>NE 42°</strong></p>
+<p><strong>Fresh advisory</strong></p>
+<p><strong>Sea conditions: favourable</strong></p>
+<p><strong>Route: clear</strong></p>
+<p><strong>Restriction conflict: none</strong></p>
+
+<p><strong>[GO TO PFZ]</strong></p>
+
+<h3 id="section-43">PFZ 02</h3>
+
+<p><strong>17.8 km from harbour</strong></p>
+<p><strong>E 87°</strong></p>
+<p><strong>Older advisory</strong></p>
+<p><strong>Wind increasing later</strong></p>
+
+<p><strong>[VIEW]</strong></p>
+
+<p>ORCA can rank the available choices based on trip needs instead of forcing the fisherman to compare them manually.</p>
+
+<hr>
+
+<h1 id="section-44">12. PFZ freshness is important</h1>
+
+<p>Because the ocean changes, the fisherman needs to know whether the advisory is recent.</p>
+
+<p>Every PFZ card should show:</p>
+
+<ul>
+<li>issued time,</li>
+<li>time since issue,</li>
+<li>source,</li>
+<li>freshness status,</li>
+<li>and where possible a simple evidence status.</li>
+</ul>
+
+<p>Use simple words such as:</p>
+
+<ul>
+<li><strong>Fresh</strong></li>
+<li><strong>Getting old</strong></li>
+<li><strong>Old</strong></li>
+</ul>
+
+<p>Avoid fake precision such as:</p>
+
+<blockquote>“87.6% fish probability.”</blockquote>
+
+<p>The evidence does not justify that kind of number.</p>
+
+<hr>
+
+<h1 id="section-45">13. PFZ should be combined with distance and travel cost</h1>
+
+<p>PFZ research shows value in reducing search effort and fuel use, but the most scientifically attractive PFZ is not automatically the best PFZ for every boat. [R10][R12]</p>
+
+<p>If a fisherman has two options:</p>
+
+<p><strong>PFZ A</strong></p>
+<ul>
+<li>stronger PFZ signal,</li>
+<li>32 km away,</li>
+<li>higher travel time.</li>
+</ul>
+
+<p><strong>PFZ B</strong></p>
+<ul>
+<li>slightly weaker signal,</li>
+<li>12 km away,</li>
+<li>better route conditions.</li>
+</ul>
+
+<p>ORCA can say:</p>
+
+<blockquote><strong>“PFZ B is the better option for this trip because it is closer and the route has better conditions.”</strong></blockquote>
+
+<p>This is a much more useful use of the PFZ service.</p>
+
+<hr>
+
+<h1 id="section-46">14. Save the fisherman's own fishing grounds</h1>
+
+<p>A useful feature should be:</p>
+
+<h2 id="section-47">MY FISHING GROUNDS</h2>
+
+<p>The fisherman can save a location using:</p>
+
+<ul>
+<li>a map tap,</li>
+<li>GPS,</li>
+<li>or voice.</li>
+</ul>
+
+<p>Examples:</p>
+
+<blockquote>“Good sardine area.”</blockquote>
+
+<blockquote>“Avoid — rocky area.”</blockquote>
+
+<blockquote>“Usually good in July.”</blockquote>
+
+<p>The system should separate:</p>
+
+<ol>
+<li><strong>Private fisherman knowledge</strong></li>
+<li><strong>Community-shared information</strong></li>
+<li><strong>Official/scientific information</strong></li>
+</ol>
+
+<p>Private locations should not automatically become public.</p>
+
+<p>This is important because a fishing ground can have economic value and trust implications.</p>
+
+<hr>
+
+<h1 id="section-48">15. Weather and sea conditions: show what changes a decision</h1>
+
+<p>INCOIS's Ocean State Forecast provides wind, waves, currents, water temperature and other ocean information at forecast intervals, with forecasts extending several days. [R14]</p>
+
+<p>SAMUDRA exposes five-day ocean-state forecasts along with PFZ and marine alerts. [R01]</p>
+
+<p>The fisherman does not need all of the raw numbers on the first screen.</p>
+
+<p>Instead show:</p>
+
+<h3 id="section-49">WIND</h3>
+<p>Moderate</p>
+
+<h3 id="section-50">WAVES</h3>
+<p>Low → rising later</p>
+
+<h3 id="section-51">RAIN</h3>
+<p>Low</p>
+
+<h3 id="section-52">CURRENT</h3>
+<p>Moderate</p>
+
+<h3 id="section-53">WARNING</h3>
+<p>None</p>
+
+<p>Then:</p>
+
+<h3 id="section-54">NEXT MAJOR CHANGE</h3>
+
+<blockquote><strong>Wind expected to increase after 11 AM.</strong></blockquote>
+
+<p>This converts a forecast into a decision.</p>
+
+<hr>
+
+<h1 id="section-55">16. Use “NOW” and “NEXT” instead of scientific tables</h1>
+
+<p>The main screen should have:</p>
+
+<h2 id="section-56">NOW</h2>
+
+<p>What is happening now?</p>
+
+<h2 id="section-57">NEXT 3 HOURS</h2>
+
+<p>What changes soon?</p>
+
+<h2 id="section-58">NEXT 6 HOURS</h2>
+
+<p>Will the trip still look reasonable?</p>
+
+<h2 id="section-59">TODAY</h2>
+
+<p>Overall trip picture.</p>
+
+<p>This is better for action than displaying a long table of hourly weather values.</p>
+
+<hr>
+
+<h1 id="section-60">17. Official warnings must always be treated differently</h1>
+
+<p>Weather forecasts and official safety warnings are not the same thing.</p>
+
+<p>For example:</p>
+
+<blockquote>“Wind moderate”</blockquote>
+
+<p>is not equivalent to:</p>
+
+<blockquote>“Official high-wave warning active.”</blockquote>
+
+<p>The official warning should be shown first when it exists.</p>
+
+<p>The system should never say:</p>
+
+<blockquote>“ORCA says the sea is safe.”</blockquote>
+
+<p>Prefer:</p>
+
+<blockquote><strong>“No active official warning found. Current forecast conditions appear favourable based on available data.”</strong></blockquote>
+
+<p>For an official warning:</p>
+
+<blockquote><strong>“Official warning active — avoid or return according to the advisory.”</strong></blockquote>
+
+<p>This distinction matters for safety and trust.</p>
+
+<hr>
+
+<h1 id="section-61">18. Alerts need priority, not volume</h1>
+
+<p>The fisherman should not receive a continuous stream of low-value notifications.</p>
+
+<p>Use four levels.</p>
+
+<h2 id="section-62">CRITICAL</h2>
+
+<p>Examples:</p>
+
+<ul>
+<li>cyclone warning,</li>
+<li>tsunami warning,</li>
+<li>very high-wave or swell-surge warning,</li>
+<li>emergency vessel message.</li>
+</ul>
+
+<h2 id="section-63">IMPORTANT</h2>
+
+<p>Examples:</p>
+
+<ul>
+<li>restricted zone approaching,</li>
+<li>international boundary approaching,</li>
+<li>major route hazard.</li>
+</ul>
+
+<h2 id="section-64">CAUTION</h2>
+
+<p>Examples:</p>
+
+<ul>
+<li>worsening wind,</li>
+<li>rising waves,</li>
+<li>forecast changing.</li>
+</ul>
+
+<h2 id="section-65">INFORMATION</h2>
+
+<p>Examples:</p>
+
+<ul>
+<li>new PFZ advisory,</li>
+<li>updated market information.</li>
+</ul>
+
+<p>Only the first two categories should normally interrupt the fisherman.</p>
+
+<p>SAMUDRA already gives strong attention to active high-wave, swell-surge, current, tsunami and storm-surge alerts. ORCA's difference should be the connection between the warning and the fisherman's current trip. [R01]</p>
+
+<hr>
+
+<h1 id="section-66">19. Offline mode should be a main feature, not a backup feature</h1>
+
+<p>A fisherman can travel beyond normal mobile coverage.</p>
+
+<p>The 2026 FISH study describes this directly and designs its application around offline use, retaining unsent information until connectivity returns. [R07]</p>
+
+<p>ISRO's MapmyIndia/NavIC fisher application also provides offline operation. [R08]</p>
+
+<p>Therefore ORCA should automatically download a <strong>trip pack</strong> before departure.</p>
+
+<h2 id="section-67">Trip pack</h2>
+
+<p>At the harbour or whenever a connection is available, download:</p>
+
+<ul>
+<li>latest PFZ data,</li>
+<li>latest weather forecast,</li>
+<li>latest official warnings,</li>
+<li>relevant offline map area,</li>
+<li>saved fishing grounds,</li>
+<li>restricted zones,</li>
+<li>harbour information,</li>
+<li>emergency contacts,</li>
+<li>selected language content.</li>
+</ul>
+
+<p>At sea, the app should continue to work with the last synchronized information.</p>
+
+<p>Each important item should show its last update time.</p>
+
+<hr>
+
+<h1 id="section-68">20. Show “last updated” clearly</h1>
+
+<p>Example:</p>
+
+<blockquote><strong>Weather:</strong> 06:00 AM<br><strong>PFZ:</strong> 05:30 AM<br><strong>Warnings:</strong> 06:02 AM<br><strong>Map data:</strong> yesterday</blockquote>
+
+<p>The fisherman should immediately know whether he is looking at fresh information or cached information.</p>
+
+<p>This fits ORCA's evidence and freshness design and is especially important when offline.</p>
+
+<hr>
+
+<h1 id="section-69">21. Phone use on a fishing boat is a special design problem</h1>
+
+<p>The phone may be used:</p>
+
+<ul>
+<li>under strong sunlight,</li>
+<li>with wet hands,</li>
+<li>on a moving boat,</li>
+<li>while wearing gloves,</li>
+<li>during engine noise,</li>
+<li>while the fisherman is doing another task,</li>
+<li>and sometimes for only a few seconds.</li>
+</ul>
+
+<p>Therefore:</p>
+
+<h3 id="section-70">UI rules</h3>
+
+<ul>
+<li>large controls,</li>
+<li>large type,</li>
+<li>high contrast,</li>
+<li>little text,</li>
+<li>one main action per screen,</li>
+<li>no deep menus,</li>
+<li>no compulsory typing,</li>
+<li>simple map labels,</li>
+<li>voice input,</li>
+<li>audio responses,</li>
+<li>vibration for important alerts,</li>
+<li>strong offline behavior.</li>
+</ul>
+
+<p>The earlier Fisher Friend usability study directly reported problems with small screens, too much scrolling, small fonts and limited time. [R06]</p>
+
+<hr>
+
+<h1 id="section-71">22. Voice is important, but voice alone is not enough</h1>
+
+<p>Voice solves several problems:</p>
+
+<ul>
+<li>typing difficulty,</li>
+<li>local-language access,</li>
+<li>limited time,</li>
+<li>users who are uncomfortable reading technical text.</li>
+</ul>
+
+<p>But a boat is noisy. Wind, engine noise and multiple people may reduce speech accuracy.</p>
+
+<p>Therefore the best design is:</p>
+
+<blockquote><strong>Voice + large buttons + visual confirmation + audio answer</strong></blockquote>
+
+<p>Example:</p>
+
+<p>Fisherman:</p>
+
+<blockquote>“Aaje savare Dholai thi javu ke nahi?”</blockquote>
+
+<p>ORCA:</p>
+
+<h3 id="section-72">CAUTION</h3>
+
+<blockquote>“Wind is expected to increase after 11 AM. Conditions are better earlier.”</blockquote>
+
+<p>On screen:</p>
+
+<ul>
+<li>Wind: Moderate</li>
+<li>Waves: Low</li>
+<li>Warning: None</li>
+<li>PFZ: 2 nearby</li>
+</ul>
+
+<p>Buttons:</p>
+
+<p><strong>PLAN TRIP</strong></p>
+
+<p><strong>WHY?</strong></p>
+
+<p><strong>OPEN MAP</strong></p>
+
+<hr>
+
+<h1 id="section-73">23. Local language is not an optional extra</h1>
+
+<p>The 2026 Andhra Pradesh study identified preferred local language as the largest reported constraint for fish farmers using digital information. [R05]</p>
+
+<p>The current INCOIS FISH app supports multiple Indian coastal languages, including Gujarati, Hindi, Marathi, Kannada, Malayalam, Tamil, Telugu, Odia and Bengali. [R07]</p>
+
+<p>INCOIS also provides PFZ maps and text in local languages. [R11]</p>
+
+<p>Therefore ORCA should treat language as part of the core design.</p>
+
+<h3 id="section-74">First field prototype</h3>
+
+<p>For Dholai:</p>
+
+<ul>
+<li>Gujarati</li>
+<li>Hindi</li>
+<li>English for technical testing</li>
+</ul>
+
+<p>Later:</p>
+
+<ul>
+<li>Marathi</li>
+<li>Konkani</li>
+<li>Malayalam</li>
+<li>Tamil</li>
+<li>Telugu</li>
+<li>Kannada</li>
+<li>Odia</li>
+<li>Bengali</li>
+</ul>
+
+<p>The spoken language and the written language should be independently configurable.</p>
+
+<hr>
+
+<h1 id="section-75">24. “Ask ORCA” should be a focused tool, not a general chatbot</h1>
+
+<p>The user can ask:</p>
+
+<blockquote>“Where should I go today?”</blockquote>
+
+<blockquote>“Wave ketli che?”</blockquote>
+
+<blockquote>“Maro harbour ketlo door che?”</blockquote>
+
+<blockquote>“PFZ kya che?”</blockquote>
+
+<blockquote>“Pachha ketla time ma avi sakay?”</blockquote>
+
+<blockquote>“Aagal koi danger che?”</blockquote>
+
+<p>ORCA should turn the question into a real task.</p>
+
+<p>Example:</p>
+
+<h3 id="section-76">User</h3>
+
+<p>“Tomorrow morning where should I go?”</p>
+
+<h3 id="section-77">System work</h3>
+
+<ol>
+<li>Understand trip time.</li>
+<li>Get PFZ options.</li>
+<li>Get forecast.</li>
+<li>Check route.</li>
+<li>Check restricted areas.</li>
+<li>Check warning status.</li>
+<li>Compare options.</li>
+<li>Explain the best available option.</li>
+</ol>
+
+<h3 id="section-78">User sees</h3>
+
+<blockquote><strong>Best available option: PFZ 02</strong><br>12 km NE<br>Conditions favourable until about 10 AM<br>Wind increases later<br><strong>[GO TO PFZ]</strong></blockquote>
+
+<p>This is a better use of the language model than making it talk about everything.</p>
+
+<hr>
+
+<h1 id="section-79">25. Every important decision should have “WHY?”</h1>
+
+<p>Trust is important.</p>
+
+<p>If ORCA says:</p>
+
+<blockquote><strong>CAUTION</strong></blockquote>
+
+<p>then the fisherman should be able to tap:</p>
+
+<h3 id="section-80">WHY?</h3>
+
+<p>and see:</p>
+
+<ul>
+<li>wind rising,</li>
+<li>wave forecast rising,</li>
+<li>official warning status,</li>
+<li>data freshness,</li>
+<li>and source names.</li>
+</ul>
+
+<p>Example:</p>
+
+<blockquote><strong>Why caution?</strong><br><br>Wind is expected to rise after 11 AM. Wave conditions are also forecast to increase. No cyclone warning is currently active.<br><br><strong>Sources:</strong> IMD forecast, INCOIS ocean-state forecast.</blockquote>
+
+<p>This prevents the system from becoming a black box.</p>
+
+<hr>
+
+<h1 id="section-81">26. Geofencing and restricted areas</h1>
+
+<p>Fishermen need awareness of:</p>
+
+<ul>
+<li>no-fishing zones,</li>
+<li>international maritime boundaries,</li>
+<li>protected areas,</li>
+<li>port/harbour restrictions,</li>
+<li>and other relevant boundaries.</li>
+</ul>
+
+<p>VCSS and Nabhmitra already support important parts of this capability. [R03][R08]</p>
+
+<p>ORCA should therefore focus on making the information simple and useful in a trip decision.</p>
+
+<p>Example:</p>
+
+<blockquote><strong>PFZ 03 looks useful, but the direct route intersects a restricted zone. PFZ 02 is the better available option.</strong></blockquote>
+
+<p>That is more useful than only displaying the boundary.</p>
+
+<hr>
+
+<h1 id="section-82">27. Safety should include more than storms</h1>
+
+<p>Recent Indian research shows that fishermen face many occupational risks besides cyclones. A 2025 study of small-scale motorized fishers in southern India ranked heat-related stress, musculoskeletal problems, cyclones, heavy rain, insomnia and overexertion among the major hazards. [R15]</p>
+
+<p>A 2026 synthesis of Indian fisherfolk health research also links climate and environmental changes with longer or riskier trips, physical injury and broader economic and health stress. [R16]</p>
+
+<p>For the first ORCA product, the most relevant safety functions are still:</p>
+
+<ul>
+<li>weather alerts,</li>
+<li>high-wave/swell alerts,</li>
+<li>route hazards,</li>
+<li>restricted-zone alerts,</li>
+<li>return-to-harbour guidance,</li>
+<li>emergency contacts,</li>
+<li>official warning messages.</li>
+</ul>
+
+<p>Health and heat information can be added later.</p>
+
+<hr>
+
+<h1 id="section-83">28. Return-to-harbour should be a first-class action</h1>
+
+<p>This deserves its own feature because returning is not the same as going out.</p>
+
+<p>The fisherman may ask:</p>
+
+<blockquote>“Can I return before conditions worsen?”</blockquote>
+
+<p>The screen should show:</p>
+
+<h3 id="section-84">RETURN TO HARBOUR</h3>
+
+<p><strong>Distance:</strong> 17.2 km</p>
+<p><strong>Estimated time:</strong> 58 min</p>
+<p><strong>Direction:</strong> SW</p>
+<p><strong>Weather:</strong> worsening after 2 PM</p>
+<p><strong>Hazard ahead:</strong> none / detected</p>
+
+<p>Then:</p>
+
+<p><strong>[START RETURN ROUTE]</strong></p>
+
+<p>This is one of the most useful combinations of navigation + weather + time.</p>
+
+<hr>
+
+<h1 id="section-85">29. Add “what will change?”</h1>
+
+<p>A fisherman rarely needs every forecast variable. The important question is what changes his plan.</p>
+
+<p>ORCA should have a simple section:</p>
+
+<h2 id="section-86">WHAT WILL CHANGE?</h2>
+
+<p>Examples:</p>
+
+<blockquote>Wind expected to increase after 11 AM.</blockquote>
+
+<blockquote>Waves expected to rise during your return window.</blockquote>
+
+<blockquote>An official advisory was issued after your last sync.</blockquote>
+
+<blockquote>The PFZ is now older than the freshness threshold used by the system.</blockquote>
+
+<p>This can be more useful than a chart.</p>
+
+<hr>
+
+<h1 id="section-87">30. Boat profile</h1>
+
+<p>A one-time setup can make ORCA more useful without adding daily work.</p>
+
+<h3 id="section-88">Boat profile</h3>
+
+<ul>
+<li>boat type,</li>
+<li>length,</li>
+<li>engine information,</li>
+<li>typical speed,</li>
+<li>fuel capacity,</li>
+<li>typical operating range,</li>
+<li>number of crew,</li>
+<li>gear/fishing method.</li>
+</ul>
+
+<p>Then the same PFZ can be evaluated differently for different boats.</p>
+
+<p>The goal is not to tell every boat exactly where to fish, but to avoid giving the same recommendation without considering basic trip constraints.</p>
+
+<hr>
+
+<h1 id="section-89">31. Fuel and effort comparison</h1>
+
+<p>This should be optional but useful.</p>
+
+<p>Example:</p>
+
+<h3 id="section-90">PFZ A</h3>
+
+<p>Distance: 32 km</p>
+<p>Travel time: high</p>
+<p>Fuel effort: higher</p>
+<p>PFZ evidence: strong</p>
+
+<h3 id="section-91">PFZ B</h3>
+
+<p>Distance: 12 km</p>
+<p>Travel time: low</p>
+<p>Fuel effort: lower</p>
+<p>PFZ evidence: good</p>
+
+<h3 id="section-92">ORCA view</h3>
+
+<blockquote><strong>PFZ B is the better balance for this trip.</strong></blockquote>
+
+<p>This turns the system into a practical decision tool rather than a scientific display.</p>
+
+<hr>
+
+<h1 id="section-93">32. Local knowledge should be part of the system</h1>
+
+<p>Scientific data should not replace fisher knowledge.</p>
+
+<p>The system should allow the fisherman to record:</p>
+
+<ul>
+<li>local fishing ground,</li>
+<li>unusual current,</li>
+<li>poor visibility,</li>
+<li>local hazard,</li>
+<li>good catch,</li>
+<li>poor catch,</li>
+<li>gear problem,</li>
+<li>or another useful observation.</li>
+</ul>
+
+<p>This can be done through voice, a simple map tap or a small number of choices.</p>
+
+<p>The important design rule is:</p>
+
+<blockquote><strong>Local knowledge should complement official/scientific data, not silently replace it.</strong></blockquote>
+
+<hr>
+
+<h1 id="section-94">33. A simple post-trip feedback loop</h1>
+
+<p>The fisherman should not fill a long form after returning.</p>
+
+<p>A simple flow could be:</p>
+
+<h3 id="section-95">HOW WAS THE TRIP?</h3>
+
+<p><strong>Good</strong> | <strong>Average</strong> | <strong>Poor</strong></p>
+
+<p>Then optional:</p>
+
+<h3 id="section-96">CATCH</h3>
+
+<blockquote>Sardine — 40 kg</blockquote>
+
+<blockquote>Pomfret — 8 kg</blockquote>
+
+<p>The FISH project shows why this type of catch information can matter: georeferenced catch observations can be used to improve future fisheries advice and species-specific forecasting. However, the same project also showed that installation alone does not guarantee active use; training and a clear user benefit matter. [R07]</p>
+
+<p>Therefore ORCA should make post-trip reporting extremely short.</p>
+
+<hr>
+
+<h1 id="section-97">34. The learning loop for ORCA</h1>
+
+<p>The long-term concept can be:</p>
+
+<blockquote><strong>Recommendation → real trip → real outcome → feedback → better future advice</strong></blockquote>
+
+<p>This creates a useful relationship between:</p>
+
+<ul>
+<li>satellite data,</li>
+<li>ocean conditions,</li>
+<li>PFZ,</li>
+<li>weather,</li>
+<li>route,</li>
+<li>local knowledge,</li>
+<li>and real fishing outcomes.</li>
+</ul>
+
+<p>But the first version should not promise perfect catch prediction.</p>
+
+<hr>
+
+<h1 id="section-98">35. Historical comparison</h1>
+
+<p>Another useful future feature is:</p>
+
+<h2 id="section-99">MY GROUND — THEN VS NOW</h2>
+
+<p>Example:</p>
+
+<blockquote>Sea temperature is higher than your recent seasonal average.</blockquote>
+
+<p>or:</p>
+
+<blockquote>Your saved fishing ground has had weaker conditions compared with the previous period.</blockquote>
+
+<p>This is useful for understanding changes in fishing patterns.</p>
+
+<p>Recent work on Indian coastal fisheries describes changes in weather, sea temperature, fish distribution, fishing days and livelihoods. [R17][R18]</p>
+
+<p>Historical comparison is therefore more useful than showing only today's number.</p>
+
+<hr>
+
+<h1 id="section-100">36. Climate and changing fish patterns</h1>
+
+<p>Climate and marine-environment change appear repeatedly in Indian fisheries research.</p>
+
+<p>Recent Indian research reports links between:</p>
+
+<ul>
+<li>changing sea temperature,</li>
+<li>unusual weather,</li>
+<li>cyclones,</li>
+<li>fishing-day losses,</li>
+<li>catch changes,</li>
+<li>and livelihood stress. [R17][R18][R19]</li>
+</ul>
+
+<p>One recent Odisha study also connected declining catch, extreme weather, coastal erosion and rising sea temperature with livelihood pressure and migration. [R20]</p>
+
+<p>This suggests a future ORCA service:</p>
+
+<h3 id="section-101">“What changed in my usual fishing area?”</h3>
+
+<p>rather than only:</p>
+
+<h3 id="section-102">“What is the temperature today?”</h3>
+
+<hr>
+
+<h1 id="section-103">37. Pollution and environmental hazards</h1>
+
+<p>Fishing problems are not limited to weather.</p>
+
+<p>A 2026 study from coastal Andhra Pradesh examined industrial pollution, environmental degradation and changes in fishing livelihoods. The authors stressed that the study involved only three fishermen and should not be generalized to all communities, but it is useful as an example of how environmental degradation can affect local fishing. [R21]</p>
+
+<p>A 2025 study around Chilika reported that most sampled fishers believed degraded water quality harmed fishing, with some reporting reduced catch and income. [R22]</p>
+
+<p>A future ORCA layer could therefore flag:</p>
+
+<ul>
+<li>known pollution events,</li>
+<li>unusual environmental conditions,</li>
+<li>harmful algal bloom information where available,</li>
+<li>marine heatwaves,</li>
+<li>and other relevant official/environmental advisories.</li>
+</ul>
+
+<p>This should be added carefully and only when a reliable data source exists.</p>
+
+<hr>
+
+<h1 id="section-104">38. Economic problems are important, but should not make the app too large</h1>
+
+<p>Indian fishing communities face economic pressure from:</p>
+
+<ul>
+<li>fuel costs,</li>
+<li>uncertain catches,</li>
+<li>fish-price changes,</li>
+<li>equipment costs,</li>
+<li>debt,</li>
+<li>market power differences,</li>
+<li>and post-harvest losses.</li>
+</ul>
+
+<p>Research from Gujarat has also documented pressure created by debt and trader relationships in some fishing communities. [R23]</p>
+
+<p>The government is now expanding the National Fisheries Digital Platform with information about schemes, credit, insurance, training, marketing, e-auctions and other fisheries services. [R04]</p>
+
+<h3 id="section-105">Product decision</h3>
+
+<p>Do not put all of that into the main sea screen.</p>
+
+<p>Instead, use a separate:</p>
+
+<h2 id="section-106">SHORE</h2>
+
+<p>section later for:</p>
+
+<ul>
+<li>market information,</li>
+<li>scheme information,</li>
+<li>insurance,</li>
+<li>training,</li>
+<li>cooperative information,</li>
+<li>and other shore-side services.</li>
+</ul>
+
+<p>The central ORCA fishing experience should remain focused on marine decisions.</p>
+
+<hr>
+
+<h1 id="section-107">39. Fisherwomen and shore users</h1>
+
+<p>The fishing economy includes many women who work in processing, marketing and other parts of the value chain.</p>
+
+<p>MSSRF's 2024–25 annual report describes a FisherWomenConnect application intended to support fisherwomen with weather information, market trends and digital marketing support. [R24]</p>
+
+<p>This suggests that a long-term ORCA ecosystem could include a different shore-facing experience rather than forcing the same interface on everyone.</p>
+
+<h3 id="section-108">Fisher mode</h3>
+
+<p>Trip, weather, PFZ, route, hazard, return.</p>
+
+<h3 id="section-109">Shore mode</h3>
+
+<p>Vessel status, arrival, market, schemes, catch, price, weather, community information.</p>
+
+<h3 id="section-110">Research mode</h3>
+
+<p>Data, maps, history, sources, comparisons, analysis.</p>
+
+<p>The three experiences can use the same underlying data foundation while keeping the interfaces separate.</p>
+
+<hr>
+
+<h1 id="section-111">40. Trust and location privacy</h1>
+
+<p>Fishing locations can be economically sensitive.</p>
+
+<p>A fisherman may not want a private fishing ground to be automatically shared.</p>
+
+<p>ORCA should therefore clearly distinguish:</p>
+
+<h3 id="section-112">Private</h3>
+
+<p>Only the fisherman sees it.</p>
+
+<h3 id="section-113">Shared with selected people</h3>
+
+<p>Boat owner, family, cooperative, etc.</p>
+
+<h3 id="section-114">Community</h3>
+
+<p>Only if explicitly contributed.</p>
+
+<h3 id="section-115">Public/scientific</h3>
+
+<p>Official/public information.</p>
+
+<p>The system should ask for location permission only when it is needed, and explain why.</p>
+
+<p>Trust is part of product adoption, not just a technical security matter.</p>
+
+<hr>
+
+<h1 id="section-116">41. The fisherman should not need a complicated registration process</h1>
+
+<p>The user should be able to reach the main value quickly.</p>
+
+<p>Possible first setup:</p>
+
+<ol>
+<li>Choose language.</li>
+<li>Choose boat type.</li>
+<li>Select home harbour.</li>
+<li>Optional boat profile.</li>
+<li>Download local trip data.</li>
+<li>Start.</li>
+</ol>
+
+<p>Avoid a long form before the first useful answer.</p>
+
+<p>For features that need registration or government identity, registration can be added later.</p>
+
+<p>The lesson from recent fisheries app work is that field users need a clear reason to continue using the application. [R07]</p>
+
+<hr>
+
+<h1 id="section-117">42. One-screen fisherman home design</h1>
+
+<p>The central fisherman screen should look more like a cockpit than a dashboard.</p>
+
+<p>Suggested structure:</p>
+
+<pre><code class="language-text">┌─────────────────────────────────────┐
+│ ORCA                         06:10  │
+│ Dholai                     ● Synced │
+├─────────────────────────────────────┤
+│                                     │
+│        TODAY AT SEA                 │
+│                                     │
+│        CAUTION                      │
+│        Conditions change later      │
+│                                     │
+│  Wind       Moderate                │
+│  Waves      Low → Rising            │
+│  Warning    None                    │
+│  PFZ        2 nearby                │
+│                                     │
+│            [ WHY? ]                 │
+├─────────────────────────────────────┤
+│        BEST AVAILABLE PFZ           │
+│                                     │
+│        PFZ 02                       │
+│        11.4 km • NE                 │
+│        Fresh • Route clear          │
+│                                     │
+│         [ GO TO PFZ ]               │
+├─────────────────────────────────────┤
+│        NEXT CHANGE                  │
+│        Wind increases after 11 AM   │
+├─────────────────────────────────────┤
+│ [ MAP ] [ ASK ORCA ] [ ALERTS ]     │
+│                         [ HELP ]     │
+└─────────────────────────────────────┘</code></pre>
+
+<p>The main screen does not show 20 data layers.</p>
+
+<p>It shows the decision and the most important reasons.</p>
+
+<hr>
+
+<h1 id="section-118">43. Fisher app navigation structure</h1>
+
+<p>Keep the bottom navigation to four main items:</p>
+
+<h2 id="section-119">HOME</h2>
+
+<p>Trip cockpit.</p>
+
+<h2 id="section-120">MAP</h2>
+
+<p>Route, PFZ, hazards, restrictions, harbour.</p>
+
+<h2 id="section-121">ASK ORCA</h2>
+
+<p>Voice-first questions.</p>
+
+<h2 id="section-122">ALERTS</h2>
+
+<p>Official and contextual warnings.</p>
+
+<p>The user should not need more than that for the first version.</p>
+
+<hr>
+
+<h1 id="section-123">44. The map should open for a reason</h1>
+
+<p>Do not make the fisherman open a generic map and then configure ten layers.</p>
+
+<p>Instead:</p>
+
+<h3 id="section-124">From PFZ</h3>
+
+<p>Tap <strong>GO TO PFZ</strong> → map opens directly on that PFZ with route.</p>
+
+<h3 id="section-125">From alert</h3>
+
+<p>Tap <strong>VIEW</strong> → map opens on the hazard.</p>
+
+<h3 id="section-126">From return</h3>
+
+<p>Tap <strong>RETURN TO HARBOUR</strong> → map opens with return route.</p>
+
+<h3 id="section-127">From saved location</h3>
+
+<p>Tap <strong>MY GROUND</strong> → map opens directly there.</p>
+
+<p>This is a simple example of good software design: the map should support the current task.</p>
+
+<hr>
+
+<h1 id="section-128">45. Map layers</h1>
+
+<p>The fisherman does need layers, but they should be hidden behind one button.</p>
+
+<h3 id="section-129">Suggested layers</h3>
+
+<ul>
+<li>PFZ</li>
+<li>Weather</li>
+<li>Waves</li>
+<li>Current</li>
+<li>Restrictions</li>
+<li>Hazards</li>
+<li>Harbour</li>
+<li>My grounds</li>
+</ul>
+
+<p>Default state should show only the layers relevant to the current action.</p>
+
+<hr>
+
+<h1 id="section-130">46. “SEA NOW” screen</h1>
+
+<p>If the fisherman just wants to know current conditions:</p>
+
+<h1 id="section-131">SEA NOW</h1>
+
+<h3 id="section-132">WIND</h3>
+<p>Moderate</p>
+
+<h3 id="section-133">WAVES</h3>
+<p>Low</p>
+
+<h3 id="section-134">CURRENT</h3>
+<p>Moderate</p>
+
+<h3 id="section-135">RAIN</h3>
+<p>Low</p>
+
+<h3 id="section-136">VISIBILITY</h3>
+<p>Good</p>
+
+<h3 id="section-137">WARNING</h3>
+<p>None</p>
+
+<p>Then:</p>
+
+<h3 id="section-138">NEXT CHANGE</h3>
+<p>Wind increasing later.</p>
+
+<p>This is far easier than requiring the user to read several charts.</p>
+
+<hr>
+
+<h1 id="section-139">47. “TRIP DECISION” is a core ORCA feature</h1>
+
+<p>This should be one of the main features in the product specification.</p>
+
+<p>It combines:</p>
+
+<ul>
+<li>official warnings,</li>
+<li>weather,</li>
+<li>waves,</li>
+<li>currents,</li>
+<li>PFZ,</li>
+<li>restrictions,</li>
+<li>route,</li>
+<li>vessel profile,</li>
+<li>travel time,</li>
+<li>and data freshness.</li>
+</ul>
+
+<p>The result should be one simple trip status:</p>
+
+<h3 id="section-140">FAVOURABLE</h3>
+
+<p>or</p>
+
+<h3 id="section-141">CAUTION</h3>
+
+<p>or</p>
+
+<h3 id="section-142">AVOID / RETURN</h3>
+
+<p>The wording must be carefully tied to available evidence. It should never be presented as an absolute guarantee of safety.</p>
+
+<hr>
+
+<h1 id="section-143">48. The system should explain the difference between data, evidence and a decision</h1>
+
+<p>A useful internal structure is:</p>
+
+<h3 id="section-144">DATA</h3>
+
+<p>Example:</p>
+
+<p>Wind = 18 km/h</p>
+
+<h3 id="section-145">EVIDENCE</h3>
+
+<p>Forecast says wind increases after 11 AM.</p>
+
+<h3 id="section-146">DECISION SUPPORT</h3>
+
+<p>Morning departure appears more favourable than late departure.</p>
+
+<p>The fisherman normally only needs the third one, with the first two available through “WHY?”.</p>
+
+<hr>
+
+<h1 id="section-147">49. What ORCA can realistically solve</h1>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>Problem</th><th>Can ORCA help?</th><th>Main response</th></tr></thead>
+<tbody><tr><td>Too many information sources</td><td>Strongly</td><td>One trip view</td></tr>
+<tr><td>Complex marine information</td><td>Strongly</td><td>Simplify and explain</td></tr>
+<tr><td>Local-language barrier</td><td>Strongly</td><td>Local language + voice</td></tr>
+<tr><td>Typing difficulty</td><td>Strongly</td><td>Voice + large buttons</td></tr>
+<tr><td>Small-screen burden</td><td>Strongly</td><td>Simple cards, progressive detail</td></tr>
+<tr><td>Poor mobile network</td><td>Partly</td><td>Offline trip pack</td></tr>
+<tr><td>PFZ interpretation</td><td>Strongly</td><td>Rank + explain + route</td></tr>
+<tr><td>Weather interpretation</td><td>Strongly</td><td>Convert forecast to actions</td></tr>
+<tr><td>Route selection</td><td>Partly/strongly</td><td>Route engine + constraints</td></tr>
+<tr><td>Restricted zones</td><td>Strongly</td><td>Geofencing + simple warning</td></tr>
+<tr><td>Returning to harbour</td><td>Strongly</td><td>One-tap route</td></tr>
+<tr><td>Fishing-ground memory</td><td>Strongly</td><td>Saved private grounds</td></tr>
+<tr><td>Catch recording</td><td>Strongly</td><td>Very short post-trip flow</td></tr>
+<tr><td>Better future PFZ validation</td><td>Partly</td><td>Catch feedback</td></tr>
+<tr><td>Fish catch prediction</td><td>Partly</td><td>Research/future feature</td></tr>
+<tr><td>Fish price</td><td>Possible</td><td>Shore module</td></tr>
+<tr><td>Debt</td><td>Not directly</td><td>Outside core scope</td></tr>
+<tr><td>Emergency satellite communication</td><td>Integration</td><td>Use existing government systems</td></tr>
+<tr><td>Medical care</td><td>Limited</td><td>Contacts/first-aid information</td></tr>
+<tr><td>Poverty</td><td>Not directly</td><td>Requires broader programs</td></tr>
+</tbody></table></div>
+
+<hr>
+
+<h1 id="section-148">50. What ORCA should NOT promise</h1>
+
+<p>Avoid statements such as:</p>
+
+<ul>
+<li>“ORCA knows exactly where fish are.”</li>
+<li>“ORCA guarantees safe travel.”</li>
+<li>“ORCA replaces the boat's navigation system.”</li>
+<li>“ORCA replaces official warnings.”</li>
+<li>“ORCA predicts the exact catch.”</li>
+<li>“ORCA works everywhere without any connectivity.”</li>
+<li>“The route is certified safe.”</li>
+</ul>
+
+<p>Better wording:</p>
+
+<ul>
+<li>“Based on available PFZ information.”</li>
+<li>“Based on the latest available forecast.”</li>
+<li>“Official warning status.”</li>
+<li>“Estimated route.”</li>
+<li>“Evidence currently available.”</li>
+<li>“Information last updated at…”</li>
+</ul>
+
+<hr>
+
+<h1 id="section-149">51. Existing products ORCA must be compared against</h1>
+
+<h2 id="section-150">INCOIS PFZ service</h2>
+
+<p>Provides PFZ maps and text, local-language dissemination, distance/direction guidance, and related services. [R10][R11]</p>
+
+<h3 id="section-151">ORCA opportunity</h3>
+
+<p>Use PFZ as one input and connect it with the fisher's trip.</p>
+
+<h2 id="section-152">SAMUDRA</h2>
+
+<p>Provides active alerts, PFZ, tides, marine heat waves, currents, waves, winds and other ocean-state services, with interactive maps and charts. The current public app listing says the app is served in English, while coastal languages are proposed. [R01][R25]</p>
+
+<h3 id="section-153">ORCA opportunity</h3>
+
+<p>Simpler fisherman experience, voice-first questions, trip recommendations, route context, freshness, explanation.</p>
+
+<h2 id="section-154">Fisher Friend</h2>
+
+<p>Has a broad fisher-facing set of functions including weather, schemes, district news, tracking, contacts, and other fisheries information. MSSRF reports more than 106,000 overall users in 2024–25, and the current Android listing remains active. [R24][R26]</p>
+
+<h3 id="section-155">ORCA opportunity</h3>
+
+<p>Do not copy the whole menu. Focus on marine trip decisions.</p>
+
+<h2 id="section-156">FISH by INCOIS</h2>
+
+<p>Designed for multilingual, offline, field data collection and catch observations. Recent research explicitly reports the need to keep the fisher-facing workflow simple. [R07]</p>
+
+<h3 id="section-157">ORCA opportunity</h3>
+
+<p>Use the same lesson: simpler field operation, clear value, multilingual/offline.</p>
+
+<h2 id="section-158">Nabhmitra / VCSS / NavIC-related fisher systems</h2>
+
+<p>Cover important parts of vessel communication, geofencing, emergency alerts, offline navigation and PFZ access. [R03][R08][R09]</p>
+
+<h3 id="section-159">ORCA opportunity</h3>
+
+<p>Do not replace them. Connect decision support to the information they already provide.</p>
+
+<h2 id="section-160">National Fisheries Digital Platform</h2>
+
+<p>Covers a wide set of fisheries services such as registration, schemes, credit, insurance, training, marketing and traceability. [R04]</p>
+
+<h3 id="section-161">ORCA opportunity</h3>
+
+<p>Use a future shore-side connection rather than turning the sea screen into a government portal.</p>
+
+<hr>
+
+<h1 id="section-162">52. A key product gap: “one screen for the decision”</h1>
+
+<p>Existing systems are strong at providing individual services.</p>
+
+<p>The ORCA opportunity is to make a single fisher-facing trip screen that answers:</p>
+
+<blockquote><strong>What is the situation for my trip right now?</strong></blockquote>
+
+<p>This screen should combine:</p>
+
+<ul>
+<li>warning status,</li>
+<li>sea conditions,</li>
+<li>PFZ options,</li>
+<li>route status,</li>
+<li>restriction status,</li>
+<li>data freshness,</li>
+<li>and the recommended next action.</li>
+</ul>
+
+<p>This is the part that should be tested in the field.</p>
+
+<hr>
+
+<h1 id="section-163">53. The field survey should test real behavior, not opinions about ORCA</h1>
+
+<p>Do not begin with:</p>
+
+<blockquote>“Would you use our application?”</blockquote>
+
+<p>Do not begin with:</p>
+
+<blockquote>“Do you think an AI assistant is useful?”</blockquote>
+
+<p>Instead ask:</p>
+
+<blockquote>“How do you decide where to fish?”</blockquote>
+
+<blockquote>“How do you check weather?”</blockquote>
+
+<blockquote>“What do you do when the network is unavailable?”</blockquote>
+
+<blockquote>“How do you return to the harbour?”</blockquote>
+
+<blockquote>“What is difficult about using your phone?”</blockquote>
+
+<blockquote>“What happens when two sources disagree?”</blockquote>
+
+<blockquote>“What information do you wish you could get more easily?”</blockquote>
+
+<p>The app should be designed from these answers.</p>
+
+<hr>
+
+<h1 id="section-164">54. Recommended Dholai fisherman survey</h1>
+
+<h2 id="section-165">Part A — Background</h2>
+
+<ol>
+<li>What is your role?</li>
+</ol>
+<ul>
+<li>fisherman/crew</li>
+<li>captain</li>
+<li>boat owner</li>
+<li>other</li>
+</ul>
+
+<ol>
+<li>How many years have you been involved in fishing?</li>
+</ol>
+
+<ol>
+<li>What type of fishing do you mainly do?</li>
+</ol>
+
+<ol>
+<li>How long is a normal fishing trip?</li>
+</ol>
+
+<ol>
+<li>How far from the harbour do you normally travel?</li>
+</ol>
+
+<h2 id="section-166">Part B — Navigation</h2>
+
+<ol>
+<li>How do you find your fishing area?</li>
+</ol>
+
+<ol>
+<li>Do you use GPS?</li>
+</ol>
+
+<ol>
+<li>What navigation equipment do you use?</li>
+</ol>
+
+<ol>
+<li>Do you use a smartphone while fishing?</li>
+</ol>
+
+<ol>
+<li>Which apps do you actually use?</li>
+</ol>
+
+<ol>
+<li>How do you save or remember a good fishing location?</li>
+</ol>
+
+<ol>
+<li>How do you find the harbour when returning?</li>
+</ol>
+
+<ol>
+<li>What happens if visibility becomes poor?</li>
+</ol>
+
+<ol>
+<li>Have you ever had difficulty finding the way back?</li>
+</ol>
+
+<h2 id="section-167">Part C — Weather and ocean information</h2>
+
+<ol>
+<li>What information do you check before leaving?</li>
+</ol>
+
+<ol>
+<li>Where do you get it?</li>
+</ol>
+
+<ol>
+<li>How many sources do you normally check?</li>
+</ol>
+
+<ol>
+<li>What happens when two sources disagree?</li>
+</ol>
+
+<ol>
+<li>Which marine information is hardest to understand?</li>
+</ol>
+
+<ol>
+<li>What weather warning information do you need while already at sea?</li>
+</ol>
+
+<h2 id="section-168">Part D — PFZ and fishing location</h2>
+
+<ol>
+<li>How do you decide where to fish?</li>
+</ol>
+
+<ol>
+<li>Do you use PFZ information?</li>
+</ol>
+
+<ol>
+<li>Where do you receive PFZ information?</li>
+</ol>
+
+<ol>
+<li>What is difficult about using PFZ information?</li>
+</ol>
+
+<ol>
+<li>How much do distance and fuel affect your decision?</li>
+</ol>
+
+<ol>
+<li>How often is the PFZ information useful when you actually reach the area?</li>
+</ol>
+
+<h2 id="section-169">Part E — Phone use</h2>
+
+<ol>
+<li>What is difficult about using a smartphone on the boat?</li>
+</ol>
+
+<ol>
+<li>Is typing difficult?</li>
+</ol>
+
+<ol>
+<li>Are maps difficult to understand?</li>
+</ol>
+
+<ol>
+<li>Is reading difficult in sunlight?</li>
+</ol>
+
+<ol>
+<li>Does water on the screen create problems?</li>
+</ol>
+
+<ol>
+<li>Do you prefer voice or typing?</li>
+</ol>
+
+<ol>
+<li>Which language do you prefer?</li>
+</ol>
+
+<h2 id="section-170">Part F — Network and power</h2>
+
+<ol>
+<li>How often do you lose mobile network at sea?</li>
+</ol>
+
+<ol>
+<li>What do you do without network?</li>
+</ol>
+
+<ol>
+<li>Have you had a phone-battery problem at sea?</li>
+</ol>
+
+<ol>
+<li>How do you charge your phone on the boat?</li>
+</ol>
+
+<h2 id="section-171">Part G — Safety</h2>
+
+<ol>
+<li>What are the biggest dangers you face?</li>
+</ol>
+
+<ol>
+<li>Have you received an official warning while at sea?</li>
+</ol>
+
+<ol>
+<li>How did you receive it?</li>
+</ol>
+
+<ol>
+<li>What would be most useful during a dangerous situation?</li>
+</ol>
+<ul>
+<li>voice warning</li>
+<li>map</li>
+<li>direction to safe/harbour area</li>
+<li>direct call/help</li>
+<li>other</li>
+</ul>
+
+<h2 id="section-172">Part H — Open questions</h2>
+
+<ol>
+<li>What information do you wish you could get before going to sea?</li>
+</ol>
+
+<ol>
+<li>What information do you wish you could get while already at sea?</li>
+</ol>
+
+<ol>
+<li>What is the one problem you most want technology to solve?</li>
+</ol>
+
+<hr>
+
+<h1 id="section-173">55. Observe phone skill instead of only asking about it</h1>
+
+<p>A very useful field method is to ask the fisherman to show how he normally checks something on his phone.</p>
+
+<p>Record:</p>
+
+<ul>
+<li>Can open the app independently?</li>
+<li>Can find weather information?</li>
+<li>Can search a location?</li>
+<li>Can read a map?</li>
+<li>Can understand map symbols?</li>
+<li>Can share location?</li>
+<li>Can use voice search?</li>
+<li>Can follow a route?</li>
+<li>Can change language?</li>
+<li>Can find the harbour?</li>
+</ul>
+
+<p>This is more useful than simply asking:</p>
+
+<blockquote>“Are you comfortable with smartphones?”</blockquote>
+
+<hr>
+
+<h1 id="section-174">56. The strongest field question</h1>
+
+<p>One question from the combined research should be asked to almost every fisherman:</p>
+
+<blockquote><strong>“When you need important information at sea, what is hardest: getting the information, understanding the information, or deciding what to do with it?”</strong></blockquote>
+
+<p>Give three choices:</p>
+
+<h3 id="section-175">GET IT</h3>
+
+<h3 id="section-176">UNDERSTAND IT</h3>
+
+<h3 id="section-177">ACT ON IT</h3>
+
+<p>This directly tests ORCA's main product hypothesis.</p>
+
+<hr>
+
+<h1 id="section-178">57. Another strong field question</h1>
+
+<p>Ask:</p>
+
+<blockquote><strong>“When two sources give different weather or fishing information, who do you trust?”</strong></blockquote>
+
+<p>Then ask why.</p>
+
+<p>Possible answers may include:</p>
+
+<ul>
+<li>government advisory,</li>
+<li>experienced fisherman,</li>
+<li>weather app,</li>
+<li>harbour,</li>
+<li>another boat,</li>
+<li>personal experience.</li>
+</ul>
+
+<p>This gives you real information about trust and source selection.</p>
+
+<hr>
+
+<h1 id="section-179">58. Dholai-specific field context</h1>
+
+<p>Dholai is a particularly good place for field validation because it is an active fishing harbour and has recent fisheries research.</p>
+
+<p>A 2026 Dholai study covering September 2025 to April 2026 described the harbour as South Gujarat's largest operational fishing harbour and reported approximately 250 registered and actively operating fishing vessels. [R27]</p>
+
+<p>A 2024 socio-economic study covered Bilimora, Dholai, Bhat and Mendar and reported approximately 300 fishing families across those selected villages. [R28]</p>
+
+<p>The Gujarat Marine Fisheries Census 2016 recorded <strong>1,189 active fishermen in Dholai</strong>, 400 people in fish marketing-related activity, and other fishing-linked occupations. This is a historical baseline, not a current count. [R29]</p>
+
+<p>A 2025 study of the Bilimora wholesale fish market reported 22 enrolled traders and an observed daily market volume of about 30 tonnes, with activity concentrated in the early morning. [R30]</p>
+
+<p>These facts make Dholai/Bilimora useful for a mixed field study:</p>
+
+<ul>
+<li>fishermen,</li>
+<li>boat crews,</li>
+<li>boat owners,</li>
+<li>fish traders,</li>
+<li>fisheries academics,</li>
+<li>and local service providers.</li>
+</ul>
+
+<hr>
+
+<h1 id="section-180">59. Suggested sample for the first Dholai field study</h1>
+
+<p>You do not need hundreds of respondents for an initial product study.</p>
+
+<p>A practical target is:</p>
+
+<h3 id="section-181">20 respondents — minimum useful first pass</h3>
+
+<h3 id="section-182">30–40 — good for a hackathon field study</h3>
+
+<h3 id="section-183">50+ — strong field evidence if time allows</h3>
+
+<p>Try to mix:</p>
+
+<ul>
+<li>8–10 boat owners/captains,</li>
+<li>10–15 experienced fishermen,</li>
+<li>8–10 crew/younger fishers,</li>
+<li>and a few traders or fisheries-side people for the wider context.</li>
+</ul>
+
+<p>Do not claim this sample represents all fishermen in Gujarat or India.</p>
+
+<p>Call it:</p>
+
+<blockquote><strong>Regional field-validation survey at Dholai Fishing Harbour, Navsari</strong></blockquote>
+
+<hr>
+
+<h1 id="section-184">60. Secondary stakeholder interviews</h1>
+
+<p>The fisherman is the primary user, but the wider research network matters.</p>
+
+<h2 id="section-185">Fisheries professor/researcher</h2>
+
+<p>Ask:</p>
+
+<blockquote>Which marine variables actually matter for fishermen's decisions?</blockquote>
+
+<blockquote>What are the limitations of PFZ?</blockquote>
+
+<blockquote>Which information do fishermen commonly misunderstand?</blockquote>
+
+<blockquote>What would make fisheries information more practical?</blockquote>
+
+<h2 id="section-186">Meteorologist</h2>
+
+<p>Ask:</p>
+
+<blockquote>Which forecast variables are most important for fishing trips?</blockquote>
+
+<blockquote>How should warning uncertainty be communicated?</blockquote>
+
+<h2 id="section-187">Ocean-data scientist</h2>
+
+<p>Ask:</p>
+
+<blockquote>Which datasets are reliable and accessible?</blockquote>
+
+<blockquote>How fresh are they?</blockquote>
+
+<blockquote>What are the known limitations?</blockquote>
+
+<h2 id="section-188">Fisheries officer</h2>
+
+<p>Ask:</p>
+
+<blockquote>What official information already exists?</blockquote>
+
+<blockquote>Where does the information-delivery gap remain?</blockquote>
+
+<h2 id="section-189">Harbour/port/safety person</h2>
+
+<p>Ask:</p>
+
+<blockquote>What incidents and communication problems are common?</blockquote>
+
+<blockquote>What information is most important during an emergency?</blockquote>
+
+<p>This gives ORCA evidence from the complete information chain.</p>
+
+<hr>
+
+<h1 id="section-190">61. Feature priority for the first fisherman prototype</h1>
+
+<h2 id="section-191">P0 — Must have</h2>
+
+<ol>
+<li><strong>Today / Trip cockpit</strong></li>
+<li><strong>PFZ Scout</strong></li>
+<li><strong>Weather and sea conditions</strong></li>
+<li><strong>Route to PFZ</strong></li>
+<li><strong>Return to Harbour</strong></li>
+<li><strong>Official warnings</strong></li>
+<li><strong>Restricted-zone/geofence awareness</strong></li>
+<li><strong>Voice in Gujarati/Hindi/English</strong></li>
+<li><strong>Offline trip pack</strong></li>
+<li><strong>Why? explanation</strong></li>
+<li><strong>Last updated time</strong></li>
+<li><strong>Simple map</strong></li>
+</ol>
+
+<h2 id="section-192">P1 — Very useful</h2>
+
+<ol>
+<li>My Fishing Grounds</li>
+<li>Boat Profile</li>
+<li>Trip history</li>
+<li>Fuel/effort comparison</li>
+<li>Local hazard report</li>
+<li>Share trip status</li>
+<li>Catch feedback</li>
+<li>Historical comparison</li>
+<li>Tide information</li>
+<li>Harbour information</li>
+</ol>
+
+<h2 id="section-193">P2 — Future</h2>
+
+<ol>
+<li>Species-specific forecasting</li>
+<li>Fish price optimization</li>
+<li>Community knowledge network</li>
+<li>Pollution intelligence</li>
+<li>Marine heatwave reasoning</li>
+<li>Advanced catch prediction</li>
+<li>Insurance/scheme integrations</li>
+<li>Marketplace</li>
+<li>Fleet/cooperative analytics</li>
+</ol>
+
+<p>Do not put all P2 features into the SIH prototype.</p>
+
+<hr>
+
+<h1 id="section-194">62. Recommended fisherman app structure</h1>
+
+<pre><code class="language-text">ORCA FISHER
+│
+├── HOME
+│   ├── Trip Decision
+│   ├── Sea Now
+│   ├── Best PFZ
+│   ├── Next Change
+│   └── Last Updated
+│
+├── MAP
+│   ├── My Location
+│   ├── PFZ
+│   ├── Route
+│   ├── Hazards
+│   ├── Restrictions
+│   ├── Harbour
+│   └── My Grounds
+│
+├── ASK ORCA
+│   ├── Voice
+│   ├── Text
+│   ├── Quick Questions
+│   └── Why?
+│
+└── ALERTS
+    ├── Critical
+    ├── Important
+    ├── Caution
+    └── Information</code></pre>
+
+<hr>
+
+<h1 id="section-195">63. One-screen information architecture</h1>
+
+<p>The first screen should contain only four information groups.</p>
+
+<h2 id="section-196">1. TRIP STATUS</h2>
+
+<p>Favourable / Caution / Avoid</p>
+
+<h2 id="section-197">2. CURRENT CONDITIONS</h2>
+
+<p>Wind / waves / rain / warning</p>
+
+<h2 id="section-198">3. BEST AVAILABLE FISHING OPTION</h2>
+
+<p>PFZ + distance + direction + freshness</p>
+
+<h2 id="section-199">4. NEXT CHANGE</h2>
+
+<p>What will change during the trip?</p>
+
+<p>Everything else should be one tap away.</p>
+
+<hr>
+
+<h1 id="section-200">64. Recommended visual design for the fisherman app</h1>
+
+<p>The interface should use:</p>
+
+<ul>
+<li>white background,</li>
+<li>very light blue support areas,</li>
+<li>dark navy/charcoal text,</li>
+<li>one main blue accent,</li>
+<li>red only for critical hazards,</li>
+<li>amber for caution,</li>
+<li>green for favourable conditions.</li>
+</ul>
+
+<p>Avoid:</p>
+
+<ul>
+<li>neon gradients,</li>
+<li>dark cyberpunk styling,</li>
+<li>glowing effects,</li>
+<li>many decorative icons,</li>
+<li>tiny labels,</li>
+<li>technical dashboards,</li>
+<li>long paragraphs.</li>
+</ul>
+
+<h3 id="section-201">Design character</h3>
+
+<p>The application should feel:</p>
+
+<ul>
+<li>calm,</li>
+<li>clear,</li>
+<li>trustworthy,</li>
+<li>practical,</li>
+<li>easy to learn,</li>
+<li>and usable under pressure.</li>
+</ul>
+
+<hr>
+
+<h1 id="section-202">65. Do not make it look like Google Maps for the ocean</h1>
+
+<p>A map is not the whole product.</p>
+
+<p>The fisherman needs:</p>
+
+<blockquote><strong>Direction + destination + distance + hazard + route</strong></blockquote>
+
+<p>before he needs a sophisticated map.</p>
+
+<p>Therefore a large directional arrow can be more useful than a full map at some moments.</p>
+
+<p>The full map remains available when the fisherman wants it.</p>
+
+<hr>
+
+<h1 id="section-203">66. The role of “Ask ORCA” on the main screen</h1>
+
+<p>Place one large button:</p>
+
+<h2 id="section-204">ASK ORCA</h2>
+
+<p>The user should not have to decide whether the question belongs to “weather,” “PFZ,” “navigation,” or “alerts.”</p>
+
+<p>He can simply ask:</p>
+
+<blockquote>“Should I leave now?”</blockquote>
+
+<blockquote>“Where is the nearest PFZ?”</blockquote>
+
+<blockquote>“What is the sea like?”</blockquote>
+
+<blockquote>“How far is my ground?”</blockquote>
+
+<blockquote>“Can I return before the wind increases?”</blockquote>
+
+<p>ORCA should work out which information is required.</p>
+
+<p>This is one of the most important differences between a normal information app and the planned system.</p>
+
+<hr>
+
+<h1 id="section-205">67. Why the language model should not make the scientific decision by itself</h1>
+
+<p>For marine decisions, the language model should not invent:</p>
+
+<ul>
+<li>current values,</li>
+<li>wave values,</li>
+<li>PFZ points,</li>
+<li>restricted zones,</li>
+<li>weather warnings,</li>
+<li>or route safety.</li>
+</ul>
+
+<p>The system should retrieve real data from the proper source, run calculations where needed, check the evidence, and then let the language model explain the result in simple language.</p>
+
+<p>This keeps the user interface simple without making the science unreliable.</p>
+
+<hr>
+
+<h1 id="section-206">68. Source hierarchy for the fisherman product</h1>
+
+<p>A practical source hierarchy should be:</p>
+
+<h3 id="section-207">Safety warnings</h3>
+
+<p>Prefer official government/authorized warning sources.</p>
+
+<h3 id="section-208">PFZ</h3>
+
+<p>Prefer INCOIS PFZ service.</p>
+
+<h3 id="section-209">Ocean state</h3>
+
+<p>Prefer INCOIS ocean-state information and compatible validated sources.</p>
+
+<h3 id="section-210">Weather</h3>
+
+<p>Use the appropriate official/validated meteorological forecast source available for the service.</p>
+
+<h3 id="section-211">Geofences</h3>
+
+<p>Use authoritative legal/operational boundaries where required.</p>
+
+<h3 id="section-212">Navigation</h3>
+
+<p>Use actual device location and appropriate marine/geospatial information, with clear limitations.</p>
+
+<h3 id="section-213">Historical/context data</h3>
+
+<p>Use compatible scientific datasets and clearly label dates.</p>
+
+<hr>
+
+<h1 id="section-214">69. Data freshness rules</h1>
+
+<p>For every important data type, the system should store:</p>
+
+<ul>
+<li>source,</li>
+<li>issue time,</li>
+<li>received time,</li>
+<li>valid time,</li>
+<li>geographical coverage,</li>
+<li>and age.</li>
+</ul>
+
+<p>A simple internal rule can be:</p>
+
+<blockquote><strong>Do not silently use old data when the user expects current information.</strong></blockquote>
+
+<p>If the latest warning cannot be retrieved:</p>
+
+<blockquote><strong>“Latest warning status could not be confirmed. Last successful update: 08:20 AM.”</strong></blockquote>
+
+<p>That is much safer than pretending everything is current.</p>
+
+<hr>
+
+<h1 id="section-215">70. Connectivity design</h1>
+
+<h2 id="section-216">Online</h2>
+
+<p>Use live updates.</p>
+
+<h2 id="section-217">Weak network</h2>
+
+<p>Use cached information and retry quietly.</p>
+
+<h2 id="section-218">Offline</h2>
+
+<p>Use trip pack and saved maps/data.</p>
+
+<h2 id="section-219">Connection returns</h2>
+
+<p>Synchronize updates.</p>
+
+<p>The app should clearly show:</p>
+
+<blockquote><strong>Offline — using data from 05:30 AM</strong></blockquote>
+
+<p>rather than silently behaving as if it has live data.</p>
+
+<hr>
+
+<h1 id="section-220">71. Emergency design</h1>
+
+<p>The ORCA emergency screen should be extremely simple.</p>
+
+<h2 id="section-221">EMERGENCY</h2>
+
+<h3 id="section-222">CURRENT LOCATION</h3>
+
+<h3 id="section-223">NEAREST HARBOUR / SAFE POINT</h3>
+
+<h3 id="section-224">CALL</h3>
+
+<h3 id="section-225">SOS / EXISTING EMERGENCY LINK</h3>
+
+<h3 id="section-226">RETURN ROUTE</h3>
+
+<p>ORCA should integrate with existing government communication systems where appropriate rather than claiming to replace them.</p>
+
+<p>The national VCSS project is being rolled out for one lakh marine fishing vessels and is designed around satellite communication, safety alerts, no-fishing zones, IMBL geofencing and Nabhmitra integration. [R03]</p>
+
+<hr>
+
+<h1 id="section-227">72. Family / shore sharing</h1>
+
+<p>A simple future feature:</p>
+
+<h2 id="section-228">SHARE TRIP</h2>
+
+<blockquote>Departed: 05:42 AM<br>Destination: PFZ 02<br>Expected return: 02:20 PM</blockquote>
+
+<p>This can help connect boat, family and shore-side people.</p>
+
+<p>It should be optional and transparent.</p>
+
+<hr>
+
+<h1 id="section-229">73. Catch and trip feedback should be tiny</h1>
+
+<p>After the trip:</p>
+
+<h3 id="section-230">HOW WAS THE TRIP?</h3>
+
+<p>Good / Average / Poor</p>
+
+<h3 id="section-231">WAS THE PFZ USEFUL?</h3>
+
+<p>Yes / Partly / No / Not used</p>
+
+<h3 id="section-232">OPTIONAL CATCH</h3>
+
+<p>Photo / species / rough amount</p>
+
+<p>The Fisher Friend app also demonstrates that broad, practical fisher services can have significant reach, while the FISH study demonstrates that user participation improves when the task is made simple and its benefit is understood. [R24][R07]</p>
+
+<hr>
+
+<h1 id="section-233">74. What should make ORCA different</h1>
+
+<p>The strongest difference is not “more features.”</p>
+
+<p>It is the following chain:</p>
+
+<h3 id="section-234">Existing systems</h3>
+
+<p><strong>provide information</strong></p>
+
+<h3 id="section-235">ORCA</h3>
+
+<p><strong>understands the fisher's question → gets the needed information → checks it → compares it → explains it → gives one practical next step</strong></p>
+
+<p>That is the product identity.</p>
+
+<hr>
+
+<h1 id="section-236">75. What should be different on the researcher app</h1>
+
+<p>The user has already decided that researchers should get a separate experience.</p>
+
+<p>That is a good decision.</p>
+
+<p>The researcher interface can show:</p>
+
+<ul>
+<li>SST maps,</li>
+<li>chlorophyll maps,</li>
+<li>currents,</li>
+<li>wave fields,</li>
+<li>historical comparison,</li>
+<li>source lineage,</li>
+<li>data downloads,</li>
+<li>uncertainty,</li>
+<li>catch observations,</li>
+<li>PFZ creation/analysis,</li>
+<li>model outputs,</li>
+<li>and deeper graphs.</li>
+</ul>
+
+<p>The fisherman should not get this interface by default.</p>
+
+<hr>
+
+<h1 id="section-237">76. The fisherman and researcher views should use the same evidence</h1>
+
+<p>This is important.</p>
+
+<p>They can share the same underlying source layer but display it differently.</p>
+
+<h2 id="section-238">Researcher</h2>
+
+<p>“Chlorophyll anomaly + SST front + current structure + historical comparison.”</p>
+
+<h2 id="section-239">Fisherman</h2>
+
+<p>“PFZ 02 looks more favourable for this trip.”</p>
+
+<p>The science remains the same. The presentation changes.</p>
+
+<hr>
+
+<h1 id="section-240">77. What we should test in the first ORCA field prototype</h1>
+
+<p>The prototype should test six main things.</p>
+
+<h3 id="section-241">Test 1 — Can the fisherman understand the home screen in 10 seconds?</h3>
+
+<h3 id="section-242">Test 2 — Can he find the best PFZ without training?</h3>
+
+<h3 id="section-243">Test 3 — Can he understand the route?</h3>
+
+<h3 id="section-244">Test 4 — Can he ask a question by voice?</h3>
+
+<h3 id="section-245">Test 5 — Can he understand an alert?</h3>
+
+<h3 id="section-246">Test 6 — Can he return to the harbour function without help?</h3>
+
+<p>If these six work, the core experience is strong.</p>
+
+<hr>
+
+<h1 id="section-247">78. Usability test method at Dholai</h1>
+
+<p>Instead of only asking what fishermen think, give them simple tasks.</p>
+
+<h2 id="section-248">Task A</h2>
+
+<p>“Find today's best available fishing area.”</p>
+
+<p>Measure:</p>
+
+<ul>
+<li>time,</li>
+<li>mistakes,</li>
+<li>whether they needed help.</li>
+</ul>
+
+<h2 id="section-249">Task B</h2>
+
+<p>“Tell me what will happen after 11 AM.”</p>
+
+<p>Measure whether they can find the forecast change.</p>
+
+<h2 id="section-250">Task C</h2>
+
+<p>“Show me how you would return to the harbour.”</p>
+
+<p>Observe route use.</p>
+
+<h2 id="section-251">Task D</h2>
+
+<p>“Ask ORCA something using your voice.”</p>
+
+<p>Observe whether the interaction feels natural.</p>
+
+<h2 id="section-252">Task E</h2>
+
+<p>“Find what caused the warning.”</p>
+
+<p>Check if the “WHY?” function is understandable.</p>
+
+<hr>
+
+<h1 id="section-253">79. Metrics to collect from the field</h1>
+
+<p>Useful metrics include:</p>
+
+<ul>
+<li>percentage using smartphone,</li>
+<li>percentage using GPS,</li>
+<li>percentage using marine navigation hardware,</li>
+<li>percentage checking multiple information sources,</li>
+<li>percentage using PFZ,</li>
+<li>percentage reporting network problems,</li>
+<li>percentage reporting phone usability problems,</li>
+<li>percentage preferring voice,</li>
+<li>percentage preferring Gujarati,</li>
+<li>percentage wanting route guidance,</li>
+<li>percentage wanting sea-condition summaries,</li>
+<li>percentage wanting PFZ explanation,</li>
+<li>percentage wanting return-to-harbour guidance.</li>
+</ul>
+
+<p>Do not put guessed values on the PPT.</p>
+
+<p>Only use values after the field survey.</p>
+
+<hr>
+
+<h1 id="section-254">80. The survey should produce direct product evidence</h1>
+
+<p>A strong result might look like:</p>
+
+<blockquote><strong>28/35 fishermen check more than one information source before departure.</strong></blockquote>
+
+<blockquote><strong>24/35 prefer local-language information.</strong></blockquote>
+
+<blockquote><strong>21/35 reported difficulty using maps/apps on the boat.</strong></blockquote>
+
+<blockquote><strong>26/35 wanted a simpler weather/sea summary.</strong></blockquote>
+
+<blockquote><strong>20/35 wanted a direct route back to harbour.</strong></blockquote>
+
+<p>These are examples only. They must not be presented as actual results until collected.</p>
+
+<hr>
+
+<h1 id="section-255">81. Questions to ask boat owners separately</h1>
+
+<p>Boat owners can give different information from crew.</p>
+
+<p>Ask:</p>
+
+<ul>
+<li>How is fuel use managed?</li>
+<li>How are fishing grounds selected?</li>
+<li>How much does distance affect the trip?</li>
+<li>What causes a trip to be cancelled?</li>
+<li>What navigation equipment is fitted?</li>
+<li>What information is trusted?</li>
+<li>Do they track boats?</li>
+<li>How are warnings communicated?</li>
+<li>What happens if a boat is overdue?</li>
+<li>What information would reduce wasted trips?</li>
+</ul>
+
+<hr>
+
+<h1 id="section-256">82. Questions to ask fish traders</h1>
+
+<p>Ask:</p>
+
+<ul>
+<li>When do boats usually arrive?</li>
+<li>How predictable is supply?</li>
+<li>What causes supply changes?</li>
+<li>How much does weather change fish availability?</li>
+<li>How do they learn expected arrivals?</li>
+<li>What problems occur with freshness/ice?</li>
+<li>What information would help them prepare?</li>
+<li>How are market prices communicated?</li>
+</ul>
+
+<p>The Bilimora market research shows that a substantial local trading network exists around Navapura. [R30]</p>
+
+<hr>
+
+<h1 id="section-257">83. Questions to ask fisheries researchers</h1>
+
+<p>Ask:</p>
+
+<ul>
+<li>Which environmental indicators are actually useful?</li>
+<li>How should PFZ be interpreted?</li>
+<li>What is the lag between environmental conditions and fish aggregation?</li>
+<li>Which species respond differently?</li>
+<li>What data can be obtained reliably?</li>
+<li>What data should not be presented as real-time?</li>
+<li>Where do forecasts fail?</li>
+<li>How should uncertainty be communicated?</li>
+</ul>
+
+<p>The recent PFZ research specifically highlights environmental lag, trophic relationships and species-specific forecasting as important research directions. [R12]</p>
+
+<hr>
+
+<h1 id="section-258">84. Questions to ask weather experts</h1>
+
+<p>Ask:</p>
+
+<ul>
+<li>Which variables are most important for fishermen?</li>
+<li>How accurate are local forecasts at the relevant time scales?</li>
+<li>How should forecast changes be displayed?</li>
+<li>Which warnings should interrupt the user?</li>
+<li>How much lead time is normally meaningful?</li>
+<li>How should uncertainty be expressed?</li>
+</ul>
+
+<hr>
+
+<h1 id="section-259">85. Questions to ask satellite/ocean-data experts</h1>
+
+<p>Ask:</p>
+
+<ul>
+<li>Which datasets have programmatic access?</li>
+<li>What is the update frequency?</li>
+<li>What is the spatial resolution?</li>
+<li>What happens under clouds or missing observations?</li>
+<li>How long does processing take?</li>
+<li>Which variables are most useful for PFZ work?</li>
+<li>Which services are authoritative?</li>
+</ul>
+
+<p>This will help ORCA avoid promising data that cannot actually be delivered.</p>
+
+<hr>
+
+<h1 id="section-260">86. Questions to ask fisheries officers</h1>
+
+<p>Ask:</p>
+
+<ul>
+<li>Which advisories are already available?</li>
+<li>How are they delivered?</li>
+<li>Where does delivery break down?</li>
+<li>Which warnings are mandatory/official?</li>
+<li>What local-language material already exists?</li>
+<li>What information do fishermen repeatedly ask for?</li>
+<li>What is the role of cooperatives and harbour staff?</li>
+</ul>
+
+<hr>
+
+<h1 id="section-261">87. What we learned from Dholai/Bilimora specifically</h1>
+
+<p>Dholai is not simply a theoretical test site.</p>
+
+<p>Recent research has studied fish landings at Dholai during 2025–2026 and reported a large active fishing fleet. [R27]</p>
+
+<p>The 2024 socio-economic study looked at Bilimora, Dholai, Bhat and Mendar together, providing a local context for fishing families and livelihoods. [R28]</p>
+
+<p>Bilimora has a documented wholesale fish market with 22 enrolled traders in the 2025 study, creating a useful second location for interviews. [R30]</p>
+
+<p>Therefore a strong field plan is:</p>
+
+<h3 id="section-262">Morning</h3>
+
+<p>Dholai harbour:</p>
+
+<ul>
+<li>fishermen,</li>
+<li>captains,</li>
+<li>boat owners,</li>
+<li>landing activity.</li>
+</ul>
+
+<h3 id="section-263">Later morning</h3>
+
+<p>Bilimora/Navapura fish market:</p>
+
+<ul>
+<li>wholesalers,</li>
+<li>traders,</li>
+<li>vendors.</li>
+</ul>
+
+<h3 id="section-264">Separate appointments</h3>
+
+<p>Navsari fisheries college/researchers:</p>
+
+<ul>
+<li>scientific/data interviews.</li>
+</ul>
+
+<p>This gives a much richer validation than speaking only to 20 random people.</p>
+
+<hr>
+
+<h1 id="section-265">88. Dholai fisherman population: how to quote it safely</h1>
+
+<p>The 2016 Gujarat Marine Fisheries Census recorded:</p>
+
+<ul>
+<li><strong>Dholai active fishermen:</strong> 1,189</li>
+<li><strong>Fish marketing-related people:</strong> 400</li>
+<li><strong>Other fisheries-linked activities:</strong> included in the same table</li>
+<li><strong>Navsari district active fishermen:</strong> 6,220</li>
+</ul>
+
+<p>[R29]</p>
+
+<p>This is a <strong>2016 census baseline</strong> and should not be described as the present-day population without a newer census.</p>
+
+<p>The 2026 Dholai harbour study reported approximately 250 registered and actively operating fishing vessels during its 2025–2026 study period. [R27]</p>
+
+<p>These two numbers measure different things and come from different time periods, so they should not be directly combined into a current fisherman population estimate.</p>
+
+<hr>
+
+<h1 id="section-266">89. What the research says about adoption</h1>
+
+<p>A major lesson from recent fisheries technology studies is:</p>
+
+<blockquote><strong>Installation does not equal adoption.</strong></blockquote>
+
+<p>The 2026 FISH app study says nearly 1,000 fishermen installed the app during the pilot, but active use and regular submissions remained relatively low. The authors linked this to the extra effort of the task, the need for training, and the need to clearly explain the benefit of participation. [R07]</p>
+
+<p>This means ORCA must not rely on:</p>
+
+<blockquote>“We have many registered users.”</blockquote>
+
+<p>The better metric is:</p>
+
+<blockquote><strong>“Did the fisherman return to ORCA because it helped him make a real decision?”</strong></blockquote>
+
+<hr>
+
+<h1 id="section-267">90. ORCA success metrics</h1>
+
+<p>For the fisherman product, measure:</p>
+
+<h3 id="section-268">Usefulness</h3>
+
+<p>Did the fisherman get the answer he needed?</p>
+
+<h3 id="section-269">Time</h3>
+
+<p>How long did it take to find the answer?</p>
+
+<h3 id="section-270">Help required</h3>
+
+<p>Did someone have to teach him?</p>
+
+<h3 id="section-271">Trust</h3>
+
+<p>Did he understand why the answer was given?</p>
+
+<h3 id="section-272">Action</h3>
+
+<p>Did the answer change or confirm a decision?</p>
+
+<h3 id="section-273">Repeat use</h3>
+
+<p>Did he use the feature again?</p>
+
+<h3 id="section-274">Offline success</h3>
+
+<p>Could he still use the main functions without mobile data?</p>
+
+<hr>
+
+<h1 id="section-275">91. What the first version should look like</h1>
+
+<p>The first working fisherman prototype should not try to contain the entire marine ecosystem.</p>
+
+<p>A good V1 can be:</p>
+
+<h2 id="section-276">Home</h2>
+
+<p>Trip Decision + conditions + best PFZ</p>
+
+<h2 id="section-277">PFZ</h2>
+
+<p>Nearby PFZs + freshness + route</p>
+
+<h2 id="section-278">Map</h2>
+
+<p>Current location + route + hazards + restrictions</p>
+
+<h2 id="section-279">Ask</h2>
+
+<p>Voice questions</p>
+
+<h2 id="section-280">Alerts</h2>
+
+<p>Official warning + contextual warning</p>
+
+<h2 id="section-281">Offline</h2>
+
+<p>Trip pack</p>
+
+<h2 id="section-282">Feedback</h2>
+
+<p>Very short post-trip result</p>
+
+<p>That is enough to demonstrate the core idea.</p>
+
+<hr>
+
+<h1 id="section-283">92. What can wait</h1>
+
+<p>Do not spend most of the hackathon on:</p>
+
+<ul>
+<li>marketplace,</li>
+<li>finance,</li>
+<li>full insurance systems,</li>
+<li>full government-scheme portal,</li>
+<li>species recognition for every fish,</li>
+<li>large social-network features,</li>
+<li>complex researcher dashboards,</li>
+<li>advanced climate modeling.</li>
+</ul>
+
+<p>Those are future modules.</p>
+
+<p>The core problem is marine decision support for the fisher.</p>
+
+<hr>
+
+<h1 id="section-284">93. Recommended ORCA fisherman journey</h1>
+
+<pre><code class="language-text">OPEN APP
+    ↓
+TODAY AT SEA
+    ↓
+TRIP STATUS
+    ↓
+CURRENT CONDITIONS
+    ↓
+BEST AVAILABLE PFZ
+    ↓
+VIEW WHY
+    ↓
+GO TO PFZ
+    ↓
+ROUTE / MAP
+    ↓
+MONITOR CONDITIONS
+    ↓
+ALERT IF IMPORTANT CHANGE
+    ↓
+RETURN TO HARBOUR
+    ↓
+TRIP FEEDBACK</code></pre>
+
+<p>Voice can enter at any point:</p>
+
+<blockquote><strong>ASK ORCA</strong></blockquote>
+
+<hr>
+
+<h1 id="section-285">94. Recommended ORCA decision flow</h1>
+
+<pre><code class="language-text">FISHERMAN QUESTION
+        ↓
+UNDERSTAND INTENT
+        ↓
+CHECK LOCATION / TIME / BOAT CONTEXT
+        ↓
+GET REQUIRED MARINE DATA
+        ↓
+CHECK SOURCE + FRESHNESS
+        ↓
+CALCULATE / COMPARE
+        ↓
+CHECK WARNINGS + RESTRICTIONS
+        ↓
+CHECK WHETHER EVIDENCE IS SUFFICIENT
+        ↓
+MAKE A DECISION-SUPPORT RESPONSE
+        ↓
+SHOW WHY
+        ↓
+OFFER ACTION</code></pre>
+
+<p>This is the technical system, but the fisherman should see only the useful result.</p>
+
+<hr>
+
+<h1 id="section-286">95. The most important product rule</h1>
+
+<p>The first screen should never make the fisherman think:</p>
+
+<blockquote>“What should I click?”</blockquote>
+
+<p>It should make him think:</p>
+
+<blockquote>“Okay, I understand the situation.”</blockquote>
+
+<p>Then the next action should be obvious.</p>
+
+<p>That is what “simple” really means in ORCA.</p>
+
+<hr>
+
+<h1 id="section-287">96. The key research-backed product principles</h1>
+
+<h2 id="section-288">Principle 1 — Local language first</h2>
+
+<p>Evidence from Andhra Pradesh and the multilingual FISH deployment supports this. [R05][R07]</p>
+
+<h2 id="section-289">Principle 2 — Offline first</h2>
+
+<p>FISH and NavIC-related fisher systems demonstrate this need. [R07][R08]</p>
+
+<h2 id="section-290">Principle 3 — Reduce typing</h2>
+
+<p>Voice and simple controls should be available.</p>
+
+<h2 id="section-291">Principle 4 — One decision at a time</h2>
+
+<p>Do not make the fisherman interpret a dashboard.</p>
+
+<h2 id="section-292">Principle 5 — Keep the scientific detail behind “WHY?”</h2>
+
+<h2 id="section-293">Principle 6 — Show data freshness</h2>
+
+<h2 id="section-294">Principle 7 — Prefer official warnings for safety</h2>
+
+<h2 id="section-295">Principle 8 — PFZ needs context, not just coordinates</h2>
+
+<h2 id="section-296">Principle 9 — Navigation should include return-to-harbour</h2>
+
+<h2 id="section-297">Principle 10 — Local knowledge should be captured, not ignored</h2>
+
+<h2 id="section-298">Principle 11 — Do not overpromise fish prediction or safety</h2>
+
+<h2 id="section-299">Principle 12 — Adoption depends on clear personal value</h2>
+
+<hr>
+
+<h1 id="section-300">97. The strongest ORCA feature set in one place</h1>
+
+<p>If the whole fisherman product had to be summarized in one list, it would be:</p>
+
+<h3 id="section-301">1. TODAY AT SEA</h3>
+
+<p>One-screen trip summary.</p>
+
+<h3 id="section-302">2. GO / CAUTION / AVOID</h3>
+
+<p>Simple trip state with explanation.</p>
+
+<h3 id="section-303">3. PFZ SCOUT</h3>
+
+<p>Find, compare and explain PFZ options.</p>
+
+<h3 id="section-304">4. BEST OPTION FOR THIS TRIP</h3>
+
+<p>Use distance, conditions, restrictions and freshness.</p>
+
+<h3 id="section-305">5. GO TO PFZ</h3>
+
+<p>Directional route.</p>
+
+<h3 id="section-306">6. RETURN TO HARBOUR</h3>
+
+<p>One-tap return route.</p>
+
+<h3 id="section-307">7. SEA NOW</h3>
+
+<p>Simple wind, wave, current, rain and warning view.</p>
+
+<h3 id="section-308">8. WHAT WILL CHANGE?</h3>
+
+<p>Upcoming changes that can affect the trip.</p>
+
+<h3 id="section-309">9. OFFICIAL ALERTS</h3>
+
+<p>Critical and important warnings first.</p>
+
+<h3 id="section-310">10. ASK ORCA</h3>
+
+<p>Voice-first questions.</p>
+
+<h3 id="section-311">11. WHY?</h3>
+
+<p>Simple evidence explanation.</p>
+
+<h3 id="section-312">12. OFFLINE TRIP PACK</h3>
+
+<p>Latest available data when leaving harbour.</p>
+
+<h3 id="section-313">13. LAST UPDATED</h3>
+
+<p>Show freshness.</p>
+
+<h3 id="section-314">14. MY FISHING GROUNDS</h3>
+
+<p>Private saved locations.</p>
+
+<h3 id="section-315">15. BOAT PROFILE</h3>
+
+<p>Basic boat context.</p>
+
+<h3 id="section-316">16. TRIP FEEDBACK</h3>
+
+<p>Short post-trip learning.</p>
+
+<hr>
+
+<h1 id="section-317">98. What makes the platform different</h1>
+
+<p>The difference should be presented as:</p>
+
+<blockquote><strong>ORCA does not ask the fisherman to become a marine-data expert. It does the information work in the background and presents one clear decision with the reasons behind it.</strong></blockquote>
+
+<p>The system can combine:</p>
+
+<ul>
+<li>PFZ,</li>
+<li>weather,</li>
+<li>waves,</li>
+<li>currents,</li>
+<li>tide,</li>
+<li>restrictions,</li>
+<li>route,</li>
+<li>historical context,</li>
+<li>local observations,</li>
+<li>and official warnings.</li>
+</ul>
+
+<p>But the fisherman can simply ask:</p>
+
+<blockquote><strong>“Where should I go?”</strong></blockquote>
+
+<p>and receive a practical answer.</p>
+
+<hr>
+
+<h1 id="section-318">99. What to validate at Dholai before finalizing the UI</h1>
+
+<p>Before locking the design, get real evidence for:</p>
+
+<ol>
+<li>Which navigation device is actually used.</li>
+<li>Which mobile apps are actually used.</li>
+<li>Whether fishermen use PFZ directly.</li>
+<li>How often mobile network disappears.</li>
+<li>How phones are charged on boats.</li>
+<li>Whether typing is difficult.</li>
+<li>Whether sunlight affects readability.</li>
+<li>Whether local language is preferred.</li>
+<li>Whether voice is preferred.</li>
+<li>How weather information is received.</li>
+<li>How official warnings are received.</li>
+<li>How fishermen decide to return.</li>
+<li>How fishing grounds are remembered.</li>
+<li>Whether fishermen trust government advisories.</li>
+<li>Whether fishermen compare several sources.</li>
+<li>Whether fuel and distance change PFZ decisions.</li>
+<li>Which information is most valuable while already at sea.</li>
+<li>Which information is useful after returning.</li>
+</ol>
+
+<p>The product should be changed according to these observations.</p>
+
+<hr>
+
+<h1 id="section-319">100. Final product definition</h1>
+
+<h2 id="section-320">ORCA Fisher</h2>
+
+<p><strong>A simple marine trip companion for fishermen.</strong></p>
+
+<p>It brings together the marine information already available from trusted sources and turns it into clear trip guidance.</p>
+
+<h3 id="section-321">The fisherman sees</h3>
+
+<p><strong>WHERE</strong> — best available fishing option</p>
+<p><strong>WHEN</strong> — when conditions are better/worse</p>
+<p><strong>HOW</strong> — route and direction</p>
+<p><strong>RISK</strong> — what to avoid</p>
+<p><strong>WHY</strong> — evidence behind the recommendation</p>
+<p><strong>RETURN</strong> — how to get home</p>
+
+<h3 id="section-322">The system handles</h3>
+
+<ul>
+<li>data collection,</li>
+<li>marine data processing,</li>
+<li>PFZ information,</li>
+<li>weather and ocean forecasts,</li>
+<li>geospatial rules,</li>
+<li>route evaluation,</li>
+<li>freshness,</li>
+<li>source checks,</li>
+<li>and explanations.</li>
+</ul>
+
+<h3 id="section-323">The central design sentence</h3>
+
+<blockquote><strong>Make the system complicated so the fisherman does not have to be.</strong></blockquote>
+
+<hr>
+
+<h1 id="section-324">101. Final recommendations for the first UI prototype</h1>
+
+<h2 id="section-325">Home</h2>
+
+<p>One decision card.</p>
+
+<p>One conditions card.</p>
+
+<p>One PFZ recommendation.</p>
+
+<p>One “next change” line.</p>
+
+<h2 id="section-326">Map</h2>
+
+<p>Current position.</p>
+
+<p>PFZ.</p>
+
+<p>Route.</p>
+
+<p>Hazards.</p>
+
+<p>Restrictions.</p>
+
+<p>Harbour.</p>
+
+<h2 id="section-327">Ask</h2>
+
+<p>Large microphone.</p>
+
+<p>Quick questions.</p>
+
+<p>Short answer.</p>
+
+<p>Voice output.</p>
+
+<h2 id="section-328">Alerts</h2>
+
+<p>Critical first.</p>
+
+<p>Important second.</p>
+
+<p>Everything else below.</p>
+
+<h2 id="section-329">Profile</h2>
+
+<p>Boat information, home harbour and language.</p>
+
+<p>Nothing more.</p>
+
+<hr>
+
+<h1 id="section-330">102. What I would deliberately avoid in V1</h1>
+
+<ul>
+<li>Giant dashboard</li>
+<li>20 data cards</li>
+<li>15 map layers visible at the same time</li>
+<li>Large scientific charts on the first screen</li>
+<li>Long government-service menus</li>
+<li>Large registration form</li>
+<li>Continuous internet requirement</li>
+<li>English-only text</li>
+<li>Mandatory typing</li>
+<li>Exact fish-catch promises</li>
+<li>Automatic claims of “safe” travel</li>
+<li>Unverified data sources presented as official</li>
+<li>Sharing private fishing grounds by default</li>
+</ul>
+
+<hr>
+
+<h1 id="section-331">103. Research-backed answer to the original product question</h1>
+
+<p>The strongest fisher-facing ORCA is not an “app for fishermen” in the generic sense.</p>
+
+<p>It is a <strong>trip decision system</strong> that has a very simple phone interface.</p>
+
+<p>The fisherman should not have to know how the answer was produced.</p>
+
+<p>He should be able to ask:</p>
+
+<blockquote><strong>“Can I go?”</strong></blockquote>
+
+<blockquote><strong>“Where should I go?”</strong></blockquote>
+
+<blockquote><strong>“What is happening at sea?”</strong></blockquote>
+
+<blockquote><strong>“Is something dangerous?”</strong></blockquote>
+
+<blockquote><strong>“How do I return?”</strong></blockquote>
+
+<p>Everything else belongs behind those actions.</p>
+
+<hr>
+
+<h1 id="section-332">104. References and sources</h1>
+
+<blockquote><strong>Note:</strong> This is the final reference section. References marked as “recent” are especially relevant to the 2024–2026 research window. A few older sources are retained because they provide direct evidence about fisher phone usability or long-running services.</blockquote>
+
+<h2 id="section-333">Government, science institutions and official systems</h2>
+
+<p><strong>[R01] INCOIS — SAMUDRA Mobile Application</strong></p>
+<p>Smart Access to Marine Data Resources and Advisories. Current service description covering active alerts, PFZ, tides, marine heat waves, ocean-state forecasts and tsunami information.</p>
+<p>https://incois.gov.in/site/SAMUDRA/index.html</p>
+
+<p><strong>[R02] INCOIS — Ocean State Forecast Service</strong></p>
+<p>Description of wind, waves, swell, currents, temperature and other ocean-state forecasts.</p>
+<p>https://www.incois.gov.in/site/services/osf.jsp</p>
+
+<p><strong>[R03] Press Information Bureau — National Rollout Plan for Vessel Communication and Support System (VCSS), 10 Feb 2026</strong></p>
+<p>One lakh marine fishing vessels; satellite-based two-way communication, adverse-weather alerts, no-fishing-zone alerts, IMBL geofencing and Nabhmitra integration.</p>
+<p>https://www.pib.gov.in/PressReleasePage.aspx?PRID=2225774&lang=1&reg=6</p>
+
+<p><strong>[R04] National Fisheries Digital Platform (NFDP)</strong></p>
+<p>Official Department of Fisheries platform covering fisher identities, schemes, credit, insurance, training, marketing, traceability and related services.</p>
+<p>https://nfdp.dof.gov.in/nfdp/</p>
+
+<p><strong>[R08] ISRO — Mobile Apps for Fishermen</strong></p>
+<p>MapmyIndia/NavIC-related fisher application description including offline operation, PFZ waypoints, live location, IMBL warning and INCOIS emergency messages.</p>
+<p>https://www.isro.gov.in/MobileApps.html</p>
+
+<p><strong>[R09] Department of Fisheries / Nabhmitra and VCSS material</strong></p>
+<p>Covered through the national VCSS information and related government documentation.</p>
+<p>https://www.pib.gov.in/PressReleasePage.aspx?PRID=2225774&lang=1&reg=6</p>
+
+<p><strong>[R10] INCOIS — Potential Fishing Zone Advisory</strong></p>
+<p>PFZ purpose, benefits, dissemination and field use.</p>
+<p>https://incois.gov.in/MarineFisheries/PfzAdvisory</p>
+
+<p><strong>[R11] INCOIS — PFZ dissemination and local-language information</strong></p>
+<p>PFZ maps/text, distance/direction guidance, local-language dissemination, dynamic movement and wind information.</p>
+<p>https://incois.gov.in/MarineFisheries/PfzAdvisory</p>
+
+<p><strong>[R18] Fishery Survey of India — Mandate</strong></p>
+<p>Marine fisheries forecasting, remote sensing, resource assessment, fish stock identification and information dissemination.</p>
+<p>https://fsi.gov.in/mandate</p>
+
+<p><strong>[R19] Fishery Survey of India — PFZ information</strong></p>
+<p>PFZ definition, satellite SST/chlorophyll inputs and dissemination through fishing landing centres.</p>
+<p>https://fsi.gov.in/node</p>
+
+<p><strong>[R25] Google Play — SAMUDRA</strong></p>
+<p>Current public application description; includes interactive maps/charts, five-day ocean-state forecasts and current English-language availability.</p>
+<p>https://play.google.com/store/apps/details?id=com.incois.mobileapp</p>
+
+<p><strong>[R26] Google Play — Fisher Friend Mobile Application</strong></p>
+<p>Current application listing and feature description.</p>
+<p>https://play.google.com/store/apps/details?hl=en_IN&id=com.mssrf.ffma</p>
+
+<p><strong>[R15] Indian Journal of Geo-Marine Sciences — Occupational hazards among small-scale motorised fishers, 2025</strong></p>
+<p>Reports major hazards including heat stress, musculoskeletal problems, cyclones, heavy rain, insomnia and overexertion.</p>
+<p>https://or.niscpr.res.in/index.php/IJMS/article/view/21664</p>
+
+<p><strong>[R16] Discover Public Health — Environmental, occupational, and socioeconomic determinants of health among Indian fisherfolk, 2026</strong></p>
+<p>Recent qualitative synthesis of health and livelihood pressures among Indian fisherfolk.</p>
+<p>https://link.springer.com/article/10.1186/s12982-026-01406-2</p>
+
+<p><strong>[R17] Government of India — Livelihoods of Fishers and Climate Resilience, 5 Aug 2025</strong></p>
+<p>Government description of climate-resilience work and coastal fisherman villages.</p>
+<p>https://www.pib.gov.in/PressReleasePage.aspx?PRID=2152506&lang=2&reg=48</p>
+
+<h2 id="section-334">Recent research on digital use, fisher apps and usability</h2>
+
+<p><strong>[R05] Periginji et al. — Constraints in Social Media Use for Agriculture and Fisheries in Andhra Pradesh, 2026</strong></p>
+<p>Study of 80 fish farmers and 80 agricultural farmers; usability was the strongest constraint dimension for fish farmers, and preferred local-language content was the largest individual constraint.</p>
+<p>https://epubs.icar.org.in/index.php/IJEE/article/view/179536</p>
+
+<p><strong>[R07] Lal et al. — Development and deployment of a pilot multilingual citizen-science mobile application for georeferenced marine catch observations in India, Frontiers in Marine Science, 2026</strong></p>
+<p>Major source for ORCA's offline, multilingual, simple-interface and adoption lessons. Includes the FISH app, field deployment and user-response findings.</p>
+<p>https://www.frontiersin.org/journals/marine-science/articles/10.3389/fmars.2026.1918530/full</p>
+
+<p><strong>[R06] Vimala & Ravisankar — Fisher Friend Mobile Application — Fishery Technology</strong></p>
+<p>Older field evidence on screen size, scrolling, font size, time limits, GPS, voice messages and device preferences. The page was published online in 2025 but the underlying issue is an older Fisher Friend study, so it should be treated as supporting background rather than new 2025–2026 field evidence.</p>
+<p>https://epubs.icar.org.in/index.php/FT/article/view/22383</p>
+
+<p><strong>[R24] MSSRF Annual Report 2024–2025</strong></p>
+<p>Reports Fisher Friend user growth, screen views and the launch of FisherWomenConnect.</p>
+<p>https://mssrf.org/sites/default/files/2025-09/Final_Annual%20Report%202025_22_09_2025_compressed.pdf</p>
+
+<h2 id="section-335">PFZ and fisheries science</h2>
+
+<p><strong>[R12] Environmental Impact Assessment Review — PFZ validation and assessment along the southwest coast of India, 2025</strong></p>
+<p>Positive relationship with village fish landings, environmental lag effects and value of landing data for PFZ validation and fisheries forecasting.</p>
+<p>https://www.sciencedirect.com/science/article/pii/S0195925525001507</p>
+
+<p><strong>[R13] E-Prints CMFRI — Study on PFZ dynamics using environmental proxies, 2024</strong></p>
+<p>Use of chlorophyll, SST fronts, wind, currents, Ekman transport and eddies for understanding PFZ dynamics.</p>
+<p>https://eprints.cmfri.org.in/18258/</p>
+
+<p><strong>[R14] INCOIS — Ocean State Forecast service</strong></p>
+<p>Forecasting service used to support sea-state decisions for activities along the Indian coast.</p>
+<p>https://www.incois.gov.in/site/services/osf.jsp</p>
+
+<h2 id="section-336">Recent Dholai / Bilimora material</h2>
+
+<p><strong>[R27] Tandel et al. — Fin Fish Diversity of Dholai Fishing Harbour, Gujarat, India, 2026</strong></p>
+<p>Study period September 2025–April 2026; describes Dholai as a major operational harbour and reports approximately 250 registered and actively operating vessels.</p>
+<p>https://mbimph.com/index.php/UPJOZ/article/view/5746</p>
+
+<p><strong>[R28] Tandel et al. — Study on the socio-economic condition of fishermen in Gandevi taluka, Gujarat, 2024</strong></p>
+<p>Study covering Bilimora, Dholai, Bhat and Mendar, including approximately 300 fishing families in the selected villages.</p>
+<p>https://www.extensionjournal.com/uploads/archives/7-12-18-533.pdf</p>
+
+<p><strong>[R29] CMFRI & Department of Fisheries — Marine Fisheries Census 2016: Gujarat</strong></p>
+<p>Historical baseline. Dholai recorded 1,189 active fishermen in the census table.</p>
+<p>https://eprints.cmfri.org.in/17502/1/GUJARAT%20Marine%20Fisheries%20Census%20India%202016.pdf</p>
+
+<p><strong>[R30] Bengani et al. — Specification of Fish Species available at Bilimora fish market, Gujarat, India, 2025</strong></p>
+<p>Describes the Bilimora wholesale market, 22 enrolled traders and observed daily fish marketing activity.</p>
+<p>https://www.researchgate.net/publication/388993437_Specification_of_Fish_Species_available_at_Bilimora_fish_marketGujarat_India</p>
+
+<h2 id="section-337">Safety, climate and livelihood studies</h2>
+
+<p><strong>[R20] Mohapatra — Climate Change Induced Migration in Marine Fishing Community in Odisha, 2025</strong></p>
+<p>Reports declining catch, extreme weather, coastal erosion and rising sea temperatures as livelihood pressures.</p>
+<p>https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5205941</p>
+
+<p><strong>[R21] Climate change impacts on coastal fishing communities: industrial pollution, environmental degradation, and livelihood transformation, 2026</strong></p>
+<p>Case study from Yerrayapalem, Visakhapatnam, Andhra Pradesh; small-sample qualitative study on pollution and livelihood change.</p>
+<p>https://www.tandfonline.com/doi/full/10.1080/29931495.2026.2644640</p>
+
+<p><strong>[R22] Frontiers — Environmental/water-quality impacts on fisher communities around Chilika, 2025</strong></p>
+<p>Study reporting fisher perceptions of water-quality degradation and impacts on catch and income.</p>
+<p>https://www.frontiersin.org/journals/sustainable-food-systems/articles/10.3389/fsufs.2025.1525142/full</p>
+
+<p><strong>[R18] / FSI and marine survey references</strong></p>
+<p>Fishery resource surveys and marine fisheries forecasting material.</p>
+<p>https://fsi.gov.in/mandate</p>
+
+<p><strong>[R23] Gujarat coastal fisheries social wellbeing research</strong></p>
+<p>Research describing debt and trader-credit relationships in Gujarat fishing communities.</p>
+<p>https://pmc.ncbi.nlm.nih.gov/articles/PMC10066161/</p>
+
+<p><strong>[R19] DG Shipping / marine safety material</strong></p>
+<p>Recent marine safety investigations and fishing-vessel safety issues.</p>
+<p>https://www.dgma.gov.in/nautical-wing/nw-circulars/nautical-marine-casuality-investigation</p>
+
+<hr>
+
+<h1 id="section-338">105. Source quality notes</h1>
+
+<h3 id="section-339">Strongest sources for ORCA product decisions</h3>
+
+<ul>
+<li>INCOIS official service descriptions</li>
+<li>ISRO fisher-app documentation</li>
+<li>Department of Fisheries / PIB official material</li>
+<li>recent peer-reviewed fisheries technology research</li>
+<li>2026 FISH app paper</li>
+<li>2026 Andhra Pradesh digital-use constraints study</li>
+<li>recent Dholai studies</li>
+<li>recent safety and occupational-hazard research</li>
+</ul>
+
+<h3 id="section-340">Use with caution</h3>
+
+<ul>
+<li>single-village case studies,</li>
+<li>very small qualitative samples,</li>
+<li>older Fisher Friend studies,</li>
+<li>commercial or secondary directories,</li>
+<li>old census counts used as present-day numbers.</li>
+</ul>
+
+<h3 id="section-341">Rule for ORCA</h3>
+
+<p>If an item is safety-critical or legally sensitive, use an authoritative source and show its freshness. Do not use a general article as a substitute for an official warning or legal boundary.</p>
+
+<hr>
+
+<h1 id="section-342">106. Final internal product checklist</h1>
+
+<p>Before calling the fisherman app ready, ask:</p>
+
+<h3 id="section-343">Simplicity</h3>
+
+<ul>
+<li>Can the fisherman understand the home screen quickly?</li>
+<li>Is there one obvious next action?</li>
+<li>Are technical details hidden until requested?</li>
+</ul>
+
+<h3 id="section-344">Language</h3>
+
+<ul>
+<li>Is Gujarati available?</li>
+<li>Can the fisherman speak naturally?</li>
+<li>Can the system read the answer aloud?</li>
+</ul>
+
+<h3 id="section-345">Navigation</h3>
+
+<ul>
+<li>Can the fisherman reach a PFZ?</li>
+<li>Can he see direction and distance?</li>
+<li>Can he return to harbour quickly?</li>
+</ul>
+
+<h3 id="section-346">PFZ</h3>
+
+<ul>
+<li>Is the PFZ source clear?</li>
+<li>Is freshness visible?</li>
+<li>Is distance visible?</li>
+<li>Is the PFZ explained rather than merely displayed?</li>
+</ul>
+
+<h3 id="section-347">Safety</h3>
+
+<ul>
+<li>Are official warnings clearly separated from normal forecasts?</li>
+<li>Are critical warnings obvious?</li>
+<li>Are restricted areas understandable?</li>
+</ul>
+
+<h3 id="section-348">Offline</h3>
+
+<ul>
+<li>Does the main trip screen work without the internet?</li>
+<li>Can the map still work?</li>
+<li>Can the last data timestamp be seen?</li>
+</ul>
+
+<h3 id="section-349">Trust</h3>
+
+<ul>
+<li>Can the fisherman see why a recommendation was made?</li>
+<li>Are source names visible?</li>
+<li>Are location-sharing choices clear?</li>
+</ul>
+
+<h3 id="section-350">Adoption</h3>
+
+<ul>
+<li>Is the app useful before the first fishing trip?</li>
+<li>Does it save time?</li>
+<li>Does it reduce information confusion?</li>
+<li>Is there a reason to open it again?</li>
+</ul>
+
+<hr>
+
+<h1 id="section-351">107. Final research conclusion</h1>
+
+<p>The strongest conclusion from the combined research is simple:</p>
+
+<blockquote><strong>The main opportunity is not to create more marine information. It is to make existing information easier to use.</strong></blockquote>
+
+<p>Indian fishermen already receive information through many channels. India already has PFZ services, weather services, ocean-state forecasts, navigation applications, vessel communication systems, geofencing, local-language advisories and digital fisheries platforms. [R01][R03][R04][R08][R10][R26]</p>
+
+<p>Recent studies repeatedly bring the attention back to:</p>
+
+<ul>
+<li>usability,</li>
+<li>local language,</li>
+<li>training,</li>
+<li>offline use,</li>
+<li>clear value,</li>
+<li>and the difficulty of adding more digital work to a demanding fishing trip. [R05][R07]</li>
+</ul>
+
+<p>The product response should therefore be:</p>
+
+<h3 id="section-352">One simple screen</h3>
+
+<p>showing:</p>
+
+<p><strong>trip condition + sea conditions + best available PFZ + next change</strong></p>
+
+<h3 id="section-353">One map</h3>
+
+<p>for:</p>
+
+<p><strong>route + PFZ + hazards + restrictions + harbour</strong></p>
+
+<h3 id="section-354">One voice interface</h3>
+
+<p>for:</p>
+
+<p><strong>questions and answers</strong></p>
+
+<h3 id="section-355">One alert system</h3>
+
+<p>for:</p>
+
+<p><strong>official and important warnings</strong></p>
+
+<h3 id="section-356">One return action</h3>
+
+<p>for:</p>
+
+<p><strong>return to harbour</strong></p>
+
+<p>And behind all of this:</p>
+
+<blockquote><strong>A system that collects, checks and combines the right evidence before giving the fisherman a simple answer.</strong></blockquote>
+
+<p>That is the strongest fisherman-facing direction for ORCA.</p>
+
+<hr>
+
+<h1 id="section-357">END OF RESEARCH REFERENCE</h1>
+
+    </div>
+
+    <div class="page-nav">
+      <a href="doc6.html">
+      <span class="page-nav-label">&#8592; Previous</span>
+      <span class="page-nav-title">Doc 6: Memory & Context</span>
+    </a>
+      <a href="data-sources.html" class="next">
+      <span class="page-nav-label">Next &#8594;</span>
+      <span class="page-nav-title">Data Sources</span>
+    </a>
+    </div>
+  </div>
+</div>
+
+<footer class="container">
+  <strong>ORCA</strong> &#183; Marine EcOsystem Reasoning with Collaborative Agents &#183; SIH 2026 &#183; PS 26176
+</footer>
+
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
+
+<script>
+// Back to top button
+window.addEventListener('scroll', function() {
+  var btn = document.getElementById('backToTop');
+  if (window.scrollY > 300) { btn.classList.add('visible'); }
+  else { btn.classList.remove('visible'); }
+});
+
+// Scroll-spy: highlight active TOC link
+(function() {
+  var tocLinks = document.querySelectorAll('#tocList a');
+  if (!tocLinks.length) return;
+
+  var headingEls = [];
+  tocLinks.forEach(function(link) {
+    var target = link.getAttribute('data-target');
+    var el = document.getElementById(target);
+    if (el) headingEls.push({ el: el, link: link });
+  });
+
+  function updateActive() {
+    var scrollY = window.scrollY + 80;
+    var current = null;
+
+    for (var i = 0; i < headingEls.length; i++) {
+      if (headingEls[i].el.offsetTop <= scrollY) {
+        current = headingEls[i];
+      }
+    }
+
+    tocLinks.forEach(function(l) { l.classList.remove('active'); });
+    if (current) {
+      current.link.classList.add('active');
+      // Scroll TOC to keep active item visible
+      var tocSticky = current.link.closest('.toc-sticky');
+      if (tocSticky) {
+        var linkTop = current.link.offsetTop - tocSticky.offsetTop;
+        var stickyHeight = tocSticky.clientHeight;
+        if (linkTop < tocSticky.scrollTop || linkTop > tocSticky.scrollTop + stickyHeight - 40) {
+          tocSticky.scrollTop = linkTop - stickyHeight / 3;
+        }
+      }
+    }
+  }
+
+  window.addEventListener('scroll', updateActive);
+  updateActive();
+})();
+
+// --- Mermaid Diagram Compiler & Interactive Viewer ---
+(function() {
+  if (typeof mermaid === 'undefined') return;
+
+  try {
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'neutral',
+      securityLevel: 'loose',
+      fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+      maxTextSize: 100000,
+      flowchart: {
+        htmlLabels: true,
+        curve: 'basis',
+        useMaxWidth: true
+      },
+      er: {
+        useMaxWidth: true
+      }
+    });
+  } catch (e) {
+    console.error('Mermaid init error:', e);
+  }
+
+  window.mmZoomState = window.mmZoomState || {};
+
+  async function compileMermaidDiagrams() {
+    var containers = document.querySelectorAll('.mermaid-container');
+    if (!containers.length) return;
+
+    for (var i = 0; i < containers.length; i++) {
+      var container = containers[i];
+      var id = container.id;
+      var preEl = container.querySelector('pre.mermaid-source');
+      var stageEl = document.getElementById(id + '-stage');
+      if (!preEl || !stageEl) continue;
+
+      var code = preEl.textContent.trim();
+      mmZoomState[id] = 1.0;
+
+      try {
+        var renderId = 'mm-svg-' + id.replace(/[^a-zA-Z0-9_-]/g, '_') + '-' + i;
+        var res = await mermaid.render(renderId, code);
+        stageEl.innerHTML = res.svg;
+        var svgEl = stageEl.querySelector('svg');
+        if (svgEl) {
+          svgEl.style.maxWidth = '100%';
+          svgEl.style.height = 'auto';
+          svgEl.style.display = 'block';
+          svgEl.style.margin = '0 auto';
+          svgEl.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+        }
+      } catch (err) {
+        console.error('Mermaid render error for ' + id + ':', err);
+        stageEl.innerHTML = '<div class="mermaid-error">' +
+          '<div class="mermaid-error-title">&#9888; Diagram Compilation Notice</div>' +
+          '<p>' + (err.message || String(err)) + '</p>' +
+          '</div>';
+      }
+    }
+  }
+
+  window.mermaidZoom = function(id, factor) {
+    var stage = document.getElementById(id + '-stage');
+    if (!stage) return;
+    var svg = stage.querySelector('svg');
+    if (!svg) return;
+    mmZoomState[id] = (mmZoomState[id] || 1.0) * factor;
+    if (mmZoomState[id] < 0.25) mmZoomState[id] = 0.25;
+    if (mmZoomState[id] > 4.0) mmZoomState[id] = 4.0;
+    stage.style.transform = 'scale(' + mmZoomState[id] + ')';
+    if (mmZoomState[id] > 1.0) {
+      svg.style.maxWidth = 'none';
+    } else {
+      svg.style.maxWidth = '100%';
+    }
+  };
+
+  window.mermaidReset = function(id) {
+    var stage = document.getElementById(id + '-stage');
+    if (!stage) return;
+    var svg = stage.querySelector('svg');
+    if (!svg) return;
+    mmZoomState[id] = 1.0;
+    stage.style.transform = 'scale(1)';
+    svg.style.maxWidth = '100%';
+  };
+
+  window.mermaidToggleCode = function(id) {
+    var codeDiv = document.getElementById(id + '-code');
+    if (!codeDiv) return;
+    codeDiv.style.display = (codeDiv.style.display === 'none') ? 'block' : 'none';
+  };
+
+  window.mermaidCopy = function(id) {
+    var container = document.getElementById(id);
+    if (!container) return;
+    var codePre = container.querySelector('.mermaid-code pre code') || container.querySelector('pre.mermaid-source');
+    if (!codePre) return;
+    navigator.clipboard.writeText(codePre.textContent).then(function() {
+      var btn = container.querySelector('.mm-btn-copy');
+      if (btn) {
+        var orig = btn.innerHTML;
+        btn.innerHTML = '&#10003; Copied!';
+        btn.style.color = '#137333';
+        setTimeout(function() { btn.innerHTML = orig; btn.style.color = ''; }, 2000);
+      }
+    });
+  };
+
+  window.mermaidFullscreen = function(id) {
+    var container = document.getElementById(id);
+    if (!container) return;
+    if (!document.fullscreenElement) {
+      if (container.requestFullscreen) {
+        container.requestFullscreen().catch(function() { container.classList.toggle('is-fullscreen'); });
+      } else {
+        container.classList.toggle('is-fullscreen');
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  };
+
+  document.addEventListener('fullscreenchange', function() {
+    var containers = document.querySelectorAll('.mermaid-container');
+    containers.forEach(function(c) {
+      if (c === document.fullscreenElement) {
+        c.classList.add('is-fullscreen');
+      } else {
+        c.classList.remove('is-fullscreen');
+      }
+    });
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', compileMermaidDiagrams);
+  } else {
+    compileMermaidDiagrams();
+  }
+})();
+</script>
+
+</body>
+</html>

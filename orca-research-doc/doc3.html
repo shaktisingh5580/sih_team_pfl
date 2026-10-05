@@ -1,0 +1,2067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Doc 3 — Data Processing Pipeline & Scientific Intelligence | ORCA Research Dossier</title>
+<meta name="description" content="ORCA &#8212; Doc 3 — Data Processing Pipeline & Scientific Intelligence. Complete research and architecture documentation.">
+<link rel="stylesheet" type="text/css" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="mermaid.min.js"></script>
+<script>
+if (typeof mermaid === 'undefined') {
+  document.write('<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"><\/script>');
+}
+</script>
+</head>
+<body>
+
+<header id="dhead" class="container">
+  <div class="row">
+    <div id="dpic">
+      <img src="ORCA_architecture.svg" class="ppic" alt="ORCA" onerror="this.style.background='#f0f0f0'" />
+    </div>
+    <div id="ddesc">
+      <h1>ORCA</h1>
+      <h2>Doc 3 — Data Processing Pipeline & Scientific Intelligence</h2>
+      <nav class="doc-nav">
+        <a href="index.html">Home</a>
+<a href="architecture.html">Architecture Diagram</a>
+<a href="doc1.html">User Flows</a>
+<a href="doc2.html">Agentic System</a>
+<a href="doc3.html" class="active">Data Pipeline</a>
+<a href="doc4.html">Database</a>
+<a href="doc5.html">Implementation</a>
+<a href="doc6.html">Memory & Context</a>
+<a href="fisher.html">Fisher Research</a>
+<a href="data-sources.html">Data Sources</a>
+
+      </nav>
+    </div>
+  </div>
+</header>
+
+<hr>
+
+<div class="page-with-toc">
+  <!-- Sidebar TOC -->
+  <aside class="toc-sidebar">
+    <div class="toc-sticky">
+      <div class="toc-header">
+        <span class="toc-label">&#9679; Table of Contents</span>
+        <a class="toc-top-link" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593; TOP</a>
+      </div>
+      <ul class="toc-list" id="tocList">
+        <li><a href="#section-1" data-target="section-1">ORCA Architecture Document 3 — Data Processing Pipeline & Scientific Intellig...</a></li>
+<li><a href="#section-2" data-target="section-2">0. The Core Technical Identity of ORCA</a></li>
+<li><a href="#section-3" data-target="section-3">1. The Master Pipeline</a></li>
+<li><a href="#section-4" data-target="section-4">2. The Three Planes</a></li>
+<li><a href="#section-5" data-target="section-5">3. The Most Important Distinction: Data Acquisition ≠ Data Processing</a></li>
+<li><a href="#section-6" data-target="section-6">A. Data Acquisition</a></li>
+<li><a href="#section-7" data-target="section-7">B. Data Processing</a></li>
+<li><a href="#section-8" data-target="section-8">4. Data Acquisition: How ORCA Actually Gets the Data</a></li>
+<li><a href="#section-9" class="toc-h3" data-target="section-9">Why These Sources Matter</a></li>
+<li><a href="#section-10" class="toc-h3" data-target="section-10">The "Smallest Valid Subset" Principle</a></li>
+<li><a href="#section-11" class="toc-h3" data-target="section-11">Data Requirement — The Bridge Between LLM and Provider</a></li>
+<li><a href="#section-12" data-target="section-12">5. The 10-Step Data Processing Pipeline</a></li>
+<li><a href="#section-13" data-target="section-13">Step 1 — Raw Ingestion</a></li>
+<li><a href="#section-14" class="toc-h3" data-target="section-14">Ingestion Record Schema</a></li>
+<li><a href="#section-15" data-target="section-15">Step 2 — Structural Validation</a></li>
+<li><a href="#section-16" class="toc-h3" data-target="section-16">Structural Validation Schema</a></li>
+<li><a href="#section-17" data-target="section-17">Step 3 — Scientific Quality Validation</a></li>
+<li><a href="#section-18" class="toc-h3" data-target="section-18">Quality States</a></li>
+<li><a href="#section-19" class="toc-h3" data-target="section-19">Scientific Quality Check Schema</a></li>
+<li><a href="#section-20" data-target="section-20">Step 4 — Normalization</a></li>
+<li><a href="#section-21" class="toc-h3" data-target="section-21">The Problem</a></li>
+<li><a href="#section-22" class="toc-h3" data-target="section-22">The Solution — Canonical Representation</a></li>
+<li><a href="#section-23" class="toc-h3" data-target="section-23">Normalization Crosswalk Schema</a></li>
+<li><a href="#section-24" class="toc-h3" data-target="section-24">Canonical Variables for V1</a></li>
+<li><a href="#section-25" class="toc-h3" data-target="section-25">Normalized Record Schema</a></li>
+<li><a href="#section-26" data-target="section-26">Step 5 — Spatial Alignment</a></li>
+<li><a href="#section-27" class="toc-h3" data-target="section-27">The Problem</a></li>
+<li><a href="#section-28" class="toc-h3" data-target="section-28">The Solution — Common Spatial Reference</a></li>
+<li><a href="#section-29" class="toc-h3" data-target="section-29">Spatial Alignment Schema</a></li>
+<li><a href="#section-30" data-target="section-30">Step 6 — Temporal Alignment</a></li>
+<li><a href="#section-31" class="toc-h3" data-target="section-31">The Problem</a></li>
+<li><a href="#section-32" class="toc-h3" data-target="section-32">Temporal Metadata Preserved</a></li>
+<li><a href="#section-33" class="toc-h3" data-target="section-33">Temporal Alignment Schema</a></li>
+<li><a href="#section-34" data-target="section-34">Step 7 — Missing Data Handling</a></li>
+<li><a href="#section-35" class="toc-h3" data-target="section-35">The Problem</a></li>
+<li><a href="#section-36" class="toc-h3" data-target="section-36">The Rule</a></li>
+<li><a href="#section-37" class="toc-h3" data-target="section-37">Missing Data Schema</a></li>
+<li><a href="#section-38" data-target="section-38">Step 8 — Cross-Source Reconciliation</a></li>
+<li><a href="#section-39" class="toc-h3" data-target="section-39">The Problem</a></li>
+<li><a href="#section-40" class="toc-h3" data-target="section-40">The Solution — Examine and Report</a></li>
+<li><a href="#section-41" data-target="section-41">Step 9 — Derived Features</a></li>
+<li><a href="#section-42" class="toc-h3" data-target="section-42">Derived Feature Schema</a></li>
+<li><a href="#section-43" class="toc-h3" data-target="section-43">Derived Feature Catalog for V1</a></li>
+<li><a href="#section-44" data-target="section-44">Step 10 — Marine State</a></li>
+<li><a href="#section-45" class="toc-h3" data-target="section-45">Marine State Schema</a></li>
+<li><a href="#section-46" data-target="section-46">6. The Critical Boundary: LLM vs Scientific Engine</a></li>
+<li><a href="#section-47" class="toc-h3" data-target="section-47">What the LLM Does (6 Operations)</a></li>
+<li><a href="#section-48" class="toc-h3" data-target="section-48">What the LLM Should NOT Receive</a></li>
+<li><a href="#section-49" data-target="section-49">7. Four Data Representations</a></li>
+<li><a href="#section-50" class="toc-h3" data-target="section-50">Example: SST Flows Through All Four</a></li>
+<li><a href="#section-51" data-target="section-51">8. Scientific Data Storage Architecture</a></li>
+<li><a href="#section-52" class="toc-h3" data-target="section-52">Technology Justification</a></li>
+<li><a href="#section-53" data-target="section-53">9. Data Catalog / Dataset Registry</a></li>
+<li><a href="#section-54" class="toc-h3" data-target="section-54">Dataset Registry Entry Schema</a></li>
+<li><a href="#section-55" data-target="section-55">10. Visualization Architecture</a></li>
+<li><a href="#section-56" class="toc-h3" data-target="section-56">Map Layer Types for ORCA</a></li>
+<li><a href="#section-57" class="toc-h3" data-target="section-57">Visualizations Are Generated From the Question</a></li>
+<li><a href="#section-58" data-target="section-58">11. Complete End-to-End Execution Trace</a></li>
+<li><a href="#section-59" class="toc-h3" data-target="section-59">Stage 1 — LLM Understands</a></li>
+<li><a href="#section-60" class="toc-h3" data-target="section-60">Stage 2 — Planner Creates Data Requirements</a></li>
+<li><a href="#section-61" class="toc-h3" data-target="section-61">Stage 3 — Data Discovery</a></li>
+<li><a href="#section-62" class="toc-h3" data-target="section-62">Stage 4 — Retrieval (smallest valid subset)</a></li>
+<li><a href="#section-63" class="toc-h3" data-target="section-63">Stage 5 — Data Processing Pipeline</a></li>
+<li><a href="#section-64" class="toc-h3" data-target="section-64">Stage 6 — Scientific Engines</a></li>
+<li><a href="#section-65" class="toc-h3" data-target="section-65">Stage 7 — Marine State Constructed</a></li>
+<li><a href="#section-66" class="toc-h3" data-target="section-66">Stage 8 — Evidence Gate</a></li>
+<li><a href="#section-67" class="toc-h3" data-target="section-67">Stage 9 — LLM Synthesis</a></li>
+<li><a href="#section-68" class="toc-h3" data-target="section-68">Stage 10 — Visualization Generated From Question</a></li>
+<li><a href="#section-69" data-target="section-69">12. What the PPT Main Technical Slide Should Show</a></li>
+<li><a href="#section-70" data-target="section-70">13. What Should NOT Dominate the PPT</a></li>
+<li><a href="#section-71" data-target="section-71">14. The ORCA Story for the Judges</a></li>
+<li><a href="#section-72" data-target="section-72">15. Summary Principles</a></li>
+<li><a href="#section-73" data-target="section-73">16. PS Fulfillment Verification - Data Pipeline Document</a></li>
+<li><a href="#section-74" class="toc-h3" data-target="section-74">How the Data Pipeline Serves the Hero Investigation Loop</a></li>
+<li><a href="#section-75" data-target="section-75">17. Companion Reference: Data Acquisition Matrix</a></li>
+<li><a href="#section-76" data-target="section-76">18. Variable-Specific Fallback Matrix</a></li>
+<li><a href="#section-77" class="toc-h3" data-target="section-77">Critical Fallback Rules</a></li>
+<li><a href="#section-78" data-target="section-78">19. MOSDAC Access Constraints (Engineering Reality)</a></li>
+<li><a href="#section-79" class="toc-h3" data-target="section-79">SSTM Status</a></li>
+<li><a href="#section-80" data-target="section-80">20. Evidence-Fused Marine State (Replaces "4D-Var" Language)</a></li>
+<li><a href="#section-81" class="toc-h3" data-target="section-81">What ORCA Actually Does</a></li>
+<li><a href="#section-82" class="toc-h3" data-target="section-82">Correct Terminology</a></li>
+<li><a href="#section-83" class="toc-h3" data-target="section-83">Marine State Structure</a></li>
+<li><a href="#section-84" class="toc-h3" data-target="section-84">4D-Capable Terminology</a></li>
+<li><a href="#section-85" data-target="section-85">21. State Versioning and Delta Tracking</a></li>
+<li><a href="#section-86" class="toc-h3" data-target="section-86">Versioned Snapshots</a></li>
+<li><a href="#section-87" class="toc-h3" data-target="section-87">State Delta</a></li>
+<li><a href="#section-88" class="toc-h3" data-target="section-88">4D Query Operations</a></li>
+<li><a href="#section-89" data-target="section-89">22. Enhanced Source Conflict Engine</a></li>
+<li><a href="#section-90" class="toc-h3" data-target="section-90">Conflict Resolution Considerations</a></li>
+<li><a href="#section-91" class="toc-h3" data-target="section-91">Output</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <div class="toc-content">
+    <div class="breadcrumb"><a href="index.html">Home</a> / Doc 3 — Data Processing Pipeline & Scientific Intelligence</div>
+
+    <div class="md-content">
+<h1 id="section-1">ORCA Architecture Document 3 — Data Processing Pipeline & Scientific Intelligence</h1>
+
+<p><strong>Project:</strong> ORCA — Marine EcOsystem Reasoning with Collaborative Agents</p>
+<p><strong>Problem Statement ID:</strong> 26176</p>
+<p><strong>Organization:</strong> ISRO / Department of Space</p>
+<p><strong>Document:</strong> Data Processing Pipeline, Scientific Intelligence, Marine State & Visualization</p>
+<p><strong>Status:</strong> Planning Phase — Architecture Design</p>
+<p><strong>Date:</strong> 22 September 2026 (Updated: 26 September 2026)</p>
+<p><strong>PS Alignment:</strong> This document covers the scientific data foundation — the engine underneath ORCA's agentic investigation loop. The PS requires autonomous data discovery, multi-source correlation, and evidence-grounded decisions. This pipeline makes that possible by turning heterogeneous marine data into trustworthy, aligned scientific information that the agentic brain can reason over.</p>
+
+<hr>
+
+<h1 id="section-2">0. The Core Technical Identity of ORCA</h1>
+
+<blockquote><strong>ORCA takes heterogeneous marine data, turns it into clean and aligned scientific information, lets the LLM decide what evidence and analysis are needed, runs deterministic marine computations, builds a Marine State, and then turns the result into an interactive map, charts, explanation and decision.</strong></blockquote>
+
+<p>That is the strongest technical story — not "ORCA has many agents."</p>
+
+<div class="important"><strong>IMPORTANT:</strong> <strong>Relationship to the Agentic Loop:</strong> This pipeline is the DATA FOUNDATION. The agentic investigation loop (ASK → UNDERSTAND → PLAN → DISCOVER → EXECUTE → CORRELATE → OBSERVE → REPLAN → DECIDE → EXPLAIN) runs ABOVE this foundation. Every agent tool call eventually touches this pipeline to get trustworthy data. The pipeline is essential infrastructure, but the product is the investigation loop.</div>
+
+<p>The judges need to understand:</p>
+
+<pre><code class="language-text">DATA → PROCESSING → LLM → SCIENTIFIC COMPUTATION → CORRELATION → VISUALIZATION → DECISION</code></pre>
+
+<p>before anything else.</p>
+
+<hr>
+
+<h1 id="section-3">1. The Master Pipeline</h1>
+
+<pre><code class="language-text">USER
+  │
+  ▼
+NATURAL LANGUAGE QUERY
+  │
+  ▼
+LLM: INTENT + CONTEXT
+  │
+  ▼
+DATA REQUIREMENT PLAN
+  │
+  ▼
+┌────────────────────────────┐
+│ DATA DISCOVERY &amp; RETRIEVAL │
+└────────────────────────────┘
+  │
+  ┌──────────────┼──────────────┐
+  ▼              ▼              ▼
+INCOIS         MOSDAC          IMD
+Ocean data     Satellite EO    Weather/Hazard
+  │              │              │
+  └──────────────┼──────────────┘
+                 ▼
+         SOURCE CONNECTORS
+                 │
+                 ▼
+           RAW DATA STORE
+                 │
+                 ▼
+          DATA VALIDATION
+                 │
+                 ▼
+          NORMALIZATION
+                 │
+                 ▼
+  SPATIAL + TEMPORAL ALIGNMENT
+                 │
+                 ▼
+      DERIVED DATA / FEATURES
+                 │
+                 ▼
+     SCIENTIFIC DATA QUERY
+                 │
+         ┌───────┼───────┐
+         ▼       ▼       ▼
+       OCEAN   WEATHER  GEO/RISK
+       ENGINE  ENGINE   ENGINE
+         └───────┼───────┘
+                 ▼
+    MULTI-SOURCE CORRELATION
+                 │
+                 ▼
+           MARINE STATE
+                 │
+                 ▼
+       EVIDENCE + DECISION
+                 │
+         ┌───────┼───────┐
+         ▼       ▼       ▼
+        CHAT    MAP    CHARTS
+                 │
+                 ▼
+              ALERTS</code></pre>
+
+<p>And running across the middle:</p>
+
+<pre><code class="language-text">PLAN → SELECT → ACT → OBSERVE → VALIDATE → REPLAN</code></pre>
+
+<hr>
+
+<h1 id="section-4">2. The Three Planes</h1>
+
+<p>This is the cleanest way to present the architecture.</p>
+
+<pre><code class="language-text">┌─────────────────────────────────────────────────────────────────┐
+│                        DATA PLANE                               │
+│                                                                 │
+│  Sources → Connectors → Raw → Validation → Normalization       │
+│  → Spatial/Temporal Alignment → Derived Data                    │
+│  → Scientific Storage → Query API                               │
+└────────────────────────────────┬────────────────────────────────┘
+                                 │
+┌────────────────────────────────▼────────────────────────────────┐
+│                    INTELLIGENCE PLANE                            │
+│                                                                 │
+│  User Query → LLM → Intent → Planner → Agents                  │
+│  → Scientific Engines → Marine State → Decision → Evidence      │
+└────────────────────────────────┬────────────────────────────────┘
+                                 │
+┌────────────────────────────────▼────────────────────────────────┐
+│                    PRESENTATION PLANE                            │
+│                                                                 │
+│  Evidence / Results → Visualization Adapter                     │
+│  → Chat + Map + Charts + Alerts                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+
+<p><strong>Everything before Marine State</strong> is about getting trustworthy information.</p>
+<p><strong>Everything after Marine State</strong> is about deciding what the information means.</p>
+
+<hr>
+
+<h1 id="section-5">3. The Most Important Distinction: Data Acquisition ≠ Data Processing</h1>
+
+<p>A lot of projects will say:</p>
+
+<blockquote>"We collect satellite data and feed it to an LLM."</blockquote>
+
+<p>That is not enough. ORCA shows two different pipelines.</p>
+
+<h2 id="section-6">A. Data Acquisition</h2>
+
+<pre><code class="language-text">What data exists?
+      ↓
+Which dataset is relevant?
+      ↓
+Which provider?
+      ↓
+Is it available?
+      ↓
+What subset is required?
+      ↓
+How do we retrieve it?</code></pre>
+
+<h2 id="section-7">B. Data Processing</h2>
+
+<pre><code class="language-text">What did we retrieve?
+      ↓
+Is it valid?
+      ↓
+What does each field mean?
+      ↓
+Can different sources be compared?
+      ↓
+Are units compatible?
+      ↓
+Are locations aligned?
+      ↓
+Are times aligned?
+      ↓
+What can be derived?
+      ↓
+What does the combined state show?</code></pre>
+
+<p>Discovery asks: <strong>"What data should ORCA use?"</strong></p>
+<p>Retrieval asks: <strong>"How should ORCA obtain it correctly?"</strong></p>
+<p>Processing asks: <strong>"How should ORCA make it scientifically usable?"</strong></p>
+
+<hr>
+
+<h1 id="section-8">4. Data Acquisition: How ORCA Actually Gets the Data</h1>
+
+<p>The source layer should not look like a pile of APIs. It should be:</p>
+
+<pre><code class="language-text">SOURCE REGISTRY
+      │
+      ▼
+DATASET DISCOVERY
+      │
+      ┌──────────────┼──────────────┐
+      ▼              ▼              ▼
+   INCOIS          MOSDAC          IMD
+      │              │              │
+   ERDDAP        APIs/files     Services
+      │              │              │
+      └──────────────┼──────────────┘
+                     ▼
+              SOURCE ADAPTER
+                     │
+                     ▼
+                 RETRIEVAL</code></pre>
+
+<h3 id="section-9">Why These Sources Matter</h3>
+
+<p><strong>INCOIS</strong> — Official holdings include Argo temperature/salinity profiles, buoys, HF radar currents, ROMS products and PFZ advisories. ERDDAP accepts requests, communicates with underlying source servers, normalizes returned time representation, and provides data in different output formats.</p>
+
+<p><strong>MOSDAC (ISRO)</strong> — OCM-3 (ocean colour, chlorophyll), SCAT-3 (surface wind vectors), INSAT products. Different users and datasets have different access profiles and latency.</p>
+
+<p><strong>IMD</strong> — REST API: current weather, forecast, marine bulletins, fishermen warnings, port warnings, sea area bulletins, cyclone tracking, lightning nowcast.</p>
+
+<p><strong>Copernicus Marine</strong> — Toolbox supports catalogue metadata discovery and subset requests by variables, geographic extent, time and depth, with outputs including NetCDF and Zarr. This is almost exactly the retrieval pattern we want to emulate internally.</p>
+
+<h3 id="section-10">The "Smallest Valid Subset" Principle</h3>
+
+<pre><code class="language-text">User: &quot;Show SST near Gujarat tomorrow morning&quot;
+
+BAD:  Download entire Arabian Sea SST dataset
+
+GOOD:
+  dataset    = SST forecast
+  region     = Gujarat marine region
+  time       = tomorrow morning
+  variables  = SST
+  resolution = appropriate regional resolution
+        ↓
+  retrieve only required subset</code></pre>
+
+<h3 id="section-11">Data Requirement — The Bridge Between LLM and Provider</h3>
+
+<p>The LLM never calls provider-specific APIs directly. It produces a structured requirement:</p>
+
+<pre><code class="language-json">{
+  &quot;variable&quot;: &quot;sea_surface_temperature&quot;,
+  &quot;region&quot;: {&quot;geometry_ref&quot;: &quot;G-104&quot;, &quot;name&quot;: &quot;Gujarat offshore&quot;},
+  &quot;time&quot;: {
+    &quot;type&quot;: &quot;forecast_valid&quot;,
+    &quot;start&quot;: &quot;2026-09-23T06:00:00Z&quot;,
+    &quot;end&quot;: &quot;2026-09-23T12:00:00Z&quot;
+  },
+  &quot;data_type&quot;: &quot;forecast&quot;,
+  &quot;purpose&quot;: &quot;safety_assessment&quot;,
+  &quot;resolution_preference&quot;: &quot;regional&quot;
+}</code></pre>
+
+<p>The Data Discovery & Retrieval service resolves this against the source registry, selects the best dataset, and retrieves only the required subset.</p>
+
+<hr>
+
+<h1 id="section-12">5. The 10-Step Data Processing Pipeline</h1>
+
+<p>This is where ORCA becomes genuinely different from "API → JSON → LLM → frontend."</p>
+
+<pre><code class="language-text">RAW SOURCE DATA
+      │
+      ▼
+ 1. INGESTION
+      │
+      ▼
+ 2. STRUCTURAL VALIDATION
+      │
+      ▼
+ 3. SCIENTIFIC QUALITY CHECK
+      │
+      ▼
+ 4. NORMALIZATION
+      │
+      ▼
+ 5. SPATIAL ALIGNMENT
+      │
+      ▼
+ 6. TEMPORAL ALIGNMENT
+      │
+      ▼
+ 7. MISSING DATA HANDLING
+      │
+      ▼
+ 8. CROSS-SOURCE RECONCILIATION
+      │
+      ▼
+ 9. DERIVED FEATURES
+      │
+      ▼
+10. MARINE STATE</code></pre>
+
+<hr>
+
+<h2 id="section-13">Step 1 — Raw Ingestion</h2>
+
+<p><strong>First principle: Never destroy the original source data.</strong></p>
+
+<p>Preserved exactly as received:</p>
+
+<pre><code class="language-text">INCOIS NetCDF
+MOSDAC satellite product
+IMD forecast response
+PFZ advisory
+Argo observation
+GeoTIFF
+CSV
+JSON</code></pre>
+
+<h3 id="section-14">Ingestion Record Schema</h3>
+
+<pre><code class="language-json">{
+  &quot;ingestion_id&quot;: &quot;ING-2041&quot;,
+  &quot;source&quot;: &quot;INCOIS&quot;,
+  &quot;dataset_id&quot;: &quot;sst_daily_ard&quot;,
+  &quot;retrieval_id&quot;: &quot;RET-928&quot;,
+  &quot;format&quot;: &quot;NetCDF&quot;,
+  &quot;raw_payload_ref&quot;: &quot;s3://orca-raw/incois/sst/2026-09-21/sst_daily_ard_20260921.nc&quot;,
+  &quot;raw_checksum&quot;: &quot;sha256:a3f9c...&quot;,
+  &quot;byte_size&quot;: 2457600,
+  &quot;ingested_at&quot;: &quot;2026-09-21T09:15:01Z&quot;,
+  &quot;immutable&quot;: true,
+  &quot;metadata&quot;: {
+    &quot;variables&quot;: [&quot;sst&quot;, &quot;quality_flag&quot;],
+    &quot;dimensions&quot;: [&quot;time&quot;, &quot;latitude&quot;, &quot;longitude&quot;],
+    &quot;time_coverage_start&quot;: &quot;2026-09-21T00:00:00Z&quot;,
+    &quot;time_coverage_end&quot;: &quot;2026-09-21T23:59:59Z&quot;,
+    &quot;geospatial_lat_min&quot;: 15.0,
+    &quot;geospatial_lat_max&quot;: 25.0,
+    &quot;geospatial_lon_min&quot;: 65.0,
+    &quot;geospatial_lon_max&quot;: 75.0,
+    &quot;spatial_resolution_deg&quot;: 0.01
+  }
+}</code></pre>
+
+<p><strong>Key rule:</strong> Raw data is immutable. It matters because later we need to answer: <em>"Where did this value come from?"</em></p>
+
+<hr>
+
+<h2 id="section-15">Step 2 — Structural Validation</h2>
+
+<p>Before scientific analysis, ORCA asks:</p>
+
+<pre><code class="language-text">Does the file parse?               → PASS / FAIL
+Are required variables present?    → PASS / MISSING_VARS
+Are coordinates present?           → PASS / NO_COORDS
+Is time present?                   → PASS / NO_TIME
+Are dimensions valid?              → PASS / DIM_MISMATCH
+Is the dataset complete?           → COMPLETE / PARTIAL
+Is the schema what we expected?    → PASS / SCHEMA_DRIFT</code></pre>
+
+<h3 id="section-16">Structural Validation Schema</h3>
+
+<pre><code class="language-json">{
+  &quot;validation_id&quot;: &quot;SVAL-401&quot;,
+  &quot;ingestion_id&quot;: &quot;ING-2041&quot;,
+  &quot;status&quot;: &quot;PASS&quot;,
+  &quot;checks&quot;: [
+    {&quot;check&quot;: &quot;file_parse&quot;, &quot;status&quot;: &quot;PASS&quot;},
+    {&quot;check&quot;: &quot;required_variables&quot;, &quot;status&quot;: &quot;PASS&quot;,
+     &quot;expected&quot;: [&quot;sst&quot;, &quot;quality_flag&quot;],
+     &quot;found&quot;: [&quot;sst&quot;, &quot;quality_flag&quot;]},
+    {&quot;check&quot;: &quot;coordinates&quot;, &quot;status&quot;: &quot;PASS&quot;,
+     &quot;found&quot;: [&quot;latitude&quot;, &quot;longitude&quot;]},
+    {&quot;check&quot;: &quot;time_dimension&quot;, &quot;status&quot;: &quot;PASS&quot;},
+    {&quot;check&quot;: &quot;dimensions&quot;, &quot;status&quot;: &quot;PASS&quot;,
+     &quot;expected&quot;: {&quot;time&quot;: 1, &quot;latitude&quot;: 1000, &quot;longitude&quot;: 1000}},
+    {&quot;check&quot;: &quot;schema_match&quot;, &quot;status&quot;: &quot;PASS&quot;,
+     &quot;expected_schema_version&quot;: &quot;incois_sst_v2&quot;}
+  ],
+  &quot;validated_at&quot;: &quot;2026-09-21T09:15:02Z&quot;
+}</code></pre>
+
+<p>If the expected dataset is <code>time, latitude, longitude, sst</code> and the source suddenly changes <code>sst</code> to another variable name or removes latitude metadata, ORCA should <strong>not</strong> silently continue. It should produce <code>DATASET_INVALID</code> or <code>DATASET_PARTIAL</code>. This prevents garbage from reaching the LLM.</p>
+
+<hr>
+
+<h2 id="section-17">Step 3 — Scientific Quality Validation</h2>
+
+<p>This is more important than conventional software validation.</p>
+
+<p>Suppose:</p>
+
+<pre><code class="language-text">SST = 28.2 °C</code></pre>
+
+<p>Looks fine. But if:</p>
+
+<pre><code class="language-text">quality_flag = bad</code></pre>
+
+<p>then ORCA cannot treat it like a normal observation.</p>
+
+<h3 id="section-18">Quality States</h3>
+
+<pre><code class="language-text">VALID          → normal scientific use
+SUSPECT        → use with warning, reduced weight
+MISSING        → acknowledge gap
+STALE          → data too old for purpose
+INVALID        → reject entirely
+UNAVAILABLE    → source could not provide</code></pre>
+
+<p><strong>Questionable records should not simply disappear.</strong> They affect the confidence of the final answer.</p>
+
+<h3 id="section-19">Scientific Quality Check Schema</h3>
+
+<pre><code class="language-json">{
+  &quot;quality_id&quot;: &quot;QUAL-501&quot;,
+  &quot;ingestion_id&quot;: &quot;ING-2041&quot;,
+  &quot;variable&quot;: &quot;sst&quot;,
+  &quot;checks&quot;: [
+    {
+      &quot;check&quot;: &quot;range_validity&quot;,
+      &quot;rule&quot;: &quot;sst &gt;= -2.0 and sst &lt;= 40.0 degC&quot;,
+      &quot;status&quot;: &quot;PASS&quot;,
+      &quot;out_of_range_count&quot;: 0,
+      &quot;total_points&quot;: 1000000
+    },
+    {
+      &quot;check&quot;: &quot;quality_flags&quot;,
+      &quot;total&quot;: 1000000,
+      &quot;valid&quot;: 942000,
+      &quot;suspect&quot;: 38000,
+      &quot;bad&quot;: 12000,
+      &quot;missing&quot;: 8000,
+      &quot;valid_fraction&quot;: 0.942
+    },
+    {
+      &quot;check&quot;: &quot;timestamp_freshness&quot;,
+      &quot;observation_time&quot;: &quot;2026-09-21T06:00:00Z&quot;,
+      &quot;check_time&quot;: &quot;2026-09-21T09:15:02Z&quot;,
+      &quot;age_hours&quot;: 3.25,
+      &quot;freshness&quot;: &quot;FRESH&quot;,
+      &quot;threshold_hours&quot;: 24
+    },
+    {
+      &quot;check&quot;: &quot;spatial_coverage&quot;,
+      &quot;expected_region&quot;: &quot;Gujarat offshore&quot;,
+      &quot;coverage_fraction&quot;: 0.94,
+      &quot;status&quot;: &quot;PASS&quot;
+    },
+    {
+      &quot;check&quot;: &quot;processing_level&quot;,
+      &quot;value&quot;: &quot;L3&quot;,
+      &quot;acceptable&quot;: [&quot;L3&quot;, &quot;L4&quot;]
+    }
+  ],
+  &quot;overall_quality&quot;: &quot;VALID&quot;,
+  &quot;quality_score&quot;: 0.94,
+  &quot;quality_at&quot;: &quot;2026-09-21T09:15:03Z&quot;
+}</code></pre>
+
+<hr>
+
+<h2 id="section-20">Step 4 — Normalization</h2>
+
+<p>This is one of the most visually powerful things to show in the PPT.</p>
+
+<h3 id="section-21">The Problem</h3>
+
+<pre><code class="language-text">INCOIS SST        → °C        field: &quot;sst&quot;
+Copernicus thetao → K         field: &quot;thetao&quot;
+NOAA SST          → °C        field: &quot;sst&quot;
+Buoy temperature  → °C        field: &quot;temperature&quot;</code></pre>
+
+<h3 id="section-22">The Solution — Canonical Representation</h3>
+
+<pre><code class="language-text">CANONICAL VARIABLE: sea_surface_temperature
+CANONICAL UNIT:     °C</code></pre>
+
+<h3 id="section-23">Normalization Crosswalk Schema</h3>
+
+<pre><code class="language-json">{
+  &quot;canonical_variable&quot;: &quot;sea_surface_temperature&quot;,
+  &quot;canonical_unit&quot;: &quot;degC&quot;,
+  &quot;sources&quot;: {
+    &quot;incois_erddap&quot;: {
+      &quot;field&quot;: &quot;sst&quot;,
+      &quot;native_unit&quot;: &quot;degC&quot;,
+      &quot;transform&quot;: &quot;none&quot;
+    },
+    &quot;copernicus_marine&quot;: {
+      &quot;field&quot;: &quot;thetao&quot;,
+      &quot;native_unit&quot;: &quot;K&quot;,
+      &quot;transform&quot;: &quot;subtract_273.15&quot;
+    },
+    &quot;noaa_coastwatch&quot;: {
+      &quot;field&quot;: &quot;sst&quot;,
+      &quot;native_unit&quot;: &quot;degC&quot;,
+      &quot;transform&quot;: &quot;none&quot;
+    },
+    &quot;buoy_incois&quot;: {
+      &quot;field&quot;: &quot;temperature&quot;,
+      &quot;native_unit&quot;: &quot;degC&quot;,
+      &quot;transform&quot;: &quot;none&quot;,
+      &quot;note&quot;: &quot;surface measurement&quot;
+    }
+  }
+}</code></pre>
+
+<h3 id="section-24">Canonical Variables for V1</h3>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>Canonical Variable</th><th>Unit</th><th>Category</th></tr></thead>
+<tbody><tr><td><code>sea_surface_temperature</code></td><td>°C</td><td>Ocean</td></tr>
+<tr><td><code>chlorophyll_a</code></td><td>mg/m³</td><td>Ocean</td></tr>
+<tr><td><code>current_speed</code></td><td>m/s</td><td>Ocean</td></tr>
+<tr><td><code>current_direction</code></td><td>degrees</td><td>Ocean</td></tr>
+<tr><td><code>mixed_layer_depth</code></td><td>m</td><td>Ocean</td></tr>
+<tr><td><code>wind_speed</code></td><td>m/s</td><td>Weather</td></tr>
+<tr><td><code>wind_direction</code></td><td>degrees</td><td>Weather</td></tr>
+<tr><td><code>wind_gust</code></td><td>m/s</td><td>Weather</td></tr>
+<tr><td><code>significant_wave_height</code></td><td>m</td><td>Weather</td></tr>
+<tr><td><code>wave_period</code></td><td>s</td><td>Weather</td></tr>
+<tr><td><code>swell_height</code></td><td>m</td><td>Weather</td></tr>
+<tr><td><code>swell_direction</code></td><td>degrees</td><td>Weather</td></tr>
+<tr><td><code>rainfall_rate</code></td><td>mm/hr</td><td>Weather</td></tr>
+<tr><td><code>sea_level_pressure</code></td><td>hPa</td><td>Weather</td></tr>
+<tr><td><code>depth</code></td><td>m</td><td>GIS</td></tr>
+<tr><td><code>distance</code></td><td>km</td><td>GIS</td></tr>
+</tbody></table></div>
+
+<h3 id="section-25">Normalized Record Schema</h3>
+
+<pre><code class="language-json">{
+  &quot;normalized_id&quot;: &quot;NORM-601&quot;,
+  &quot;ingestion_id&quot;: &quot;ING-2041&quot;,
+  &quot;canonical_variable&quot;: &quot;sea_surface_temperature&quot;,
+  &quot;canonical_unit&quot;: &quot;degC&quot;,
+  &quot;source_field&quot;: &quot;sst&quot;,
+  &quot;source_unit&quot;: &quot;degC&quot;,
+  &quot;transform_applied&quot;: &quot;none&quot;,
+  &quot;data_ref&quot;: &quot;s3://orca-normalized/sst/2026-09-21/gujarat_sst.zarr&quot;,
+  &quot;coordinate_system&quot;: &quot;EPSG:4326&quot;,
+  &quot;time_reference&quot;: &quot;UTC&quot;,
+  &quot;normalized_at&quot;: &quot;2026-09-21T09:15:04Z&quot;
+}</code></pre>
+
+<p>This follows CF (Climate and Forecast) metadata conventions where coordinate semantics such as latitude, longitude and time are explicitly represented through standardized metadata.</p>
+
+<hr>
+
+<h2 id="section-26">Step 5 — Spatial Alignment</h2>
+
+<p>Another major hidden complexity.</p>
+
+<h3 id="section-27">The Problem</h3>
+
+<pre><code class="language-text">SST grid:          1 km × 1 km     (raster)
+Chlorophyll grid:  4 km × 4 km     (raster)
+Buoy:              single point     (point)
+Current model:     8 km × 8 km     (raster)
+Restricted zone:   polygon          (vector)
+Ecol. Sensitive:   polygon          (vector)</code></pre>
+
+<p>You cannot just combine those raw datasets.</p>
+
+<h3 id="section-28">The Solution — Common Spatial Reference</h3>
+
+<pre><code class="language-text">         Common spatial reference (EPSG:4326 / WGS84)
+                     │
+         ┌───────────┼───────────────┐
+         │           │               │
+    RASTER GRID   POINT DATA    VECTOR GEOMETRY
+         │           │               │
+    ┌────┼────┐      │           ┌───┼────┐
+    │    │    │      │           │   │    │
+   SST  CHL  Wave  Buoy/Argo  EEZ  MPA  ESZ  Geofence
+  1km   4km  0.5°  point      poly poly  poly</code></pre>
+
+<h3 id="section-29">Spatial Alignment Schema</h3>
+
+<pre><code class="language-json">{
+  &quot;spatial_alignment_id&quot;: &quot;SA-701&quot;,
+  &quot;reference_system&quot;: &quot;EPSG:4326&quot;,
+  &quot;query_region&quot;: {
+    &quot;name&quot;: &quot;Gujarat offshore&quot;,
+    &quot;geometry_ref&quot;: &quot;G-104&quot;,
+    &quot;bbox&quot;: [65.0, 18.0, 73.0, 24.0]
+  },
+  &quot;aligned_layers&quot;: [
+    {
+      &quot;variable&quot;: &quot;sea_surface_temperature&quot;,
+      &quot;source&quot;: &quot;INCOIS&quot;,
+      &quot;native_resolution_km&quot;: 1.0,
+      &quot;alignment_method&quot;: &quot;native_grid&quot;,
+      &quot;coverage_fraction&quot;: 0.94
+    },
+    {
+      &quot;variable&quot;: &quot;chlorophyll_a&quot;,
+      &quot;source&quot;: &quot;MOSDAC_OCM3&quot;,
+      &quot;native_resolution_km&quot;: 4.0,
+      &quot;alignment_method&quot;: &quot;native_grid&quot;,
+      &quot;coverage_fraction&quot;: 0.87
+    },
+    {
+      &quot;variable&quot;: &quot;significant_wave_height&quot;,
+      &quot;source&quot;: &quot;INCOIS_OSF&quot;,
+      &quot;native_resolution_deg&quot;: 0.083,
+      &quot;alignment_method&quot;: &quot;native_grid&quot;,
+      &quot;coverage_fraction&quot;: 1.0
+    },
+    {
+      &quot;type&quot;: &quot;point_observation&quot;,
+      &quot;source&quot;: &quot;INCOIS_Buoy&quot;,
+      &quot;location&quot;: {&quot;lat&quot;: 20.7, &quot;lon&quot;: 71.0},
+      &quot;within_region&quot;: true
+    },
+    {
+      &quot;type&quot;: &quot;vector_boundary&quot;,
+      &quot;source&quot;: &quot;MarineRegions&quot;,
+      &quot;geometry&quot;: &quot;EEZ_India&quot;,
+      &quot;intersection_method&quot;: &quot;ST_Intersects&quot;
+    }
+  ],
+  &quot;aligned_at&quot;: &quot;2026-09-21T09:15:05Z&quot;
+}</code></pre>
+
+<p>A query like <em>"Show high-chlorophyll areas outside protected zones within 50 km"</em> becomes a deterministic spatial operation (PostGIS: <code>ST_Intersects</code>, <code>ST_DWithin</code>), rather than something the LLM tries to reason about from raw text.</p>
+
+<hr>
+
+<h2 id="section-30">Step 6 — Temporal Alignment</h2>
+
+<p>Marine data is time-dependent with different temporal semantics.</p>
+
+<h3 id="section-31">The Problem</h3>
+
+<pre><code class="language-text">SST observation:          06:00 UTC
+Chlorophyll satellite:    04:30 UTC
+Wind forecast:            issued 00:00, valid 06:00
+Wave forecast:            issued 03:00, valid 06:00
+PFZ advisory:             issued 05:00
+Tide prediction:          valid 06:00</code></pre>
+
+<p>Those aren't automatically comparable.</p>
+
+<h3 id="section-32">Temporal Metadata Preserved</h3>
+
+<pre><code class="language-text">observation_time          → when the measurement happened
+forecast_issue_time       → when the forecast was generated
+forecast_valid_time       → when the forecast applies
+lead_time                 → gap between issue and valid time
+retrieval_time            → when ORCA downloaded it
+data_type                 → observation | forecast | advisory | derived | historical | static</code></pre>
+
+<h3 id="section-33">Temporal Alignment Schema</h3>
+
+<pre><code class="language-json">{
+  &quot;temporal_alignment_id&quot;: &quot;TA-801&quot;,
+  &quot;query_time&quot;: {
+    &quot;type&quot;: &quot;forecast_valid&quot;,
+    &quot;target&quot;: &quot;2026-09-23T06:00:00Z&quot;,
+    &quot;tolerance_hours&quot;: 3
+  },
+  &quot;aligned_records&quot;: [
+    {
+      &quot;variable&quot;: &quot;sea_surface_temperature&quot;,
+      &quot;data_type&quot;: &quot;observation&quot;,
+      &quot;observation_time&quot;: &quot;2026-09-21T06:00:00Z&quot;,
+      &quot;age_hours&quot;: 48,
+      &quot;freshness&quot;: &quot;ACCEPTABLE&quot;,
+      &quot;note&quot;: &quot;Most recent observation available&quot;
+    },
+    {
+      &quot;variable&quot;: &quot;significant_wave_height&quot;,
+      &quot;data_type&quot;: &quot;forecast&quot;,
+      &quot;forecast_issue_time&quot;: &quot;2026-09-22T00:00:00Z&quot;,
+      &quot;forecast_valid_time&quot;: &quot;2026-09-23T06:00:00Z&quot;,
+      &quot;lead_time_hours&quot;: 30,
+      &quot;freshness&quot;: &quot;FRESH&quot;
+    },
+    {
+      &quot;variable&quot;: &quot;wind_speed&quot;,
+      &quot;data_type&quot;: &quot;forecast&quot;,
+      &quot;forecast_issue_time&quot;: &quot;2026-09-22T03:00:00Z&quot;,
+      &quot;forecast_valid_time&quot;: &quot;2026-09-23T06:00:00Z&quot;,
+      &quot;lead_time_hours&quot;: 27,
+      &quot;freshness&quot;: &quot;FRESH&quot;
+    },
+    {
+      &quot;variable&quot;: &quot;marine_warning&quot;,
+      &quot;data_type&quot;: &quot;advisory&quot;,
+      &quot;issue_time&quot;: &quot;2026-09-22T06:00:00Z&quot;,
+      &quot;valid_until&quot;: &quot;2026-09-23T18:00:00Z&quot;,
+      &quot;freshness&quot;: &quot;ACTIVE&quot;
+    }
+  ],
+  &quot;temporal_note&quot;: &quot;SST is observation-based (2-day old), weather variables are forecast-based (fresh). This distinction is preserved throughout analysis.&quot;,
+  &quot;aligned_at&quot;: &quot;2026-09-21T09:15:06Z&quot;
+}</code></pre>
+
+<p>This becomes critical for <em>"What will conditions be tomorrow morning?"</em> — ORCA must reason about future valid time, not merely the time the forecast file was downloaded.</p>
+
+<hr>
+
+<h2 id="section-34">Step 7 — Missing Data Handling</h2>
+
+<h3 id="section-35">The Problem</h3>
+
+<pre><code class="language-text">SST              ✓ available
+Chlorophyll      ✓ available
+Wind             ✓ available
+Current          ✗ unavailable (source timeout)
+Buoy             ✗ unavailable (no nearby buoy)</code></pre>
+
+<h3 id="section-36">The Rule</h3>
+
+<p>The answer should <strong>not</strong> pretend all five sources exist.</p>
+
+<h3 id="section-37">Missing Data Schema</h3>
+
+<pre><code class="language-json">{
+  &quot;coverage_id&quot;: &quot;COV-901&quot;,
+  &quot;workflow_id&quot;: &quot;W-100&quot;,
+  &quot;available&quot;: [
+    {&quot;variable&quot;: &quot;sea_surface_temperature&quot;, &quot;source&quot;: &quot;INCOIS&quot;, &quot;quality&quot;: &quot;VALID&quot;},
+    {&quot;variable&quot;: &quot;chlorophyll_a&quot;, &quot;source&quot;: &quot;MOSDAC&quot;, &quot;quality&quot;: &quot;VALID&quot;},
+    {&quot;variable&quot;: &quot;wind_speed&quot;, &quot;source&quot;: &quot;IMD&quot;, &quot;quality&quot;: &quot;VALID&quot;}
+  ],
+  &quot;unavailable&quot;: [
+    {
+      &quot;variable&quot;: &quot;current_speed&quot;,
+      &quot;reason&quot;: &quot;SOURCE_TIMEOUT&quot;,
+      &quot;attempted_source&quot;: &quot;INCOIS_OSF&quot;,
+      &quot;impact&quot;: &quot;Current-based assessments will be absent&quot;,
+      &quot;fallback_attempted&quot;: true,
+      &quot;fallback_source&quot;: &quot;Copernicus&quot;,
+      &quot;fallback_status&quot;: &quot;ALSO_UNAVAILABLE&quot;
+    },
+    {
+      &quot;variable&quot;: &quot;buoy_observation&quot;,
+      &quot;reason&quot;: &quot;NO_NEARBY_STATION&quot;,
+      &quot;impact&quot;: &quot;No in-situ validation available&quot;,
+      &quot;nearest_station_km&quot;: 85
+    }
+  ],
+  &quot;coverage_fraction&quot;: 0.6,
+  &quot;confidence_impact&quot;: &quot;Evidence sufficient with limitations&quot;
+}</code></pre>
+
+<p>The confidence/limitations layer changes accordingly. This follows the distinction between <strong>uncertainty</strong> in physical information and <strong>confidence</strong> in a specific ORCA conclusion.</p>
+
+<hr>
+
+<h2 id="section-38">Step 8 — Cross-Source Reconciliation</h2>
+
+<p>This is where ORCA starts becoming genuinely intelligent.</p>
+
+<h3 id="section-39">The Problem</h3>
+
+<pre><code class="language-text">INCOIS SST     = 28.1 °C
+Copernicus SST = 28.0 °C
+NOAA SST       = 27.8 °C
+Buoy SST       = 28.2 °C</code></pre>
+
+<p>ORCA should <strong>not</strong> say <em>"The correct value is 28.1."</em></p>
+
+<h3 id="section-40">The Solution — Examine and Report</h3>
+
+<pre><code class="language-json">{
+  &quot;reconciliation_id&quot;: &quot;RECON-1001&quot;,
+  &quot;variable&quot;: &quot;sea_surface_temperature&quot;,
+  &quot;region&quot;: &quot;Gujarat offshore&quot;,
+  &quot;sources&quot;: [
+    {
+      &quot;source&quot;: &quot;INCOIS&quot;,
+      &quot;value&quot;: 28.1,
+      &quot;type&quot;: &quot;satellite_L3&quot;,
+      &quot;resolution_km&quot;: 1.0,
+      &quot;observation_time&quot;: &quot;2026-09-21T06:00:00Z&quot;
+    },
+    {
+      &quot;source&quot;: &quot;Copernicus&quot;,
+      &quot;value&quot;: 28.0,
+      &quot;type&quot;: &quot;model_L4&quot;,
+      &quot;resolution_km&quot;: 8.0,
+      &quot;observation_time&quot;: &quot;2026-09-21T00:00:00Z&quot;
+    },
+    {
+      &quot;source&quot;: &quot;NOAA&quot;,
+      &quot;value&quot;: 27.8,
+      &quot;type&quot;: &quot;satellite_L3&quot;,
+      &quot;resolution_km&quot;: 5.0,
+      &quot;observation_time&quot;: &quot;2026-09-20T18:00:00Z&quot;
+    },
+    {
+      &quot;source&quot;: &quot;Buoy&quot;,
+      &quot;value&quot;: 28.2,
+      &quot;type&quot;: &quot;in_situ&quot;,
+      &quot;resolution&quot;: &quot;point&quot;,
+      &quot;observation_time&quot;: &quot;2026-09-21T06:00:00Z&quot;
+    }
+  ],
+  &quot;analysis&quot;: {
+    &quot;agreement&quot;: &quot;CONSISTENT&quot;,
+    &quot;range_min&quot;: 27.8,
+    &quot;range_max&quot;: 28.2,
+    &quot;spread&quot;: 0.4,
+    &quot;primary_value&quot;: 28.1,
+    &quot;primary_source&quot;: &quot;INCOIS&quot;,
+    &quot;primary_reason&quot;: &quot;highest resolution, most recent, validated by buoy&quot;,
+    &quot;buoy_validation&quot;: &quot;Buoy supports satellite estimate (delta = 0.1°C)&quot;
+  },
+  &quot;reconciled_at&quot;: &quot;2026-09-21T09:15:07Z&quot;
+}</code></pre>
+
+<p>That is much stronger than simply saying "we use multiple datasets."</p>
+
+<hr>
+
+<h2 id="section-41">Step 9 — Derived Features</h2>
+
+<p>Now ORCA creates information that was not directly downloaded.</p>
+
+<pre><code class="language-text">SST + historical SST               → SST anomaly
+Chlorophyll + historical CHL        → chlorophyll anomaly
+SST gradient + CHL gradient         → front indicator
++ currents
+Wind + waves + cyclone              → operational risk state
++ lightning + geofence
+All environmental variables         → ecosystem state</code></pre>
+
+<h3 id="section-42">Derived Feature Schema</h3>
+
+<pre><code class="language-json">{
+  &quot;derived_id&quot;: &quot;DER-1101&quot;,
+  &quot;feature&quot;: &quot;sst_anomaly&quot;,
+  &quot;engine&quot;: &quot;ocean_engine&quot;,
+  &quot;method&quot;: {
+    &quot;name&quot;: &quot;regional_mean_anomaly&quot;,
+    &quot;version&quot;: &quot;1.0&quot;,
+    &quot;description&quot;: &quot;Current SST minus climatological monthly mean&quot;
+  },
+  &quot;inputs&quot;: [
+    {&quot;evidence_id&quot;: &quot;EV-91&quot;, &quot;variable&quot;: &quot;sea_surface_temperature&quot;, &quot;type&quot;: &quot;observation&quot;},
+    {&quot;evidence_id&quot;: &quot;EV-92&quot;, &quot;variable&quot;: &quot;sst_climatology&quot;, &quot;type&quot;: &quot;historical&quot;}
+  ],
+  &quot;outputs&quot;: {
+    &quot;anomaly_value&quot;: 1.1,
+    &quot;current_mean&quot;: 28.2,
+    &quot;baseline_mean&quot;: 27.1,
+    &quot;unit&quot;: &quot;degC&quot;,
+    &quot;region&quot;: &quot;Gujarat offshore&quot;,
+    &quot;period&quot;: &quot;September 2026 vs September climatology&quot;
+  },
+  &quot;quality&quot;: {
+    &quot;spatial_coverage&quot;: 0.94,
+    &quot;baseline_years&quot;: 30,
+    &quot;confidence&quot;: &quot;HIGH&quot;
+  },
+  &quot;derived_at&quot;: &quot;2026-09-21T09:15:08Z&quot;
+}</code></pre>
+
+<h3 id="section-43">Derived Feature Catalog for V1</h3>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>Feature</th><th>Inputs</th><th>Engine</th><th>Category</th></tr></thead>
+<tbody><tr><td>SST anomaly</td><td>SST + climatology</td><td>Ocean</td><td>Ocean</td></tr>
+<tr><td>Chlorophyll anomaly</td><td>CHL + climatology</td><td>Ocean</td><td>Ocean</td></tr>
+<tr><td>Front indicator</td><td>SST gradient + CHL gradient + currents</td><td>Ocean</td><td>Ocean</td></tr>
+<tr><td>Upwelling indicator</td><td>SST + wind + current</td><td>Ocean</td><td>Ocean</td></tr>
+<tr><td>MLD analysis</td><td>Temperature profile + salinity</td><td>Ocean</td><td>Ocean</td></tr>
+<tr><td>Wind risk</td><td>Wind speed + gust</td><td>Weather</td><td>Hazard</td></tr>
+<tr><td>Wave risk</td><td>Wave height + period</td><td>Weather</td><td>Hazard</td></tr>
+<tr><td>Cyclone proximity</td><td>Cyclone track + user position</td><td>Weather</td><td>Hazard</td></tr>
+<tr><td>Lightning proximity</td><td>Lightning observations + distance</td><td>Weather</td><td>Hazard</td></tr>
+<tr><td>Combined risk state</td><td>All hazard variables</td><td>Risk</td><td>Decision</td></tr>
+<tr><td>Route exposure</td><td>Route geometry + hazard layers</td><td>Route</td><td>Decision</td></tr>
+<tr><td>Geofence status</td><td>Position + all boundary polygons</td><td>Spatial</td><td>GIS</td></tr>
+<tr><td>Ecosystem state</td><td>SST + CHL + currents + wind + historical</td><td>Ecosystem</td><td>Science</td></tr>
+<tr><td>Productivity indicator</td><td>CHL + SST + front + upwelling</td><td>Ecosystem</td><td>Science</td></tr>
+</tbody></table></div>
+
+<hr>
+
+<h2 id="section-44">Step 10 — Marine State</h2>
+
+<p><strong>The central intermediate representation.</strong> Everything before it is about getting trustworthy information. Everything after it is about deciding what the information means.</p>
+
+<pre><code class="language-text">OBSERVATIONS
++
+FORECASTS
++
+ADVISORIES
++
+HISTORICAL CONTEXT
++
+GIS CONSTRAINTS
++
+ECOSYSTEM INDICATORS
++
+HUMAN ACTIVITY CONTEXT
+        ↓
+     MARINE STATE</code></pre>
+
+<h3 id="section-45">Marine State Schema</h3>
+
+<pre><code class="language-json">{
+  &quot;marine_state_id&quot;: &quot;MS-1201&quot;,
+  &quot;workflow_id&quot;: &quot;W-100&quot;,
+  &quot;region&quot;: {
+    &quot;name&quot;: &quot;Gujarat offshore&quot;,
+    &quot;geometry_ref&quot;: &quot;G-104&quot;,
+    &quot;bbox&quot;: [65.0, 18.0, 73.0, 24.0]
+  },
+  &quot;reference_time&quot;: &quot;2026-09-23T06:00:00Z&quot;,
+  &quot;time_type&quot;: &quot;forecast_valid&quot;,
+
+  &quot;ocean&quot;: {
+    &quot;sst&quot;: {&quot;value&quot;: 28.2, &quot;unit&quot;: &quot;degC&quot;, &quot;type&quot;: &quot;observation&quot;, &quot;evidence_id&quot;: &quot;EV-91&quot;},
+    &quot;sst_anomaly&quot;: {&quot;value&quot;: 1.1, &quot;unit&quot;: &quot;degC&quot;, &quot;evidence_id&quot;: &quot;EV-93&quot;},
+    &quot;chlorophyll&quot;: {&quot;value&quot;: 0.8, &quot;unit&quot;: &quot;mg/m3&quot;, &quot;type&quot;: &quot;observation&quot;, &quot;evidence_id&quot;: &quot;EV-94&quot;},
+    &quot;chlorophyll_anomaly&quot;: {&quot;value&quot;: -0.31, &quot;unit&quot;: &quot;fraction&quot;, &quot;evidence_id&quot;: &quot;EV-95&quot;},
+    &quot;current_speed&quot;: null,
+    &quot;current_note&quot;: &quot;Unavailable (source timeout)&quot;
+  },
+
+  &quot;atmosphere&quot;: {
+    &quot;wind_speed&quot;: {&quot;value&quot;: 8.2, &quot;unit&quot;: &quot;m/s&quot;, &quot;type&quot;: &quot;forecast&quot;, &quot;evidence_id&quot;: &quot;EV-96&quot;},
+    &quot;wind_direction&quot;: {&quot;value&quot;: 245, &quot;unit&quot;: &quot;degrees&quot;},
+    &quot;wave_height&quot;: {&quot;value&quot;: 2.1, &quot;unit&quot;: &quot;m&quot;, &quot;type&quot;: &quot;forecast&quot;, &quot;evidence_id&quot;: &quot;EV-97&quot;},
+    &quot;swell_height&quot;: {&quot;value&quot;: 1.5, &quot;unit&quot;: &quot;m&quot;, &quot;type&quot;: &quot;forecast&quot;},
+    &quot;lightning_proximity&quot;: null,
+    &quot;cyclone_active&quot;: false,
+    &quot;marine_warning&quot;: {
+      &quot;active&quot;: true,
+      &quot;source&quot;: &quot;IMD&quot;,
+      &quot;severity&quot;: &quot;MODERATE&quot;,
+      &quot;valid_until&quot;: &quot;2026-09-23T18:00:00Z&quot;,
+      &quot;evidence_id&quot;: &quot;EV-98&quot;
+    }
+  },
+
+  &quot;ecosystem&quot;: {
+    &quot;productivity_state&quot;: &quot;BELOW_BASELINE&quot;,
+    &quot;front_detected&quot;: false,
+    &quot;upwelling_indicator&quot;: &quot;WEAK&quot;,
+    &quot;hab_indicator&quot;: &quot;NONE&quot;,
+    &quot;pfz_available&quot;: true,
+    &quot;pfz_count&quot;: 2,
+    &quot;pfz_evidence_id&quot;: &quot;EV-99&quot;
+  },
+
+  &quot;geography&quot;: {
+    &quot;eez_status&quot;: &quot;WITHIN_INDIA&quot;,
+    &quot;mpa_nearby&quot;: false,
+    &quot;restricted_zones_nearby&quot;: true,
+    &quot;restricted_zone_count&quot;: 1,
+    &quot;nearest_port&quot;: {&quot;name&quot;: &quot;Veraval&quot;, &quot;distance_km&quot;: 42},
+    &quot;bathymetry_range&quot;: {&quot;min_m&quot;: 15, &quot;max_m&quot;: 200}
+  },
+
+  &quot;temporal&quot;: {
+    &quot;query_refers_to&quot;: &quot;future&quot;,
+    &quot;lead_time_hours&quot;: 30,
+    &quot;data_freshness&quot;: {
+      &quot;ocean&quot;: &quot;ACCEPTABLE&quot;,
+      &quot;weather&quot;: &quot;FRESH&quot;,
+      &quot;advisory&quot;: &quot;ACTIVE&quot;
+    }
+  },
+
+  &quot;coverage&quot;: {
+    &quot;available_variables&quot;: 8,
+    &quot;unavailable_variables&quot;: 1,
+    &quot;coverage_fraction&quot;: 0.89,
+    &quot;limitations&quot;: [
+      &quot;No current observation available&quot;,
+      &quot;No nearby buoy for in-situ validation&quot;
+    ]
+  },
+
+  &quot;evidence_ids&quot;: [&quot;EV-91&quot;, &quot;EV-93&quot;, &quot;EV-94&quot;, &quot;EV-95&quot;, &quot;EV-96&quot;, &quot;EV-97&quot;, &quot;EV-98&quot;, &quot;EV-99&quot;],
+  &quot;constructed_at&quot;: &quot;2026-09-21T09:15:10Z&quot;
+}</code></pre>
+
+<p>The same Marine State can serve fishermen, researchers, authorities, disaster-management teams and maritime operators — the <strong>Decision layer</strong> on top adapts the interpretation to the user's context.</p>
+
+<hr>
+
+<h1 id="section-46">6. The Critical Boundary: LLM vs Scientific Engine</h1>
+
+<p>This is the single most important technical statement in the presentation:</p>
+
+<pre><code class="language-text">LLM                          SCIENTIFIC ENGINE
+│                             │
+reasoning / planning          deterministic math
+│                             │
+▼                             ▼
+&quot;I need SST anomaly,          (28.4 - 27.1) = 1.3
+ chlorophyll anomaly,         ST_DWithin(point, zone, 50km)
+ wind and baseline&quot;           route_distance(A, B)</code></pre>
+
+<h3 id="section-47">What the LLM Does (6 Operations)</h3>
+
+<pre><code class="language-text">1. UNDERSTAND    → &quot;What is the user asking?&quot;
+2. CONTEXTUALIZE → &quot;Where? When? For whom? What constraints?&quot;
+3. PLAN          → &quot;What evidence is necessary?&quot;
+4. SELECT        → &quot;Which capabilities/tools should execute?&quot;
+5. OBSERVE       → &quot;Are results sufficient or contradictory?&quot;
+6. SYNTHESIZE    → &quot;What does the evidence mean to this user?&quot;</code></pre>
+
+<p>And sometimes:</p>
+
+<pre><code class="language-text">OBSERVE → insufficient evidence → REPLAN → request additional evidence</code></pre>
+
+<h3 id="section-48">What the LLM Should NOT Receive</h3>
+
+<pre><code class="language-text">BAD:
+  NetCDF → convert entire file to JSON → put JSON in LLM context
+
+GOOD:
+  NetCDF / Zarr → Scientific Engine → Structured Result</code></pre>
+
+<p>The LLM receives compact structured results:</p>
+
+<pre><code class="language-json">{
+  &quot;variable&quot;: &quot;sea_surface_temperature&quot;,
+  &quot;region&quot;: &quot;Gujarat offshore&quot;,
+  &quot;mean&quot;: 28.2,
+  &quot;min&quot;: 27.7,
+  &quot;max&quot;: 28.8,
+  &quot;anomaly&quot;: 1.1,
+  &quot;unit&quot;: &quot;degC&quot;,
+  &quot;valid_time&quot;: &quot;2026-09-23T06:00:00Z&quot;,
+  &quot;evidence_ids&quot;: [&quot;EV-91&quot;, &quot;EV-93&quot;]
+}</code></pre>
+
+<p>Not 500MB of raw NetCDF.</p>
+
+<hr>
+
+<h1 id="section-49">7. Four Data Representations</h1>
+
+<p>The same dataset should NOT be passed through the whole system in the same representation.</p>
+
+<pre><code class="language-text">┌──────────────────────────────────────────────────────────┐
+│            RAW SCIENTIFIC REPRESENTATION                  │
+│  NetCDF, Zarr, GeoTIFF, HDF, GRIB, CSV, JSON            │
+│  → Storage: S3/MinIO object storage                      │
+│  → Purpose: Immutable source archive                     │
+└──────────────────────┬───────────────────────────────────┘
+                       ▼
+┌──────────────────────────────────────────────────────────┐
+│            ANALYTICAL REPRESENTATION                      │
+│  xarray arrays, Parquet tables, PostGIS geometries       │
+│  → Storage: Zarr chunks, Parquet files, PostGIS tables   │
+│  → Purpose: Scientific computation and querying          │
+└──────────────────────┬───────────────────────────────────┘
+                       ▼
+┌──────────────────────────────────────────────────────────┐
+│         VISUALIZATION REPRESENTATION                      │
+│  COG/raster tiles, GeoJSON/vector tiles,                 │
+│  structured time series, vector fields, route geometries │
+│  → Storage: Tile server, GeoJSON API, MVT               │
+│  → Purpose: Browser rendering                            │
+└──────────────────────┬───────────────────────────────────┘
+                       ▼
+┌──────────────────────────────────────────────────────────┐
+│              LLM REPRESENTATION                           │
+│  Compact structured evidence: metrics, findings,         │
+│  methods, uncertainty, provenance references              │
+│  → Transport: JSON in agent context                      │
+│  → Purpose: Reasoning and synthesis                      │
+└──────────────────────────────────────────────────────────┘</code></pre>
+
+<h3 id="section-50">Example: SST Flows Through All Four</h3>
+
+<pre><code class="language-text">SST NetCDF (raw)
+    ↓
+xarray + validated SST array (analytical)
+    ↓
+SST anomaly calculated (analytical)
+    ↓
+┌──────────────────────────────────────────────┐
+│ Two parallel outputs from same derived data: │
+│                                              │
+│ COG / color-mapped raster tiles              │
+│     ↓                                        │
+│ Browser map visualization                    │
+│                                              │
+│ Structured scientific result                 │
+│     ↓                                        │
+│ LLM → natural-language explanation           │
+└──────────────────────────────────────────────┘</code></pre>
+
+<p>That is far more technically credible than: <code>API → JSON → LLM → frontend</code></p>
+
+<hr>
+
+<h1 id="section-51">8. Scientific Data Storage Architecture</h1>
+
+<p>Not just "Database: PostgreSQL." Show the real architecture:</p>
+
+<pre><code class="language-text">DATA STORAGE
+  │
+  ┌──────────────────┼─────────────────┼───────────────┐
+  ▼                  ▼                 ▼               ▼
+OBJECT STORAGE    POSTGRES+POSTGIS   PARQUET         REDIS
+S3 / MinIO        Metadata + GIS     Analytics       Cache
+  │                  │                 │               │
+NetCDF            workflows          history          hot cache
+Zarr              variables          features         temp state
+GeoTIFF           evidence           vessel data      in-flight dedup
+HDF               tables             observations     short-lived
+GRIB              geometries         time-series      rate/coord state
+  │               geofences                │
+  │               ports/harbours           │
+  │               source registry          │
+  │               dataset catalog          │</code></pre>
+
+<h3 id="section-52">Technology Justification</h3>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>Storage</th><th>Technology</th><th>Why</th></tr></thead>
+<tbody><tr><td>Scientific arrays</td><td><strong>xarray</strong></td><td>Labelled multidimensional arrays, Dask-backed chunked processing for larger-than-memory datasets, Zarr and NetCDF workflows</td></tr>
+<tr><td>Columnar analytics</td><td><strong>Parquet</strong></td><td>Column-oriented format for efficient analytical storage and retrieval</td></tr>
+<tr><td>Spatial queries</td><td><strong>PostGIS</strong></td><td>Spatial indexing, <code>ST_Intersects</code>, <code>ST_DWithin</code>, index-aware predicates</td></tr>
+<tr><td>Raster delivery</td><td><strong>Cloud Optimized GeoTIFF</strong></td><td>Tiling, reduced-resolution overviews, HTTP range requests — retrieve only needed portions</td></tr>
+<tr><td>Map rendering</td><td><strong>MapLibre GL JS</strong></td><td>Interactive vector-tile maps in the browser</td></tr>
+<tr><td>Heavy layers</td><td><strong>deck.gl</strong></td><td>High-performance visualization of large datasets through composable layers</td></tr>
+</tbody></table></div>
+
+<hr>
+
+<h1 id="section-53">9. Data Catalog / Dataset Registry</h1>
+
+<p>Between source discovery and storage:</p>
+
+<pre><code class="language-text">DATA CATALOG
+      │
+      ┌──────────────┼──────────────┐
+      ▼              ▼              ▼
+  dataset          variable        source
+  metadata         metadata        metadata</code></pre>
+
+<h3 id="section-54">Dataset Registry Entry Schema</h3>
+
+<pre><code class="language-json">{
+  &quot;dataset_id&quot;: &quot;incois_sst_daily&quot;,
+  &quot;provider&quot;: &quot;INCOIS&quot;,
+  &quot;variables&quot;: [&quot;sea_surface_temperature&quot;, &quot;quality_flag&quot;],
+  &quot;spatial_coverage&quot;: {
+    &quot;region&quot;: &quot;Indian Ocean&quot;,
+    &quot;bbox&quot;: [30.0, -30.0, 120.0, 30.0]
+  },
+  &quot;temporal_coverage&quot;: {
+    &quot;start&quot;: &quot;2010-01-01&quot;,
+    &quot;end&quot;: &quot;present&quot;,
+    &quot;update_frequency&quot;: &quot;daily&quot;
+  },
+  &quot;spatial_resolution_km&quot;: 1.0,
+  &quot;temporal_resolution&quot;: &quot;daily&quot;,
+  &quot;format&quot;: &quot;NetCDF&quot;,
+  &quot;access_method&quot;: &quot;ERDDAP&quot;,
+  &quot;data_type&quot;: &quot;observation&quot;,
+  &quot;processing_level&quot;: &quot;L3&quot;,
+  &quot;trust_class&quot;: &quot;AUTHORITATIVE&quot;,
+  &quot;role&quot;: &quot;primary&quot;,
+  &quot;fallback&quot;: &quot;copernicus_sst&quot;,
+  &quot;authentication&quot;: &quot;none&quot;,
+  &quot;rate_limit&quot;: &quot;10/min&quot;,
+  &quot;quality_info&quot;: &quot;CF-compliant quality flags&quot;,
+  &quot;license&quot;: &quot;open&quot;,
+  &quot;version&quot;: &quot;v2&quot;,
+  &quot;last_verified&quot;: &quot;2026-09-15&quot;
+}</code></pre>
+
+<p>For Earth-observation assets, STAC provides a standardized way to describe and discover spatiotemporal geospatial assets. ORCA doesn't need full STAC infrastructure for the hackathon, but STAC-like dataset metadata is a very strong architectural concept.</p>
+
+<hr>
+
+<h1 id="section-55">10. Visualization Architecture</h1>
+
+<p>Visualization should NOT be an afterthought.</p>
+
+<pre><code class="language-text">SCIENTIFIC RESULT
+      │
+      ▼
+VISUALIZATION ADAPTER
+      │
+      ┌─────────┼──────────────┐
+      ▼         ▼              ▼
+     MAP      CHARTS     SUMMARY CARDS
+      │         │              │
+      ▼         ▼              ▼
+   Layers    Time-series      KPIs
+   Raster    Anomaly          Findings
+   Vector    Comparison       Evidence
+   Route     Forecast         Limitations</code></pre>
+
+<p>The scientific engine should not tell the browser how to calculate anything. It returns: geometry, raster reference, time series, vectors, structured metrics. The browser renders.</p>
+
+<h3 id="section-56">Map Layer Types for ORCA</h3>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>Type</th><th>Examples</th><th>Format</th></tr></thead>
+<tbody><tr><td><strong>Raster</strong></td><td>SST, chlorophyll, wave height, rain, bathymetry, risk surface</td><td>COG tiles / TileJSON</td></tr>
+<tr><td><strong>Vector</strong></td><td>Currents, wind, routes, vessel activity</td><td>GeoJSON / MVT</td></tr>
+<tr><td><strong>Points</strong></td><td>Buoys, Argo profiles, ports, harbours, lightning events</td><td>GeoJSON</td></tr>
+<tr><td><strong>Polygons</strong></td><td>EEZ, MPA, restricted zones, geofences, hazard zones</td><td>GeoJSON / MVT</td></tr>
+<tr><td><strong>Lines</strong></td><td>Cyclone track, recommended route, historical trajectory</td><td>GeoJSON</td></tr>
+</tbody></table></div>
+
+<h3 id="section-57">Visualizations Are Generated From the Question</h3>
+
+<pre><code class="language-text">&quot;Where are the high-chlorophyll regions with suitable SST?&quot;
+→ Map: High CHL + SST suitability + PFZ
+→ Chart: Chlorophyll vs SST
+→ Evidence: Satellite timestamp, SST source, CHL source, PFZ advisory
+
+&quot;Why has productivity decreased?&quot;
+→ Map: Productivity anomaly
+→ Chart: Current vs historical chlorophyll
+→ Chart: SST anomaly
+→ Chart: Wind/current comparison
+→ Explanation: Structured evidence
+
+&quot;Show the safest route.&quot;
+→ Map: Route A, Route B, hazard zones, restricted zones
+→ Chart: Route exposure comparison
+→ Summary: Distance, ETA, wave exposure, wind exposure, hazards</code></pre>
+
+<p>The map is conversationally controlled — the user's question determines which layers appear, not a static layer list.</p>
+
+<hr>
+
+<h1 id="section-58">11. Complete End-to-End Execution Trace</h1>
+
+<p><strong>Query:</strong> <em>"Find suitable fishing areas near Gujarat tomorrow morning, but avoid hazardous zones."</em></p>
+
+<h3 id="section-59">Stage 1 — LLM Understands</h3>
+
+<pre><code class="language-json">{
+  &quot;intent&quot;: &quot;fishing_suitability_with_constraints&quot;,
+  &quot;decision_type&quot;: &quot;WHERE&quot;,
+  &quot;region&quot;: &quot;Gujarat offshore&quot;,
+  &quot;time&quot;: &quot;tomorrow morning (2026-09-23T06:00:00Z)&quot;,
+  &quot;objective&quot;: &quot;fishing suitability&quot;,
+  &quot;constraints&quot;: [&quot;avoid hazards&quot;, &quot;avoid restricted zones&quot;],
+  &quot;user_context&quot;: {&quot;role&quot;: &quot;fisherman&quot;, &quot;language&quot;: &quot;gu&quot;, &quot;vessel&quot;: &quot;mechanized&quot;}
+}</code></pre>
+
+<h3 id="section-60">Stage 2 — Planner Creates Data Requirements</h3>
+
+<pre><code class="language-text">Need: PFZ, SST, chlorophyll, wind, waves, currents,
+      cyclone/lightning, restricted zones, marine warnings</code></pre>
+
+<h3 id="section-61">Stage 3 — Data Discovery</h3>
+
+<pre><code class="language-text">PFZ             → INCOIS PFZ Advisory
+SST             → INCOIS (primary) / Copernicus (fallback)
+Chlorophyll     → MOSDAC OCM-3 / INCOIS
+Wind            → IMD forecast
+Waves           → INCOIS OSF
+Currents        → INCOIS / Copernicus
+Cyclone         → IMD tracking
+Lightning       → IMD nowcast
+GIS boundaries  → MarineRegions / ProtectedSeas
+Marine warnings → IMD</code></pre>
+
+<h3 id="section-62">Stage 4 — Retrieval (smallest valid subset)</h3>
+
+<pre><code class="language-text">Region   = Gujarat offshore (bbox: 65-73E, 18-24N)
+Time     = 2026-09-23T06:00:00Z
+Variables = SST, CHL, wind, waves, currents only</code></pre>
+
+<h3 id="section-63">Stage 5 — Data Processing Pipeline</h3>
+
+<pre><code class="language-text">1. Ingest        → raw files stored immutably
+2. Validate      → structural checks pass
+3. Quality       → quality flags checked, coverage assessed
+4. Normalize     → all units → canonical (°C, m/s, m, km)
+5. Spatial align  → all layers referenced to common EPSG:4326
+6. Temporal align → observation vs forecast times preserved
+7. Missing data   → current observation unavailable, noted
+8. Reconcile     → SST sources agree within 0.4°C
+9. Derive        → SST anomaly, CHL anomaly, risk indicators</code></pre>
+
+<h3 id="section-64">Stage 6 — Scientific Engines</h3>
+
+<pre><code class="language-text">Ocean Engine    → SST anomaly (+1.1°C), CHL anomaly (-31%)
+Weather Engine  → Wind risk (MODERATE), wave risk (MODERATE)
+Spatial Engine  → 1 restricted zone nearby, within EEZ
+Risk Engine     → Combined risk: MODERATE
+Ecosystem Engine → Productivity: BELOW_BASELINE, no front detected</code></pre>
+
+<h3 id="section-65">Stage 7 — Marine State Constructed</h3>
+
+<p>Full structured Marine State (see schema in Step 10 above)</p>
+
+<h3 id="section-66">Stage 8 — Evidence Gate</h3>
+
+<pre><code class="language-text">✓ Source availability:   8/9 variables available
+✓ Freshness:             weather FRESH, ocean ACCEPTABLE
+✗ Conflict:              none detected
+✓ Official warnings:     IMD marine warning ACTIVE (MODERATE)
+✗ Missing evidence:      current observation absent
+→ Confidence:            SUFFICIENT WITH LIMITATIONS</code></pre>
+
+<h3 id="section-67">Stage 9 — LLM Synthesis</h3>
+
+<p>LLM receives compact Marine State + evidence and produces:</p>
+
+<pre><code class="language-text">&quot;ગુજરાત દરિયાકિનારે 2 PFZ વિસ્તારો ઉપલબ્ધ છે...
+
+Area A: Higher chlorophyll, favorable SST, PFZ indication
+  But: Elevated wave conditions (2.1m), IMD moderate advisory active.
+
+Area B: Lower productivity, but lower hazard exposure.
+
+Limitation: Current observation was not available.
+Based on: INCOIS PFZ advisory, MOSDAC chlorophyll, IMD forecast.&quot;</code></pre>
+
+<h3 id="section-68">Stage 10 — Visualization Generated From Question</h3>
+
+<pre><code class="language-text">MAP
+├── PFZ markers (INCOIS)
+├── Chlorophyll heatmap (MOSDAC)
+├── SST overlay (INCOIS)
+├── Hazard zones (IMD warning)
+├── Restricted zones (MarineRegions)
+├── Candidate fishing areas (derived)
+└── Decision overlay (green/yellow/red)
+
+CHARTS
+├── SST current vs baseline
+├── Chlorophyll current vs baseline
+└── Wave forecast for tomorrow
+
+EVIDENCE PANEL
+├── INCOIS PFZ — Fresh
+├── MOSDAC CHL — Recent observation
+├── IMD Wind — Forecast valid 06:00
+├── INCOIS Wave — Forecast
+└── Limitation: No current observation</code></pre>
+
+<hr>
+
+<h1 id="section-69">12. What the PPT Main Technical Slide Should Show</h1>
+
+<pre><code class="language-text">              ORCA TECHNICAL APPROACH
+
+              USER
+                │
+                ▼
+┌─────────────────────────────────────────────┐
+│       LLM CONTEXT + PLANNING LAYER          │
+│  Intent • Context • Data Requirements       │
+│  Tool Selection • Replanning • Synthesis     │
+└──────────────────────┬──────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────┐
+│         MARINE DATA DISCOVERY               │
+│  Dataset Registry • Semantic Mapping        │
+│  Source Selection • Subset Retrieval         │
+└──────────────────────┬──────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────┐
+│       DATA PROCESSING PIPELINE              │
+│  Ingest → Validate → Normalize → Align     │
+│  Spatial/Temporal → Quality → Derived Data  │
+└──────────────────────┬──────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────┐
+│       SCIENTIFIC INTELLIGENCE               │
+│  Ocean • Weather • Ecosystem • GIS • Risk   │
+│  Deterministic Scientific Computation       │
+└──────────────────────┬──────────────────────┘
+                       │
+                       ▼
+              MARINE STATE
+                       │
+                       ▼
+           EVIDENCE + DECISION
+                       │
+           ┌───────────┼───────────┐
+           ▼           ▼           ▼
+         CHAT         MAP        CHARTS
+
+
+DATA STORAGE ─────────────────────────────────
+S3/MinIO         PostgreSQL/PostGIS    Parquet       Redis
+Scientific       Metadata + GIS       Analytics     Cache/State
+NetCDF/Zarr      Evidence/Geometry     Historical    Dedup
+GeoTIFF/HDF      Dataset Registry     Features      Query cache
+
+
+INDIAN + GLOBAL SOURCES ──────────────────────
+INCOIS │ MOSDAC │ IMD │ Copernicus │ NOAA │ GEBCO │ GIS</code></pre>
+
+<hr>
+
+<h1 id="section-70">13. What Should NOT Dominate the PPT</h1>
+
+<p>Push these into internal engineering documentation only:</p>
+
+<pre><code class="language-text">✗ WAF / CDN / Edge
+✗ IAM / RBAC details
+✗ Kubernetes / multi-region
+✗ Service mesh
+✗ Zero trust details
+✗ Red-team scenarios
+✗ Complex enterprise deployment diagrams
+✗ Huge agent registries
+✗ 20+ component diagrams</code></pre>
+
+<p>Keep only visible runtime controls:</p>
+
+<pre><code class="language-text">✓ Validation
+✓ Timeouts
+✓ API limits
+✓ Fallbacks
+✓ Basic tool controls
+✓ Failure handling</code></pre>
+
+<hr>
+
+<h1 id="section-71">14. The ORCA Story for the Judges</h1>
+
+<blockquote>Marine data is fragmented across satellites, ocean observations, weather forecasts, advisories and GIS datasets. ORCA first discovers the datasets required for the user's question and retrieves only the relevant spatio-temporal subset. The data is then validated, normalized and aligned across space and time before deterministic scientific engines calculate anomalies, correlations, hazards and routes. These results are consolidated into a machine-readable Marine State. The LLM does not replace the scientific computation; it plans the investigation, selects the required capabilities, interprets validated evidence, detects when additional evidence is needed, and explains the final result. The same structured results drive the conversational response, dynamic marine map, scientific charts and alerts.</blockquote>
+
+<p>That is the core technical identity of ORCA. And it is much stronger than presenting ORCA primarily as a multi-agent chatbot.</p>
+
+<hr>
+
+<h1 id="section-72">15. Summary Principles</h1>
+
+<pre><code class="language-text">1. DATA PIPELINE IS THE CENTER OF GRAVITY
+   Not the LLM. Not the agents. The scientific data pipeline.
+
+2. RAW → VALIDATED → NORMALIZED → ALIGNED → DERIVED → MARINE STATE
+   Every step has a concrete schema and purpose.
+
+3. FOUR REPRESENTATIONS, NOT ONE
+   Raw scientific → Analytical → Visualization → LLM
+   The same data flows through different forms for different consumers.
+
+4. LLM PLANS, ENGINES CALCULATE
+   The LLM never computes SST anomaly. The Ocean Engine does.
+
+5. RETRIEVE ONLY WHAT IS NEEDED
+   Smallest valid spatio-temporal subset, not entire global datasets.
+
+6. MISSING DATA IS EXPLICIT
+   Never pretend all sources exist. State limitations.
+
+7. CROSS-SOURCE RECONCILIATION, NOT BLIND SELECTION
+   Report agreement/disagreement, don&#x27;t silently pick one value.
+
+8. MARINE STATE IS THE CENTRAL ABSTRACTION
+   Everything before it = getting trustworthy data.
+   Everything after it = deciding what it means.
+
+9. THE MAP IS DRIVEN BY THE QUESTION
+   Not a static layer dashboard — visualization adapts to the query.
+
+10. THE STORY IS SCIENTIFIC DATA ENGINEERING
+    Not &quot;AI agents thinking&quot; — real data processing that
+    turns heterogeneous marine observations into decisions.</code></pre>
+
+<hr>
+
+<h1 id="section-73">16. PS Fulfillment Verification - Data Pipeline Document</h1>
+
+<pre><code class="language-text">V PS-6  Autonomous data discovery and retrieval
+        -&gt; Section 4 (Data Acquisition): catalog -&gt; semantic mapping -&gt; source selection
+        -&gt; Data Requirement Plan bridges LLM intent to provider APIs
+
+V PS-7  Spatial-temporal reasoning (data layer)
+        -&gt; Steps 5-6 (Spatial + Temporal Alignment): all layers aligned to EPSG:4326
+        -&gt; Temporal semantics preserved: observation_time != forecast_valid_time
+
+V PS-8  Evidence-grounded decision (data layer)
+        -&gt; Step 1 (Raw Ingestion): immutable source data with checksum
+        -&gt; Steps 2-3 (Validation + Quality): every value has quality state
+        -&gt; Step 8 (Reconciliation): cross-source agreement tracked
+        -&gt; Step 10 (Marine State): unified evidence-linked snapshot
+
+V PS-5  Multi-source correlation
+        -&gt; Step 4 (Normalization): canonical variables + unit crosswalk
+        -&gt; Step 8 (Reconciliation): INCOIS vs Copernicus vs NOAA vs Buoy
+        -&gt; Step 9 (Derived Features): SST anomaly, CHL anomaly, front detection
+
+V PS-9  Explainable visualization (data layer)
+        -&gt; Section 7 (Four Representations): Raw -&gt; Analytical -&gt; Visualization -&gt; LLM
+        -&gt; Section 10 (Visualization Architecture): map driven by the question
+
+V PS-3  Autonomous planning (data layer)
+        -&gt; Step 7 (Missing Data): gaps tracked and reported to planner
+        -&gt; Planner can REPLAN based on data availability/gaps</code></pre>
+
+<h3 id="section-74">How the Data Pipeline Serves the Hero Investigation Loop</h3>
+
+<pre><code class="language-text">Hero Loop Step              Data Pipeline Contribution
+
+DISCOVER DATA            -&gt;  Source Registry + Dataset Catalog + Semantic Crosswalk
+RETRIEVE                 -&gt;  Source Connectors + Smallest Valid Subset
+CORRELATE                -&gt;  Normalization + Spatial/Temporal Alignment + Reconciliation
+OBSERVE STATE            -&gt;  Marine State (unified snapshot with coverage + gaps)
+VALIDATE                 -&gt;  Evidence Chain (retrieval witness -&gt; quality -&gt; provenance)
+EXPLAIN                  -&gt;  Four Representations (Raw -&gt; Analytical -&gt; Viz -&gt; LLM)
+VISUALIZE                -&gt;  Tile server + GeoJSON + Charts from derived data</code></pre>
+
+<blockquote><strong>The data pipeline is the engine. The investigation loop is the product.</strong></blockquote>
+
+<hr>
+
+<h1 id="section-75">17. Companion Reference: Data Acquisition Matrix</h1>
+
+<blockquote>For detailed connector specifications, dataset IDs, access patterns, and provider-specific engineering, refer to:<br>ORCA_Data_Acquisition_Matrix_and_Engineering_Specification.md (64KB, 94 sections)</blockquote>
+
+<p>That document contains:</p>
+<ul>
+<li>Complete source inventory with 30+ dataset IDs (IN-01 through OSM-01)</li>
+<li>Detailed INCOIS ERDDAP, MOSDAC, IMD, Copernicus, NOAA, GEBCO connector specs</li>
+<li>Generic ERDDAP connector architecture (reusable across providers)</li>
+<li>Dataset request/response object schemas</li>
+<li>Ingestion manager workflow</li>
+<li>Raw data naming conventions</li>
+<li>Checksum and deduplication</li>
+<li>Data security rules</li>
+</ul>
+
+<hr>
+
+<h1 id="section-76">18. Variable-Specific Fallback Matrix</h1>
+
+<blockquote>Not all variables have fallbacks. PFZ has NONE. Cyclone warnings have NONE. SST has four.</blockquote>
+
+<pre><code class="language-text">Variable          Primary              Fallback               Restriction
+-----------       --------             --------               -----------
+PFZ               INCOIS               NONE                   Do NOT invent PFZ
+Cyclone warning   IMD                  Official sources only  Do NOT override
+Fishermen warning IMD                  INCOIS context         Preserve warning text
+Tsunami           INCOIS               NONE                   Authoritative only
+SST               INCOIS/operational   Copernicus/NOAA/NASA   Check latency
+Chlorophyll       INCOIS/MOSDAC        NASA/NOAA/Copernicus   Resolution differs
+Wind              IMD/MOSDAC           NOAA/Copernicus        Compare timestamps
+Waves             INCOIS               Copernicus             Forecast metadata
+Currents          INCOIS               Copernicus             Resolution matters
+Argo T/S          INCOIS Argo          Global Argo/Copernicus Observation sparse
+Bathymetry        GEBCO                auth. charts           Not a nav chart
+General map       OSM                  other map sources      Not safety authority</code></pre>
+
+<h3 id="section-77">Critical Fallback Rules</h3>
+
+<pre><code class="language-text">1. authoritative warning source unavailable -&gt; do NOT fabricate equivalent warning
+2. PFZ unavailable -&gt; say &quot;PFZ data currently unavailable&quot; (do not substitute)
+3. SST unavailable from primary -&gt; use fallback but REPORT the substitution
+4. Never silently substitute a source</code></pre>
+
+<hr>
+
+<h1 id="section-78">19. MOSDAC Access Constraints (Engineering Reality)</h1>
+
+<blockquote>MOSDAC access is NOT freely available in real-time for all users.</blockquote>
+
+<pre><code class="language-text">Registered General Users:    limited access, 3-day latency
+Registered Privileged Users: all data, NRT access
+Anonymous Users:             metadata/image/open data only, NRT access</code></pre>
+
+<h3 id="section-79">SSTM Status</h3>
+
+<p>Oceansat-3 SSTM has developed a technical problem in its scan mechanism and is NOT operating as of September 2026.</p>
+
+<pre><code class="language-text">SSTM connector -&gt; Keep capability -&gt; Do NOT depend on it for V1 live SST
+
+SST fallback chain:
+  INCOIS -&gt; other Indian operational -&gt; NOAA -&gt; Copernicus -&gt; NASA</code></pre>
+
+<hr>
+
+<h1 id="section-80">20. Evidence-Fused Marine State (Replaces "4D-Var" Language)</h1>
+
+<blockquote>ORCA does NOT perform numerical ocean data assimilation. Do not claim "4D-Var."</blockquote>
+
+<h3 id="section-81">What ORCA Actually Does</h3>
+
+<pre><code class="language-text">observations / forecast products / advisories
+              |
+              v
+ORCA harmonization and evidence fusion
+              |
+              v
+EVIDENCE-FUSED MARINE STATE
+(also: Decision-Ready Marine State)</code></pre>
+
+<h3 id="section-82">Correct Terminology</h3>
+
+<p>DO NOT say: "ORCA performs 4D-Var ocean assimilation"</p>
+<p>DO say: "ORCA constructs an Evidence-Fused Marine State from heterogeneous sources"</p>
+
+<h3 id="section-83">Marine State Structure</h3>
+
+<pre><code class="language-text">MARINE STATE
++-- Ocean
+|   +-- SST, Chlorophyll, Currents, Sea Level, Salinity, Fronts
++-- Atmosphere / Weather
+|   +-- Wind, Waves, Swell, Rain, Lightning, Warnings
++-- Ecosystem
+|   +-- Productivity, PFZ, Bloom Indicators
++-- Geography
+|   +-- EEZ, MPA, Restricted Zones, Ports, Bathymetry
++-- Human Activity
+|   +-- Maritime Activity Context
++-- Temporal
+    +-- Current, Forecast, Historical, Trend/Event State</code></pre>
+
+<h3 id="section-84">4D-Capable Terminology</h3>
+
+<pre><code class="language-text">X = longitude
+Y = latitude
+Z = depth (where available)
+T = time
+
+Most V1 products are surface: X * Y * T
+Say &quot;4D-Capable Marine State&quot; not &quot;4D Marine State&quot;
+(depth data available for Argo profiles, bathymetry, MLD/D20)</code></pre>
+
+<hr>
+
+<h1 id="section-85">21. State Versioning and Delta Tracking</h1>
+
+<blockquote>Avoid recomputing the full state when only part changed.</blockquote>
+
+<h3 id="section-86">Versioned Snapshots</h3>
+
+<pre><code class="language-text">MS-100  06:00 UTC
+MS-101  09:00 UTC  (parent: MS-100)
+MS-102  12:00 UTC  (parent: MS-101)</code></pre>
+
+<h3 id="section-87">State Delta</h3>
+
+<pre><code class="language-text">STATE A
+   +
+NEW EVIDENCE
+   |
+   v
+STATE DELTA
+   |
+   v
+STATE B</code></pre>
+
+<p>Example delta:</p>
+
+<pre><code class="language-json">{
+  &quot;parent_state&quot;: &quot;MS-100&quot;,
+  &quot;new_state&quot;: &quot;MS-101&quot;,
+  &quot;changed&quot;: {
+    &quot;wave_height&quot;: {&quot;old&quot;: 1.2, &quot;new&quot;: 2.1},
+    &quot;marine_warning&quot;: {&quot;old&quot;: false, &quot;new&quot;: true}
+  }
+}</code></pre>
+
+<p>This enables:</p>
+<ul>
+<li>"What changed?" -> show delta</li>
+<li>"Has risk increased?" -> compare states</li>
+<li>"Why did the alert trigger?" -> show the specific change</li>
+</ul>
+
+<h3 id="section-88">4D Query Operations</h3>
+
+<pre><code class="language-text">STATE_NOW                              - current marine state
+STATE_AT(location, time)               - state at point in space-time
+STATE_TIMESERIES(region, var, t1, t2)  - variable over time in region
+STATE_DEPTH_PROFILE(location, depths)  - vertical profile at location
+STATE_DIFF(region, t1, t2)             - what changed between times
+STATE_FORECAST(region, valid_time)     - predicted future state
+STATE_ALONG_ROUTE(route, time_window)  - conditions along travel path</code></pre>
+
+<p>STATE_ALONG_ROUTE is critical for route optimization because conditions vary along both space and travel time.</p>
+
+<hr>
+
+<h1 id="section-89">22. Enhanced Source Conflict Engine</h1>
+
+<blockquote>When sources disagree, don't arbitrarily pick one. Report the disagreement.</blockquote>
+
+<pre><code class="language-text">INCOIS SST = 28.1 C
+NOAA SST   = 27.8 C
+Copernicus = 28.0 C
+Buoy       = 28.2 C</code></pre>
+
+<h3 id="section-90">Conflict Resolution Considerations</h3>
+
+<pre><code class="language-text">time difference       - are observations from the same time?
+distance              - are they at the same location?
+resolution            - 1km vs 25km grid
+observation vs forecast - different semantic types
+quality flags         - any flagged as suspect?
+provider methodology  - different algorithms/sensors</code></pre>
+
+<h3 id="section-91">Output</h3>
+
+<pre><code class="language-text">agreement:   sources within 0.3 C -&gt; HIGH AGREEMENT
+disagreement: sources differ by &gt; 1.0 C -&gt; FLAG
+confidence:  weighted by freshness, resolution, type</code></pre>
+
+<p>DO NOT: silently select one source</p>
+<p>DO: report agreement level and selected value with reasoning</p>
+
+    </div>
+
+    <div class="page-nav">
+      <a href="doc2.html">
+      <span class="page-nav-label">&#8592; Previous</span>
+      <span class="page-nav-title">Doc 2: Agentic System</span>
+    </a>
+      <a href="doc4.html" class="next">
+      <span class="page-nav-label">Next &#8594;</span>
+      <span class="page-nav-title">Doc 4: Database</span>
+    </a>
+    </div>
+  </div>
+</div>
+
+<footer class="container">
+  <strong>ORCA</strong> &#183; Marine EcOsystem Reasoning with Collaborative Agents &#183; SIH 2026 &#183; PS 26176
+</footer>
+
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
+
+<script>
+// Back to top button
+window.addEventListener('scroll', function() {
+  var btn = document.getElementById('backToTop');
+  if (window.scrollY > 300) { btn.classList.add('visible'); }
+  else { btn.classList.remove('visible'); }
+});
+
+// Scroll-spy: highlight active TOC link
+(function() {
+  var tocLinks = document.querySelectorAll('#tocList a');
+  if (!tocLinks.length) return;
+
+  var headingEls = [];
+  tocLinks.forEach(function(link) {
+    var target = link.getAttribute('data-target');
+    var el = document.getElementById(target);
+    if (el) headingEls.push({ el: el, link: link });
+  });
+
+  function updateActive() {
+    var scrollY = window.scrollY + 80;
+    var current = null;
+
+    for (var i = 0; i < headingEls.length; i++) {
+      if (headingEls[i].el.offsetTop <= scrollY) {
+        current = headingEls[i];
+      }
+    }
+
+    tocLinks.forEach(function(l) { l.classList.remove('active'); });
+    if (current) {
+      current.link.classList.add('active');
+      // Scroll TOC to keep active item visible
+      var tocSticky = current.link.closest('.toc-sticky');
+      if (tocSticky) {
+        var linkTop = current.link.offsetTop - tocSticky.offsetTop;
+        var stickyHeight = tocSticky.clientHeight;
+        if (linkTop < tocSticky.scrollTop || linkTop > tocSticky.scrollTop + stickyHeight - 40) {
+          tocSticky.scrollTop = linkTop - stickyHeight / 3;
+        }
+      }
+    }
+  }
+
+  window.addEventListener('scroll', updateActive);
+  updateActive();
+})();
+
+// --- Mermaid Diagram Compiler & Interactive Viewer ---
+(function() {
+  if (typeof mermaid === 'undefined') return;
+
+  try {
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'neutral',
+      securityLevel: 'loose',
+      fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+      maxTextSize: 100000,
+      flowchart: {
+        htmlLabels: true,
+        curve: 'basis',
+        useMaxWidth: true
+      },
+      er: {
+        useMaxWidth: true
+      }
+    });
+  } catch (e) {
+    console.error('Mermaid init error:', e);
+  }
+
+  window.mmZoomState = window.mmZoomState || {};
+
+  async function compileMermaidDiagrams() {
+    var containers = document.querySelectorAll('.mermaid-container');
+    if (!containers.length) return;
+
+    for (var i = 0; i < containers.length; i++) {
+      var container = containers[i];
+      var id = container.id;
+      var preEl = container.querySelector('pre.mermaid-source');
+      var stageEl = document.getElementById(id + '-stage');
+      if (!preEl || !stageEl) continue;
+
+      var code = preEl.textContent.trim();
+      mmZoomState[id] = 1.0;
+
+      try {
+        var renderId = 'mm-svg-' + id.replace(/[^a-zA-Z0-9_-]/g, '_') + '-' + i;
+        var res = await mermaid.render(renderId, code);
+        stageEl.innerHTML = res.svg;
+        var svgEl = stageEl.querySelector('svg');
+        if (svgEl) {
+          svgEl.style.maxWidth = '100%';
+          svgEl.style.height = 'auto';
+          svgEl.style.display = 'block';
+          svgEl.style.margin = '0 auto';
+          svgEl.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+        }
+      } catch (err) {
+        console.error('Mermaid render error for ' + id + ':', err);
+        stageEl.innerHTML = '<div class="mermaid-error">' +
+          '<div class="mermaid-error-title">&#9888; Diagram Compilation Notice</div>' +
+          '<p>' + (err.message || String(err)) + '</p>' +
+          '</div>';
+      }
+    }
+  }
+
+  window.mermaidZoom = function(id, factor) {
+    var stage = document.getElementById(id + '-stage');
+    if (!stage) return;
+    var svg = stage.querySelector('svg');
+    if (!svg) return;
+    mmZoomState[id] = (mmZoomState[id] || 1.0) * factor;
+    if (mmZoomState[id] < 0.25) mmZoomState[id] = 0.25;
+    if (mmZoomState[id] > 4.0) mmZoomState[id] = 4.0;
+    stage.style.transform = 'scale(' + mmZoomState[id] + ')';
+    if (mmZoomState[id] > 1.0) {
+      svg.style.maxWidth = 'none';
+    } else {
+      svg.style.maxWidth = '100%';
+    }
+  };
+
+  window.mermaidReset = function(id) {
+    var stage = document.getElementById(id + '-stage');
+    if (!stage) return;
+    var svg = stage.querySelector('svg');
+    if (!svg) return;
+    mmZoomState[id] = 1.0;
+    stage.style.transform = 'scale(1)';
+    svg.style.maxWidth = '100%';
+  };
+
+  window.mermaidToggleCode = function(id) {
+    var codeDiv = document.getElementById(id + '-code');
+    if (!codeDiv) return;
+    codeDiv.style.display = (codeDiv.style.display === 'none') ? 'block' : 'none';
+  };
+
+  window.mermaidCopy = function(id) {
+    var container = document.getElementById(id);
+    if (!container) return;
+    var codePre = container.querySelector('.mermaid-code pre code') || container.querySelector('pre.mermaid-source');
+    if (!codePre) return;
+    navigator.clipboard.writeText(codePre.textContent).then(function() {
+      var btn = container.querySelector('.mm-btn-copy');
+      if (btn) {
+        var orig = btn.innerHTML;
+        btn.innerHTML = '&#10003; Copied!';
+        btn.style.color = '#137333';
+        setTimeout(function() { btn.innerHTML = orig; btn.style.color = ''; }, 2000);
+      }
+    });
+  };
+
+  window.mermaidFullscreen = function(id) {
+    var container = document.getElementById(id);
+    if (!container) return;
+    if (!document.fullscreenElement) {
+      if (container.requestFullscreen) {
+        container.requestFullscreen().catch(function() { container.classList.toggle('is-fullscreen'); });
+      } else {
+        container.classList.toggle('is-fullscreen');
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  };
+
+  document.addEventListener('fullscreenchange', function() {
+    var containers = document.querySelectorAll('.mermaid-container');
+    containers.forEach(function(c) {
+      if (c === document.fullscreenElement) {
+        c.classList.add('is-fullscreen');
+      } else {
+        c.classList.remove('is-fullscreen');
+      }
+    });
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', compileMermaidDiagrams);
+  } else {
+    compileMermaidDiagrams();
+  }
+})();
+</script>
+
+</body>
+</html>

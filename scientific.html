@@ -1,0 +1,3187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Scientific & Marine Intelligence System | ORCA Research Dossier</title>
+<meta name="description" content="ORCA &#8212; Scientific & Marine Intelligence System. Complete research and architecture documentation.">
+<link rel="stylesheet" type="text/css" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="mermaid.min.js"></script>
+<script>
+if (typeof mermaid === 'undefined') {
+  document.write('<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"><\/script>');
+}
+</script>
+</head>
+<body>
+
+<header id="dhead" class="container">
+  <div class="row">
+    <div id="dpic">
+      <img src="ORCA_architecture.svg" class="ppic" alt="ORCA" onerror="this.style.background='#f0f0f0'" />
+    </div>
+    <div id="ddesc">
+      <h1>ORCA</h1>
+      <h2>Scientific & Marine Intelligence System</h2>
+      <nav class="doc-nav">
+        <a href="index.html">Home</a>
+<a href="architecture.html">Architecture Diagram</a>
+<a href="doc1.html">User Flows</a>
+<a href="doc2.html">Agentic System</a>
+<a href="doc3.html">Data Pipeline</a>
+<a href="doc4.html">Database</a>
+<a href="doc5.html">Implementation</a>
+<a href="doc6.html">Memory & Context</a>
+<a href="fisher.html">Fisher Research</a>
+<a href="data-sources.html">Data Sources</a>
+
+      </nav>
+    </div>
+  </div>
+</header>
+
+<hr>
+
+<div class="page-with-toc">
+  <!-- Sidebar TOC -->
+  <aside class="toc-sidebar">
+    <div class="toc-sticky">
+      <div class="toc-header">
+        <span class="toc-label">&#9679; Table of Contents</span>
+        <a class="toc-top-link" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593; TOP</a>
+      </div>
+      <ul class="toc-list" id="tocList">
+        <li><a href="#section-1" data-target="section-1">ORCA Marine Ecosystem Reasoning with Collaborative Agents</a></li>
+<li><a href="#section-2" data-target="section-2">System 7 — Scientific & Marine Intelligence System</a></li>
+<li><a href="#section-3" data-target="section-3">1. Executive Definition</a></li>
+<li><a href="#section-4" data-target="section-4">2. Why This System Exists</a></li>
+<li><a href="#section-5" data-target="section-5">3. Stakeholder-Neutral Architecture</a></li>
+<li><a href="#section-6" data-target="section-6">3.1 Fisherman</a></li>
+<li><a href="#section-7" data-target="section-7">3.2 Marine Researcher</a></li>
+<li><a href="#section-8" data-target="section-8">3.3 Coastal Authority</a></li>
+<li><a href="#section-9" data-target="section-9">3.4 Disaster Management Agency</a></li>
+<li><a href="#section-10" data-target="section-10">3.5 Maritime Operator</a></li>
+<li><a href="#section-11" data-target="section-11">3.6 Port Authority</a></li>
+<li><a href="#section-12" data-target="section-12">3.7 Environmental Agency</a></li>
+<li><a href="#section-13" data-target="section-13">4. The Central ORCA Concept: Marine State</a></li>
+<li><a href="#section-14" data-target="section-14">5. System Architecture</a></li>
+<li><a href="#section-15" data-target="section-15">6. Scientific Intelligence Layers</a></li>
+<li><a href="#section-16" data-target="section-16">Level 1 — Measurement</a></li>
+<li><a href="#section-17" data-target="section-17">Level 2 — Analysis</a></li>
+<li><a href="#section-18" data-target="section-18">Level 3 — Decision Intelligence</a></li>
+<li><a href="#section-19" data-target="section-19">7. Ocean Intelligence Engine</a></li>
+<li><a href="#section-20" data-target="section-20">7.1 Purpose</a></li>
+<li><a href="#section-21" data-target="section-21">7.2 SST Analysis</a></li>
+<li><a href="#section-22" class="toc-h3" data-target="section-22">SST lookup</a></li>
+<li><a href="#section-23" class="toc-h3" data-target="section-23">Regional SST statistics</a></li>
+<li><a href="#section-24" class="toc-h3" data-target="section-24">SST gradient</a></li>
+<li><a href="#section-25" data-target="section-25">8. Chlorophyll Intelligence</a></li>
+<li><a href="#section-26" data-target="section-26">9. Ocean Front Detection</a></li>
+<li><a href="#section-27" data-target="section-27">10. Eddy Intelligence</a></li>
+<li><a href="#section-28" data-target="section-28">11. Upwelling Intelligence</a></li>
+<li><a href="#section-29" data-target="section-29">12. Current Intelligence</a></li>
+<li><a href="#section-30" data-target="section-30">13. Vertical Ocean Intelligence</a></li>
+<li><a href="#section-31" data-target="section-31">14. PFZ Intelligence</a></li>
+<li><a href="#section-32" data-target="section-32">15. Ecosystem Intelligence Engine</a></li>
+<li><a href="#section-33" data-target="section-33">16. Weather & Atmospheric Intelligence Engine</a></li>
+<li><a href="#section-34" data-target="section-34">17. Wind Analysis</a></li>
+<li><a href="#section-35" data-target="section-35">18. Wave Intelligence</a></li>
+<li><a href="#section-36" data-target="section-36">19. Rain Intelligence</a></li>
+<li><a href="#section-37" data-target="section-37">20. Cyclone Intelligence</a></li>
+<li><a href="#section-38" data-target="section-38">21. Lightning Intelligence</a></li>
+<li><a href="#section-39" data-target="section-39">22. Forecast Comparison</a></li>
+<li><a href="#section-40" data-target="section-40">23. Spatial Intelligence Engine</a></li>
+<li><a href="#section-41" data-target="section-41">24. Point-in-Polygon</a></li>
+<li><a href="#section-42" data-target="section-42">25. Distance Calculation</a></li>
+<li><a href="#section-43" data-target="section-43">26. Intersection</a></li>
+<li><a href="#section-44" data-target="section-44">27. Geofencing</a></li>
+<li><a href="#section-45" data-target="section-45">28. Raster Sampling</a></li>
+<li><a href="#section-46" data-target="section-46">29. Temporal Intelligence Engine</a></li>
+<li><a href="#section-47" data-target="section-47">30. Forecast Alignment</a></li>
+<li><a href="#section-48" data-target="section-48">31. Historical Comparison</a></li>
+<li><a href="#section-49" data-target="section-49">32. Trend Analysis</a></li>
+<li><a href="#section-50" data-target="section-50">33. Anomaly Engine</a></li>
+<li><a href="#section-51" data-target="section-51">34. Risk Intelligence Engine</a></li>
+<li><a href="#section-52" data-target="section-52">35. Hazard Components</a></li>
+<li><a href="#section-53" data-target="section-53">36. Contextual Risk</a></li>
+<li><a href="#section-54" data-target="section-54">37. Risk vs Confidence</a></li>
+<li><a href="#section-55" data-target="section-55">38. Uncertainty</a></li>
+<li><a href="#section-56" data-target="section-56">39. Route & Operations Engine</a></li>
+<li><a href="#section-57" data-target="section-57">40. Route Generation</a></li>
+<li><a href="#section-58" data-target="section-58">41. Route Cost</a></li>
+<li><a href="#section-59" data-target="section-59">42. Current-Aware Routing</a></li>
+<li><a href="#section-60" data-target="section-60">43. Route Validation</a></li>
+<li><a href="#section-61" data-target="section-61">44. Important Bathymetry Limitation</a></li>
+<li><a href="#section-62" data-target="section-62">45. Decision Intelligence</a></li>
+<li><a href="#section-63" data-target="section-63">46. Decision Classes</a></li>
+<li><a href="#section-64" data-target="section-64">WHERE</a></li>
+<li><a href="#section-65" data-target="section-65">WHEN</a></li>
+<li><a href="#section-66" data-target="section-66">WHY</a></li>
+<li><a href="#section-67" data-target="section-67">WHAT SHOULD I DO</a></li>
+<li><a href="#section-68" data-target="section-68">WHAT CHANGED</a></li>
+<li><a href="#section-69" data-target="section-69">47. Scientific Engine Contract</a></li>
+<li><a href="#section-70" data-target="section-70">48. Evidence-First Computation</a></li>
+<li><a href="#section-71" data-target="section-71">49. Provenance Requirements</a></li>
+<li><a href="#section-72" data-target="section-72">50. Confidence Model</a></li>
+<li><a href="#section-73" data-target="section-73">51. Scientific Output Must Be Structured</a></li>
+<li><a href="#section-74" data-target="section-74">52. Scientific Engines vs Agents</a></li>
+<li><a href="#section-75" data-target="section-75">Scientific Engine</a></li>
+<li><a href="#section-76" data-target="section-76">Agent</a></li>
+<li><a href="#section-77" data-target="section-77">53. Example Agent Interaction</a></li>
+<li><a href="#section-78" data-target="section-78">54. Engine Registry</a></li>
+<li><a href="#section-79" data-target="section-79">55. V1 Scientific Capability Set</a></li>
+<li><a href="#section-80" data-target="section-80">Ocean</a></li>
+<li><a href="#section-81" data-target="section-81">Weather</a></li>
+<li><a href="#section-82" data-target="section-82">Spatial</a></li>
+<li><a href="#section-83" data-target="section-83">Temporal</a></li>
+<li><a href="#section-84" data-target="section-84">Ecosystem</a></li>
+<li><a href="#section-85" data-target="section-85">Risk</a></li>
+<li><a href="#section-86" data-target="section-86">Route</a></li>
+<li><a href="#section-87" data-target="section-87">56. V2 Scientific Capability Set</a></li>
+<li><a href="#section-88" data-target="section-88">57. Recommended Implementation Order</a></li>
+<li><a href="#section-89" data-target="section-89">Phase 1 — Scientific Data Interface</a></li>
+<li><a href="#section-90" data-target="section-90">Phase 2 — Core Mathematical Operations</a></li>
+<li><a href="#section-91" data-target="section-91">Phase 3 — Ocean Engine</a></li>
+<li><a href="#section-92" data-target="section-92">Phase 4 — Weather Engine</a></li>
+<li><a href="#section-93" data-target="section-93">Phase 5 — Spatial Engine</a></li>
+<li><a href="#section-94" data-target="section-94">Phase 6 — Temporal Engine</a></li>
+<li><a href="#section-95" data-target="section-95">Phase 7 — Ecosystem Engine</a></li>
+<li><a href="#section-96" data-target="section-96">Phase 8 — Risk Engine</a></li>
+<li><a href="#section-97" data-target="section-97">Phase 9 — Route Engine</a></li>
+<li><a href="#section-98" data-target="section-98">Phase 10 — Agent Integration</a></li>
+<li><a href="#section-99" data-target="section-99">58. Testing Strategy</a></li>
+<li><a href="#section-100" data-target="section-100">Ocean tests</a></li>
+<li><a href="#section-101" data-target="section-101">Spatial tests</a></li>
+<li><a href="#section-102" data-target="section-102">Temporal tests</a></li>
+<li><a href="#section-103" data-target="section-103">Risk tests</a></li>
+<li><a href="#section-104" data-target="section-104">Route tests</a></li>
+<li><a href="#section-105" data-target="section-105">59. Synthetic / Mock Data Mode</a></li>
+<li><a href="#section-106" data-target="section-106">60. Caching</a></li>
+<li><a href="#section-107" data-target="section-107">61. Computational Storage</a></li>
+<li><a href="#section-108" data-target="section-108">62. API Layer</a></li>
+<li><a href="#section-109" data-target="section-109">63. Generic Scientific Request</a></li>
+<li><a href="#section-110" data-target="section-110">64. Generic Scientific Response</a></li>
+<li><a href="#section-111" data-target="section-111">65. Failure Handling</a></li>
+<li><a href="#section-112" data-target="section-112">66. Source Conflict Handling</a></li>
+<li><a href="#section-113" data-target="section-113">67. Explainability</a></li>
+<li><a href="#section-114" data-target="section-114">68. Map Integration</a></li>
+<li><a href="#section-115" data-target="section-115">69. Charts</a></li>
+<li><a href="#section-116" data-target="section-116">70. Alert Support</a></li>
+<li><a href="#section-117" data-target="section-117">71. Security and Safety Boundaries</a></li>
+<li><a href="#section-118" data-target="section-118">72. LLM Boundary</a></li>
+<li><a href="#section-119" data-target="section-119">73. Core Separation</a></li>
+<li><a href="#section-120" data-target="section-120">74. Anti-Patterns to Avoid</a></li>
+<li><a href="#section-121" data-target="section-121">Anti-pattern 1 — Fisherman-first architecture</a></li>
+<li><a href="#section-122" data-target="section-122">Anti-pattern 2 — Agent for every noun</a></li>
+<li><a href="#section-123" data-target="section-123">Anti-pattern 3 — LLM mathematics</a></li>
+<li><a href="#section-124" data-target="section-124">Anti-pattern 4 — Black-box risk score</a></li>
+<li><a href="#section-125" data-target="section-125">Anti-pattern 5 — Treating inference as observation</a></li>
+<li><a href="#section-126" data-target="section-126">Anti-pattern 6 — Treating bathymetry as a navigation chart</a></li>
+<li><a href="#section-127" data-target="section-127">75. Recommended ORCA Scientific Architecture</a></li>
+<li><a href="#section-128" data-target="section-128">76. Final Design Philosophy</a></li>
+<li><a href="#section-129" data-target="section-129">77. One-Sentence System Definition</a></li>
+<li><a href="#section-130" data-target="section-130">78. Engineering Rule to Lock</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <div class="toc-content">
+    <div class="breadcrumb"><a href="index.html">Home</a> / Scientific & Marine Intelligence System</div>
+
+    <div class="md-content">
+<h1 id="section-1">ORCA Marine Ecosystem Reasoning with Collaborative Agents</h1>
+<h2 id="section-2">System 7 — Scientific & Marine Intelligence System</h2>
+
+<p><strong>Problem Statement:</strong> ORCA Marine EcOsystem Reasoning with Collaborative Agents</p>
+<p><strong>Organization:</strong> ISRO / Department of Space</p>
+<p><strong>System:</strong> Scientific & Marine Intelligence</p>
+<p><strong>Document purpose:</strong> Detailed engineering and research specification</p>
+<p><strong>Scope:</strong> Stakeholder-neutral marine decision intelligence</p>
+
+<hr>
+
+<h1 id="section-3">1. Executive Definition</h1>
+
+<p>ORCA must not be designed as a fishermen-only application.</p>
+
+<p>It is a <strong>general marine decision-intelligence platform</strong> that can support fishermen, marine researchers, coastal authorities, disaster-management agencies, maritime operators, port authorities, environmental agencies, and other marine stakeholders.</p>
+
+<p>The central principle is:</p>
+
+<blockquote><strong>Stakeholder role, operational context, spatial region, temporal horizon, constraints, and decision objective determine which scientific analyses are required.</strong></blockquote>
+
+<p>The Scientific & Marine Intelligence System is the deterministic computational layer between the heterogeneous data foundation and the agentic reasoning layer.</p>
+
+<p>The separation is:</p>
+
+<pre><code class="language-text">LLM / Agents       = reasoning, planning, interpretation
+Scientific Engines = deterministic computation
+Data Foundation    = evidence
+Decision Layer     = contextual operational judgment
+Evidence Layer     = provenance, validation, confidence</code></pre>
+
+<p>The LLM must not independently perform scientific calculations that can be implemented deterministically.</p>
+
+<hr>
+
+<h1 id="section-4">2. Why This System Exists</h1>
+
+<p>The ORCA problem involves large volumes of heterogeneous marine information:</p>
+
+<ul>
+<li>satellite Earth observation</li>
+<li>oceanographic observations</li>
+<li>ocean forecasts</li>
+<li>weather forecasts</li>
+<li>marine advisories</li>
+<li>GIS layers</li>
+<li>historical datasets</li>
+<li>derived scientific products</li>
+</ul>
+
+<p>The challenge is not merely retrieving a value.</p>
+
+<p>A useful marine intelligence system must answer questions such as:</p>
+
+<ul>
+<li>What is happening?</li>
+<li>Where is it happening?</li>
+<li>When is it happening?</li>
+<li>How unusual is it?</li>
+<li>What other variables are correlated with it?</li>
+<li>What hazards or constraints exist?</li>
+<li>What does the evidence imply?</li>
+<li>What decision is appropriate for this stakeholder and context?</li>
+<li>How confident is the conclusion?</li>
+<li>What evidence supports the conclusion?</li>
+</ul>
+
+<p>Therefore:</p>
+
+<pre><code class="language-text">Raw Data
+   ↓
+Marine State
+   ↓
+Scientific Analysis
+   ↓
+Contextual Interpretation
+   ↓
+Decision Intelligence
+   ↓
+Evidence-Grounded Response</code></pre>
+
+<hr>
+
+<h1 id="section-5">3. Stakeholder-Neutral Architecture</h1>
+
+<p>ORCA should not create a separate scientific engine for every user type.</p>
+
+<p>Instead, the same scientific core should support multiple decision classes.</p>
+
+<h2 id="section-6">3.1 Fisherman</h2>
+
+<p>Example:</p>
+
+<blockquote>Where should I fish tomorrow morning?</blockquote>
+
+<p>Required intelligence:</p>
+
+<pre><code class="language-text">PFZ
++ SST
++ Chlorophyll
++ Waves
++ Wind
++ Currents
++ Marine warnings
++ Restricted areas
++ Time
+→ Fishing operational suitability</code></pre>
+
+<p>Important:</p>
+
+<p>PFZ is a potential fishing-zone indicator, not proof that fish are physically present.</p>
+
+<hr>
+
+<h2 id="section-7">3.2 Marine Researcher</h2>
+
+<p>Example:</p>
+
+<blockquote>Why has productivity decreased in this region?</blockquote>
+
+<p>Required intelligence:</p>
+
+<pre><code class="language-text">Current chlorophyll
++ Historical chlorophyll
++ Chlorophyll anomaly
++ SST anomaly
++ Currents
++ Wind
++ Fronts / upwelling indicators
+→ Ecosystem change analysis</code></pre>
+
+<p>The system should distinguish between:</p>
+
+<ul>
+<li>observation</li>
+<li>derived metric</li>
+<li>scientific indicator</li>
+<li>correlation</li>
+<li>hypothesis/inference</li>
+</ul>
+
+<p>It must not convert correlation into unsupported causation.</p>
+
+<hr>
+
+<h2 id="section-8">3.3 Coastal Authority</h2>
+
+<p>Example:</p>
+
+<blockquote>Which marine areas currently have operational restrictions or elevated hazards?</blockquote>
+
+<p>Required intelligence:</p>
+
+<pre><code class="language-text">Marine warnings
++ Cyclone
++ Waves
++ Wind
++ Geofences
++ Restricted areas
++ GIS
+→ Spatial operational assessment</code></pre>
+
+<hr>
+
+<h2 id="section-9">3.4 Disaster Management Agency</h2>
+
+<p>Example:</p>
+
+<blockquote>Which coastal regions may be affected by this cyclone?</blockquote>
+
+<p>Required intelligence:</p>
+
+<pre><code class="language-text">Official cyclone track
++ Forecast position
++ Wind
++ Waves
++ Rain
++ Coastline
++ Spatial overlays
+→ Potential impact regions</code></pre>
+
+<p>Official warnings remain authoritative.</p>
+
+<hr>
+
+<h2 id="section-10">3.5 Maritime Operator</h2>
+
+<p>Example:</p>
+
+<blockquote>What is the safest practical route from Port A to Port B tomorrow?</blockquote>
+
+<p>Required intelligence:</p>
+
+<pre><code class="language-text">Coastline
++ Restricted zones
++ Wind
++ Waves
++ Currents
++ Cyclone
++ Operational constraints
+→ Candidate routes
+→ Exposure analysis
+→ Route ranking</code></pre>
+
+<p>The system should not represent a general bathymetry dataset as a certified navigation chart.</p>
+
+<hr>
+
+<h2 id="section-11">3.6 Port Authority</h2>
+
+<p>Example:</p>
+
+<blockquote>Are marine conditions suitable for planned operations?</blockquote>
+
+<p>Required intelligence:</p>
+
+<pre><code class="language-text">Wave height
++ Wave period
++ Wind
++ Forecast
++ Marine warnings
++ Operational threshold/policy
+→ Operational suitability</code></pre>
+
+<p>Thresholds must be configurable to the actual operation rather than hard-coded as universal maritime safety rules.</p>
+
+<hr>
+
+<h2 id="section-12">3.7 Environmental Agency</h2>
+
+<p>Example:</p>
+
+<blockquote>Is this region experiencing an unusual ecosystem condition?</blockquote>
+
+<p>Required intelligence:</p>
+
+<pre><code class="language-text">SST anomaly
++ Chlorophyll anomaly
++ Ocean colour
++ Historical baseline
++ HAB indicators
++ Marine heatwave indicators
+→ Ecosystem anomaly assessment</code></pre>
+
+<hr>
+
+<h1 id="section-13">4. The Central ORCA Concept: Marine State</h1>
+
+<p>The scientific system should construct a machine-readable representation of the marine environment.</p>
+
+<p>This is the <strong>Marine State</strong>.</p>
+
+<pre><code class="language-text">Marine State
+│
+├── Ocean
+│   ├── SST
+│   ├── Chlorophyll
+│   ├── Currents
+│   ├── Waves
+│   ├── MLD
+│   ├── Temperature
+│   ├── Salinity
+│   └── Ocean colour
+│
+├── Atmosphere
+│   ├── Wind
+│   ├── Rain
+│   ├── Lightning
+│   └── Cyclone
+│
+├── Ecosystem
+│   ├── Productivity indicators
+│   ├── Fronts
+│   ├── Upwelling indicators
+│   ├── HAB indicators
+│   ├── Marine heatwave indicators
+│   └── Ecosystem anomalies
+│
+├── Geography
+│   ├── Coastline
+│   ├── EEZ
+│   ├── MPA
+│   ├── Restricted areas
+│   ├── Ports
+│   └── Bathymetry
+│
+└── Temporal State
+    ├── Current observations
+    ├── Forecast
+    ├── Historical baseline
+    ├── Trend
+    └── Anomaly</code></pre>
+
+<p>This model is more important than any individual agent.</p>
+
+<hr>
+
+<h1 id="section-14">5. System Architecture</h1>
+
+<pre><code class="language-text">                         USER
+                           │
+                           ▼
+                    CONVERSATION LAYER
+                           │
+                           ▼
+                     ORCHESTRATOR
+                           │
+                           ▼
+                    TASK / PLAN MODEL
+                           │
+                           ▼
+                 DATA DISCOVERY AGENT
+                           │
+                           ▼
+                 DATA RETRIEVAL AGENT
+                           │
+                           ▼
+             SCIENTIFIC &amp; MARINE INTELLIGENCE
+                           │
+        ┌──────────────────┼───────────────────┐
+        │                  │                   │
+        ▼                  ▼                   ▼
+      OCEAN             WEATHER            SPATIAL
+   INTELLIGENCE       INTELLIGENCE       INTELLIGENCE
+        │                  │                   │
+        ├──────────────┐   │   ┌──────────────┤
+        │              │   │   │              │
+        ▼              ▼   ▼   ▼              ▼
+   ECOSYSTEM       TEMPORAL ENGINE       GEOSPATIAL
+   INTELLIGENCE                         CONSTRAINTS
+        │                  │
+        └────────────┬─────┘
+                     ▼
+                 RISK ENGINE
+                     │
+                     ▼
+                ROUTE ENGINE
+                     │
+                     ▼
+             DECISION INTELLIGENCE
+                     │
+                     ▼
+              EVIDENCE VALIDATOR
+                     │
+                     ▼
+             RESPONSE SYNTHESIZER
+                     │
+                     ▼
+                USER + MAP</code></pre>
+
+<hr>
+
+<h1 id="section-15">6. Scientific Intelligence Layers</h1>
+
+<p>The system should operate at three major levels.</p>
+
+<h2 id="section-16">Level 1 — Measurement</h2>
+
+<p>Directly retrieve or sample data.</p>
+
+<p>Examples:</p>
+
+<ul>
+<li>SST = 28.4 °C</li>
+<li>chlorophyll = 1.2 mg/m³</li>
+<li>wave height = 1.8 m</li>
+<li>wind speed = 24 km/h</li>
+<li>current speed = 0.7 m/s</li>
+</ul>
+
+<p>No interpretation is performed here.</p>
+
+<hr>
+
+<h2 id="section-17">Level 2 — Analysis</h2>
+
+<p>Transform measurements into scientifically meaningful quantities.</p>
+
+<p>Examples:</p>
+
+<pre><code class="language-text">SST
+→ SST anomaly
+
+Chlorophyll
+→ chlorophyll anomaly
+
+SST field
+→ spatial gradient
+
+SST + chlorophyll gradients
+→ potential front
+
+Current vectors
+→ current speed and direction
+
+Historical data
+→ trend
+
+Current + historical
+→ anomaly</code></pre>
+
+<hr>
+
+<h2 id="section-18">Level 3 — Decision Intelligence</h2>
+
+<p>Combine scientific results with context and constraints.</p>
+
+<p>Example:</p>
+
+<pre><code class="language-text">Wave conditions
++ Wind
++ Cyclone
++ Marine warning
++ Vessel context
++ Time
+→ Operational suitability</code></pre>
+
+<p>The LLM explains this result but should not invent the calculation.</p>
+
+<hr>
+
+<h1 id="section-19">7. Ocean Intelligence Engine</h1>
+
+<h2 id="section-20">7.1 Purpose</h2>
+
+<p>The Ocean Intelligence Engine analyzes the physical and biogeochemical state of the ocean.</p>
+
+<p>Primary variables:</p>
+
+<ul>
+<li>sea surface temperature</li>
+<li>chlorophyll</li>
+<li>ocean colour</li>
+<li>currents</li>
+<li>waves</li>
+<li>mixed layer depth</li>
+<li>temperature profiles</li>
+<li>salinity profiles</li>
+<li>related oceanographic indicators</li>
+</ul>
+
+<hr>
+
+<h2 id="section-21">7.2 SST Analysis</h2>
+
+<p>Operations:</p>
+
+<h3 id="section-22">SST lookup</h3>
+
+<p>Inputs:</p>
+
+<pre><code class="language-text">latitude
+longitude
+time
+dataset</code></pre>
+
+<p>Output:</p>
+
+<pre><code class="language-json">{
+  &quot;variable&quot;: &quot;sst&quot;,
+  &quot;value&quot;: 28.4,
+  &quot;unit&quot;: &quot;degC&quot;,
+  &quot;timestamp&quot;: &quot;...&quot;,
+  &quot;source&quot;: &quot;...&quot;,
+  &quot;evidence_ids&quot;: [&quot;...&quot;]
+}</code></pre>
+
+<h3 id="section-23">Regional SST statistics</h3>
+
+<p>Calculate:</p>
+
+<ul>
+<li>minimum</li>
+<li>maximum</li>
+<li>mean</li>
+<li>median</li>
+<li>standard deviation</li>
+<li>percentile</li>
+<li>spatial coverage</li>
+</ul>
+
+<h3 id="section-24">SST gradient</h3>
+
+<p>Calculate:</p>
+
+<pre><code class="language-text">|∇SST|</code></pre>
+
+<p>A strong spatial temperature gradient can indicate an oceanic front.</p>
+
+<p>The result must state:</p>
+
+<ul>
+<li>method</li>
+<li>grid resolution</li>
+<li>units</li>
+<li>threshold</li>
+<li>input dataset</li>
+<li>confidence</li>
+</ul>
+
+<hr>
+
+<h1 id="section-25">8. Chlorophyll Intelligence</h1>
+
+<p>Chlorophyll-a is a major ocean-colour-derived indicator relevant to biological productivity.</p>
+
+<p>Operations:</p>
+
+<pre><code class="language-text">lookup
+regional statistics
+gradient
+anomaly
+historical comparison
+spatial hotspot detection</code></pre>
+
+<p>Example:</p>
+
+<pre><code class="language-text">Current chlorophyll
+        ↓
+Historical baseline
+        ↓
+Anomaly
+        ↓
+Spatial pattern</code></pre>
+
+<p>The system should not interpret high chlorophyll as automatically meaning:</p>
+
+<blockquote>“There are many fish.”</blockquote>
+
+<p>Instead:</p>
+
+<blockquote>“The region exhibits elevated chlorophyll relative to the selected baseline.”</blockquote>
+
+<p>Further ecological interpretation requires additional evidence.</p>
+
+<hr>
+
+<h1 id="section-26">9. Ocean Front Detection</h1>
+
+<p>Front detection is particularly relevant to ORCA because operational marine advisory systems can use oceanic fronts as part of fisheries intelligence.</p>
+
+<p>A basic implementation can use spatial gradients.</p>
+
+<p>For SST:</p>
+
+<pre><code class="language-text">SST(x,y)
+   ↓
+Spatial derivative
+   ↓
+Gradient magnitude
+   ↓
+Threshold
+   ↓
+Potential thermal front</code></pre>
+
+<p>For chlorophyll:</p>
+
+<pre><code class="language-text">Chlorophyll(x,y)
+   ↓
+Spatial gradient
+   ↓
+Potential biological boundary</code></pre>
+
+<p>A combined method can evaluate:</p>
+
+<pre><code class="language-text">SST gradient
++
+Chlorophyll gradient
++
+spatial coherence
++
+temporal persistence</code></pre>
+
+<p>Important distinction:</p>
+
+<pre><code class="language-text">Front detected
+≠
+Fish detected</code></pre>
+
+<p>The front is an environmental feature.</p>
+
+<hr>
+
+<h1 id="section-27">10. Eddy Intelligence</h1>
+
+<p>Eddy detection is a V2 capability.</p>
+
+<p>Potential inputs:</p>
+
+<ul>
+<li>sea-surface height</li>
+<li>sea-surface temperature</li>
+<li>currents</li>
+<li>chlorophyll</li>
+<li>vorticity</li>
+</ul>
+
+<p>Possible methods:</p>
+
+<pre><code class="language-text">SSH contours
++
+velocity field
++
+vorticity
++
+temperature anomaly
+→ Eddy candidate</code></pre>
+
+<p>Candidate output:</p>
+
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;eddy_candidate&quot;,
+  &quot;center&quot;: {&quot;lat&quot;: 0, &quot;lon&quot;: 0},
+  &quot;radius_km&quot;: 25,
+  &quot;polarity&quot;: &quot;cyclonic&quot;,
+  &quot;confidence&quot;: 0.78,
+  &quot;method_version&quot;: &quot;eddy-v1&quot;
+}</code></pre>
+
+<p>Do not implement complex eddy classification before the basic scientific pipeline is stable.</p>
+
+<hr>
+
+<h1 id="section-28">11. Upwelling Intelligence</h1>
+
+<p>Upwelling should be treated as an <strong>inferred environmental condition</strong>, not a single directly observed variable.</p>
+
+<p>Possible evidence:</p>
+
+<pre><code class="language-text">Lower SST
++
+elevated chlorophyll
++
+favorable wind
++
+current structure
++
+historical persistence
+→ conditions consistent with upwelling</code></pre>
+
+<p>Output language should distinguish evidence from inference:</p>
+
+<pre><code class="language-text">Observed:
+SST is below baseline.
+
+Observed:
+Chlorophyll is elevated.
+
+Derived:
+Wind direction is favorable for coastal upwelling.
+
+Inference:
+Conditions are consistent with enhanced upwelling.</code></pre>
+
+<p>This is scientifically safer than declaring:</p>
+
+<blockquote>“Upwelling is occurring.”</blockquote>
+
+<p>unless a validated algorithm supports that statement.</p>
+
+<hr>
+
+<h1 id="section-29">12. Current Intelligence</h1>
+
+<p>Current datasets can provide vector components:</p>
+
+<pre><code class="language-text">u = east-west component
+v = north-south component</code></pre>
+
+<p>Derive:</p>
+
+<pre><code class="language-text">speed = sqrt(u² + v²)</code></pre>
+
+<p>and direction using a clearly documented convention.</p>
+
+<p>Operations:</p>
+
+<ul>
+<li>current speed</li>
+<li>current direction</li>
+<li>vector field</li>
+<li>spatial gradients</li>
+<li>convergence</li>
+<li>divergence</li>
+<li>route exposure</li>
+</ul>
+
+<p>Current direction conventions must be explicitly recorded because oceanographic and meteorological direction conventions can differ.</p>
+
+<hr>
+
+<h1 id="section-30">13. Vertical Ocean Intelligence</h1>
+
+<p>For Argo and related profiles:</p>
+
+<pre><code class="language-text">Depth
+Temperature
+Salinity</code></pre>
+
+<p>Possible derived products:</p>
+
+<ul>
+<li>mixed-layer depth</li>
+<li>thermocline indicators</li>
+<li>temperature gradient</li>
+<li>salinity gradient</li>
+<li>vertical structure</li>
+<li>heat-content indicators</li>
+</ul>
+
+<p>Example:</p>
+
+<pre><code class="language-text">Surface temperature
+       ↓
+Temperature profile
+       ↓
+Gradient with depth
+       ↓
+Thermal structure</code></pre>
+
+<p>This is more useful for researchers and ecosystem analysis than for simple fishing queries.</p>
+
+<hr>
+
+<h1 id="section-31">14. PFZ Intelligence</h1>
+
+<p>PFZ must be treated as an existing authoritative operational product when available.</p>
+
+<p>ORCA should <strong>not claim that it invented PFZ</strong>.</p>
+
+<p>The system can:</p>
+
+<pre><code class="language-text">retrieve PFZ
++
+associate PFZ with location
++
+compare PFZ with ocean state
++
+compare PFZ with weather
++
+check hazards
++
+check geofences
++
+rank operational suitability</code></pre>
+
+<p>Example:</p>
+
+<pre><code class="language-text">PFZ
++
+SST
++
+Chlorophyll
++
+Wind
++
+Waves
++
+Marine warning
++
+Restricted areas
+→ Contextual PFZ assessment</code></pre>
+
+<p>This is a much stronger contribution than simply displaying the PFZ layer.</p>
+
+<hr>
+
+<h1 id="section-32">15. Ecosystem Intelligence Engine</h1>
+
+<p>Because the problem is explicitly about marine ecosystem reasoning, ORCA should contain an Ecosystem Intelligence capability.</p>
+
+<p>Inputs:</p>
+
+<pre><code class="language-text">SST
+Chlorophyll
+Ocean colour
+Currents
+Fronts
+Upwelling indicators
+MLD
+Historical baseline
+HAB indicators
+Marine heatwave indicators
+PFZ</code></pre>
+
+<p>Potential outputs:</p>
+
+<pre><code class="language-text">ecosystem anomaly
+productivity indicator
+thermal anomaly
+chlorophyll anomaly
+possible bloom condition
+front persistence
+regional ecosystem change</code></pre>
+
+<p>The engine should use evidence chains.</p>
+
+<p>Example:</p>
+
+<pre><code class="language-text">Evidence 1:
+Chlorophyll +35% relative to baseline
+
+Evidence 2:
+SST -1.2 °C relative to baseline
+
+Evidence 3:
+Wind pattern consistent with upwelling
+
+Derived assessment:
+Environmental conditions are consistent with enhanced productivity.
+
+Confidence:
+Moderate</code></pre>
+
+<p>This is preferable to a black-box statement.</p>
+
+<hr>
+
+<h1 id="section-33">16. Weather & Atmospheric Intelligence Engine</h1>
+
+<p>The Weather Engine handles:</p>
+
+<ul>
+<li>wind</li>
+<li>rain</li>
+<li>waves</li>
+<li>lightning</li>
+<li>cyclone</li>
+<li>marine warnings</li>
+<li>forecast products</li>
+</ul>
+
+<hr>
+
+<h1 id="section-34">17. Wind Analysis</h1>
+
+<p>Operations:</p>
+
+<pre><code class="language-text">speed
+direction
+u/v components
+regional mean
+gradient
+forecast trend
+historical comparison</code></pre>
+
+<p>Possible output:</p>
+
+<pre><code class="language-json">{
+  &quot;variable&quot;: &quot;wind_speed&quot;,
+  &quot;value&quot;: 26,
+  &quot;unit&quot;: &quot;km/h&quot;,
+  &quot;valid_time&quot;: &quot;...&quot;,
+  &quot;forecast&quot;: true,
+  &quot;source&quot;: &quot;...&quot;,
+  &quot;confidence&quot;: &quot;high&quot;
+}</code></pre>
+
+<hr>
+
+<h1 id="section-35">18. Wave Intelligence</h1>
+
+<p>Wave analysis should include:</p>
+
+<ul>
+<li>significant wave height</li>
+<li>wave period</li>
+<li>swell height</li>
+<li>swell period</li>
+<li>wave direction where available</li>
+<li>forecast evolution</li>
+</ul>
+
+<p>Do not create a universal rule such as:</p>
+
+<pre><code class="language-text">wave &gt; X = unsafe</code></pre>
+
+<p>unless the operational context provides a validated threshold.</p>
+
+<p>Instead:</p>
+
+<pre><code class="language-text">Wave state
++
+vessel/operation context
++
+official warning
++
+forecast uncertainty
+→ operational assessment</code></pre>
+
+<hr>
+
+<h1 id="section-36">19. Rain Intelligence</h1>
+
+<p>Rain should be classified contextually.</p>
+
+<p>Possible states:</p>
+
+<pre><code class="language-text">none
+light
+moderate
+heavy
+extreme</code></pre>
+
+<p>But rain alone should not automatically mean unsafe marine conditions.</p>
+
+<p>It can become relevant when combined with:</p>
+
+<ul>
+<li>lightning</li>
+<li>cyclone</li>
+<li>visibility</li>
+<li>flooding</li>
+<li>wind</li>
+<li>operational context</li>
+</ul>
+
+<hr>
+
+<h1 id="section-37">20. Cyclone Intelligence</h1>
+
+<p>Cyclone analysis must prioritize authoritative cyclone information.</p>
+
+<p>Operations:</p>
+
+<pre><code class="language-text">track retrieval
+forecast position
+distance to region
+distance to route
+time to closest approach
+wind exposure
+warning status
+forecast evolution</code></pre>
+
+<p>Example:</p>
+
+<pre><code class="language-text">Cyclone forecast track
+        ↓
+Spatial projection
+        ↓
+Region / route intersection
+        ↓
+Distance to closest approach
+        ↓
+Timing
+        ↓
+Risk context</code></pre>
+
+<p>Official warnings must not be casually overridden by model-derived calculations.</p>
+
+<hr>
+
+<h1 id="section-38">21. Lightning Intelligence</h1>
+
+<p>Operations:</p>
+
+<ul>
+<li>lightning occurrence</li>
+<li>distance</li>
+<li>spatial density</li>
+<li>recent activity</li>
+<li>trend</li>
+<li>forecast/nowcast where available</li>
+</ul>
+
+<p>Example:</p>
+
+<pre><code class="language-text">Recent lightning activity
++
+distance from operation
++
+storm movement
+→ lightning exposure</code></pre>
+
+<hr>
+
+<h1 id="section-39">22. Forecast Comparison</h1>
+
+<p>Multiple authoritative or high-quality sources can sometimes provide different forecasts.</p>
+
+<p>ORCA should preserve them separately.</p>
+
+<pre><code class="language-text">Forecast A
+Forecast B
+Observation
+       ↓
+Alignment
+       ↓
+Difference
+       ↓
+Agreement / disagreement</code></pre>
+
+<p>Example:</p>
+
+<pre><code class="language-text">INCOIS forecast:
+Wave = 1.8 m
+
+Copernicus:
+Wave = 2.0 m
+
+Observation:
+Wave = 1.9 m</code></pre>
+
+<p>This can support a higher-confidence assessment.</p>
+
+<p>If forecasts disagree strongly, confidence should decrease.</p>
+
+<hr>
+
+<h1 id="section-40">23. Spatial Intelligence Engine</h1>
+
+<p>Spatial reasoning is a foundational capability.</p>
+
+<p>Operations:</p>
+
+<pre><code class="language-text">point-in-polygon
+distance
+intersection
+buffer
+nearest feature
+spatial join
+raster sampling
+area statistics
+geofence detection
+route intersection</code></pre>
+
+<hr>
+
+<h1 id="section-41">24. Point-in-Polygon</h1>
+
+<p>Example:</p>
+
+<pre><code class="language-text">Vessel coordinate
+        ↓
+Protected-area polygons
+        ↓
+Point-in-polygon
+        ↓
+Inside / Outside</code></pre>
+
+<p>Use cases:</p>
+
+<ul>
+<li>MPA membership</li>
+<li>EEZ membership</li>
+<li>restricted zones</li>
+<li>administrative/coastal zones</li>
+<li>operational areas</li>
+</ul>
+
+<hr>
+
+<h1 id="section-42">25. Distance Calculation</h1>
+
+<p>Distance should use an appropriate geodesic calculation for geographic coordinates.</p>
+
+<p>Use cases:</p>
+
+<pre><code class="language-text">distance to port
+distance to PFZ
+distance to cyclone
+distance to restricted zone
+distance to coast
+distance between route points</code></pre>
+
+<hr>
+
+<h1 id="section-43">26. Intersection</h1>
+
+<p>Example:</p>
+
+<pre><code class="language-text">Candidate Route
+       +
+Restricted Zone
+       ↓
+Geometry intersection
+       ↓
+Violation = true</code></pre>
+
+<p>This should be deterministic.</p>
+
+<p>The LLM should never decide geometric intersection by visual guesswork.</p>
+
+<hr>
+
+<h1 id="section-44">27. Geofencing</h1>
+
+<p>Geofences are <strong>constraints</strong>, not necessarily physical hazards.</p>
+
+<p>Example:</p>
+
+<pre><code class="language-text">Restricted Area
+Protected Area
+Military Zone
+Port Exclusion Zone
+Fishing Restriction</code></pre>
+
+<p>Therefore distinguish:</p>
+
+<pre><code class="language-text">Physical Risk
+vs
+Compliance / Access Constraint</code></pre>
+
+<p>A route can be physically safe but legally prohibited.</p>
+
+<hr>
+
+<h1 id="section-45">28. Raster Sampling</h1>
+
+<p>For satellite or model grids:</p>
+
+<pre><code class="language-text">Point / polygon
+      ↓
+Raster / grid
+      ↓
+Sampling
+      ↓
+Variable value</code></pre>
+
+<p>For polygons, possible statistics include:</p>
+
+<ul>
+<li>mean</li>
+<li>minimum</li>
+<li>maximum</li>
+<li>percentile</li>
+<li>valid-pixel percentage</li>
+</ul>
+
+<p>Quality and missing-data handling must be recorded.</p>
+
+<hr>
+
+<h1 id="section-46">29. Temporal Intelligence Engine</h1>
+
+<p>Marine intelligence is highly time-dependent.</p>
+
+<p>The engine must understand:</p>
+
+<pre><code class="language-text">observation_time
+forecast_initialization_time
+forecast_valid_time
+historical_time
+analysis_window</code></pre>
+
+<p>Do not confuse:</p>
+
+<pre><code class="language-text">forecast created at 00:00</code></pre>
+
+<p>with:</p>
+
+<pre><code class="language-text">forecast valid at 12:00</code></pre>
+
+<p>These are different timestamps.</p>
+
+<hr>
+
+<h1 id="section-47">30. Forecast Alignment</h1>
+
+<p>Example:</p>
+
+<p>User asks:</p>
+
+<blockquote>What will conditions be at 08:00 tomorrow?</blockquote>
+
+<p>The system should:</p>
+
+<pre><code class="language-text">Resolve local time
+        ↓
+Convert to canonical time representation
+        ↓
+Find forecast valid near requested time
+        ↓
+Interpolate if appropriate
+        ↓
+Record interpolation method</code></pre>
+
+<hr>
+
+<h1 id="section-48">31. Historical Comparison</h1>
+
+<p>Supported comparisons:</p>
+
+<pre><code class="language-text">yesterday
+7-day baseline
+30-day baseline
+seasonal baseline
+climatology
+same month in previous years</code></pre>
+
+<p>The baseline must be explicitly named.</p>
+
+<p>Avoid:</p>
+
+<blockquote>“This is unusually high.”</blockquote>
+
+<p>Prefer:</p>
+
+<blockquote>“Chlorophyll is 34% above the selected 1993–2016 baseline.”</blockquote>
+
+<p>when the baseline actually supports that statement.</p>
+
+<hr>
+
+<h1 id="section-49">32. Trend Analysis</h1>
+
+<p>Possible methods:</p>
+
+<pre><code class="language-text">linear trend
+rolling average
+rolling median
+percentage change
+rate of change
+change-point detection</code></pre>
+
+<p>For every result record:</p>
+
+<ul>
+<li>time window</li>
+<li>sample count</li>
+<li>missing values</li>
+<li>method</li>
+<li>baseline</li>
+<li>confidence</li>
+</ul>
+
+<hr>
+
+<h1 id="section-50">33. Anomaly Engine</h1>
+
+<p>Generic formulation:</p>
+
+<pre><code class="language-text">Anomaly = Current Value - Expected/Baseline Value</code></pre>
+
+<p>Relative anomaly can be:</p>
+
+<pre><code class="language-text">Relative Anomaly =
+(Current - Baseline) / Baseline</code></pre>
+
+<p>But the implementation must handle:</p>
+
+<ul>
+<li>zero baseline</li>
+<li>missing baseline</li>
+<li>seasonal effects</li>
+<li>unit differences</li>
+<li>irregular sampling</li>
+</ul>
+
+<hr>
+
+<h1 id="section-51">34. Risk Intelligence Engine</h1>
+
+<p>Risk must be contextual.</p>
+
+<p>The engine should not simply output an unexplained scalar such as:</p>
+
+<pre><code class="language-text">Risk = 0.83</code></pre>
+
+<p>Instead:</p>
+
+<pre><code class="language-json">{
+  &quot;context&quot;: &quot;small_fishing_vessel&quot;,
+  &quot;hazards&quot;: [
+    {
+      &quot;type&quot;: &quot;wave&quot;,
+      &quot;severity&quot;: &quot;moderate&quot;,
+      &quot;evidence_ids&quot;: [&quot;...&quot;]
+    },
+    {
+      &quot;type&quot;: &quot;wind&quot;,
+      &quot;severity&quot;: &quot;high&quot;,
+      &quot;evidence_ids&quot;: [&quot;...&quot;]
+    }
+  ],
+  &quot;constraints&quot;: [],
+  &quot;overall_assessment&quot;: &quot;unfavorable&quot;,
+  &quot;confidence&quot;: &quot;high&quot;
+}</code></pre>
+
+<hr>
+
+<h1 id="section-52">35. Hazard Components</h1>
+
+<p>The V1 risk system should evaluate separately:</p>
+
+<pre><code class="language-text">wave risk
+wind risk
+cyclone risk
+lightning exposure
+rain/storm exposure</code></pre>
+
+<p>And separately:</p>
+
+<pre><code class="language-text">geofence/access constraint</code></pre>
+
+<hr>
+
+<h1 id="section-53">36. Contextual Risk</h1>
+
+<p>The same marine state can produce different decisions.</p>
+
+<p>Example:</p>
+
+<pre><code class="language-text">Wave = 2.0 m</code></pre>
+
+<p>For:</p>
+
+<pre><code class="language-text">small fishing boat</code></pre>
+
+<p>the operational assessment may be unfavorable.</p>
+
+<p>For:</p>
+
+<pre><code class="language-text">large ocean-going vessel</code></pre>
+
+<p>the assessment may be different.</p>
+
+<p>Therefore the system must support:</p>
+
+<pre><code class="language-text">user role
+vessel type
+operation type
+time
+route
+operational policy</code></pre>
+
+<hr>
+
+<h1 id="section-54">37. Risk vs Confidence</h1>
+
+<p>These are different concepts.</p>
+
+<pre><code class="language-text">Risk
+=
+How unfavorable / hazardous the situation is.
+
+Confidence
+=
+How strongly the evidence supports the assessment.</code></pre>
+
+<p>Example:</p>
+
+<pre><code class="language-text">High risk + high confidence</code></pre>
+
+<p>is possible.</p>
+
+<p>So is:</p>
+
+<pre><code class="language-text">High risk + low confidence</code></pre>
+
+<p>when data is sparse but available signals are concerning.</p>
+
+<hr>
+
+<h1 id="section-55">38. Uncertainty</h1>
+
+<p>Every important scientific result should be able to represent uncertainty.</p>
+
+<p>Possible fields:</p>
+
+<pre><code class="language-text">data_quality
+forecast_spread
+source_agreement
+missingness
+spatial_resolution
+temporal_resolution
+algorithm_confidence</code></pre>
+
+<p>The final answer should not hide significant uncertainty.</p>
+
+<hr>
+
+<h1 id="section-56">39. Route & Operations Engine</h1>
+
+<p>The Route Engine supports multiple stakeholders.</p>
+
+<p>Examples:</p>
+
+<pre><code class="language-text">Fishing vessel
+Port-to-port vessel
+Emergency response
+Research vessel
+Coastal operation</code></pre>
+
+<p>Inputs:</p>
+
+<pre><code class="language-text">origin
+destination
+departure time
+vessel/operation context
+coastline
+bathymetry
+restricted areas
+wind
+waves
+currents
+cyclone
+hazards</code></pre>
+
+<hr>
+
+<h1 id="section-57">40. Route Generation</h1>
+
+<p>V1 approach:</p>
+
+<pre><code class="language-text">Marine grid
+      ↓
+Forbidden cells removed
+      ↓
+Remaining navigable cells
+      ↓
+Environmental cost assigned
+      ↓
+A* / Dijkstra
+      ↓
+Candidate routes</code></pre>
+
+<p>Candidate routes can then be ranked.</p>
+
+<hr>
+
+<h1 id="section-58">41. Route Cost</h1>
+
+<p>A conceptual multi-objective cost:</p>
+
+<pre><code class="language-text">Total Cost =
+distance cost
++ time cost
++ environmental exposure
++ wave exposure
++ wind exposure
++ hazard penalty
++ restriction penalty</code></pre>
+
+<p>Weights should be configurable.</p>
+
+<p>Do not claim a route is legally or universally “safe” merely because it has the lowest computed cost.</p>
+
+<p>Prefer:</p>
+
+<blockquote>“Lowest-risk candidate under the configured constraints and available data.”</blockquote>
+
+<hr>
+
+<h1 id="section-59">42. Current-Aware Routing</h1>
+
+<p>Currents can either help or hinder a route.</p>
+
+<p>Conceptually:</p>
+
+<pre><code class="language-text">Vessel motion
++
+Current vector
+→ effective movement</code></pre>
+
+<p>The route engine should consider current direction relative to the route.</p>
+
+<hr>
+
+<h1 id="section-60">43. Route Validation</h1>
+
+<p>Every candidate route should be checked for:</p>
+
+<pre><code class="language-text">restricted-zone intersection
+coastline intersection
+invalid geometry
+missing environmental data
+hazard exposure
+excessive uncertainty</code></pre>
+
+<p>Output:</p>
+
+<pre><code class="language-json">{
+  &quot;route_id&quot;: &quot;...&quot;,
+  &quot;distance_km&quot;: 420,
+  &quot;eta_hours&quot;: 18.4,
+  &quot;constraint_violations&quot;: [],
+  &quot;wave_exposure&quot;: 0.31,
+  &quot;wind_exposure&quot;: 0.22,
+  &quot;hazard_exposure&quot;: 0.14,
+  &quot;confidence&quot;: &quot;medium&quot;
+}</code></pre>
+
+<hr>
+
+<h1 id="section-61">44. Important Bathymetry Limitation</h1>
+
+<p>General bathymetry datasets can support:</p>
+
+<ul>
+<li>depth visualization</li>
+<li>spatial analysis</li>
+<li>route-cost heuristics</li>
+<li>research analysis</li>
+</ul>
+
+<p>But a general bathymetry dataset must not be represented as an official navigation chart or certified navigational safety source.</p>
+
+<p>Navigation-critical decisions require appropriate authoritative navigation information.</p>
+
+<hr>
+
+<h1 id="section-62">45. Decision Intelligence</h1>
+
+<p>The scientific engines produce facts and analyses.</p>
+
+<p>Decision Intelligence combines them with context.</p>
+
+<pre><code class="language-text">DATA
+ ↓
+SCIENTIFIC ANALYSIS
+ ↓
+MARINE STATE
+ ↓
+USER CONTEXT
+ ↓
+CONSTRAINTS
+ ↓
+RISK
+ ↓
+DECISION</code></pre>
+
+<p>Examples:</p>
+
+<pre><code class="language-text">Where?
+→ spatial + ocean + PFZ + route
+
+When?
+→ temporal + forecast + weather
+
+Why?
+→ historical + anomaly + ecosystem + correlation
+
+What should I do?
+→ risk + route + constraints + context
+
+What changed?
+→ temporal + anomaly + historical comparison</code></pre>
+
+<hr>
+
+<h1 id="section-63">46. Decision Classes</h1>
+
+<p>ORCA should support a generic decision taxonomy.</p>
+
+<h2 id="section-64">WHERE</h2>
+
+<p>Examples:</p>
+
+<ul>
+<li>Where are potential fishing zones?</li>
+<li>Where are high chlorophyll areas?</li>
+<li>Where is the hazard concentrated?</li>
+<li>Which coastal regions are affected?</li>
+<li>Where are suitable operational areas?</li>
+</ul>
+
+<h2 id="section-65">WHEN</h2>
+
+<p>Examples:</p>
+
+<ul>
+<li>When are conditions expected to improve?</li>
+<li>When will cyclone exposure be highest?</li>
+<li>When was the anomaly strongest?</li>
+</ul>
+
+<h2 id="section-66">WHY</h2>
+
+<p>Examples:</p>
+
+<ul>
+<li>Why did productivity decline?</li>
+<li>Why is this region different?</li>
+<li>Why did the risk increase?</li>
+</ul>
+
+<h2 id="section-67">WHAT SHOULD I DO</h2>
+
+<p>Examples:</p>
+
+<ul>
+<li>Which route should I take?</li>
+<li>Should the operation proceed?</li>
+<li>Which area should be avoided?</li>
+</ul>
+
+<h2 id="section-68">WHAT CHANGED</h2>
+
+<p>Examples:</p>
+
+<ul>
+<li>What changed since yesterday?</li>
+<li>How different is this season?</li>
+<li>Did the cyclone track change?</li>
+</ul>
+
+<hr>
+
+<h1 id="section-69">47. Scientific Engine Contract</h1>
+
+<p>Every engine should expose a standardized interface.</p>
+
+<pre><code class="language-json">{
+  &quot;task_id&quot;: &quot;task-123&quot;,
+  &quot;engine&quot;: &quot;ocean&quot;,
+  &quot;operation&quot;: &quot;sst_anomaly&quot;,
+  &quot;inputs&quot;: {
+    &quot;region&quot;: &quot;...&quot;,
+    &quot;time&quot;: &quot;...&quot;,
+    &quot;baseline&quot;: &quot;...&quot;
+  },
+  &quot;method&quot;: {
+    &quot;name&quot;: &quot;sst_anomaly&quot;,
+    &quot;version&quot;: &quot;1.0&quot;
+  },
+  &quot;outputs&quot;: {},
+  &quot;units&quot;: {},
+  &quot;quality&quot;: {},
+  &quot;confidence&quot;: &quot;high&quot;,
+  &quot;evidence_ids&quot;: [&quot;ev-1&quot;, &quot;ev-2&quot;],
+  &quot;processing_time&quot;: &quot;...&quot;,
+  &quot;status&quot;: &quot;success&quot;
+}</code></pre>
+
+<hr>
+
+<h1 id="section-70">48. Evidence-First Computation</h1>
+
+<p>Every derived result should reference the data used.</p>
+
+<p>Example:</p>
+
+<pre><code class="language-text">SST anomaly
+   │
+   ├── evidence: SST observation
+   ├── evidence: historical baseline
+   └── method: anomaly-v1</code></pre>
+
+<p>Then:</p>
+
+<pre><code class="language-text">Front detection
+   │
+   ├── SST evidence
+   ├── Chlorophyll evidence
+   └── gradient method</code></pre>
+
+<p>Then:</p>
+
+<pre><code class="language-text">Recommendation
+   │
+   ├── PFZ evidence
+   ├── weather evidence
+   ├── wave evidence
+   ├── geofence evidence
+   └── scientific analysis evidence</code></pre>
+
+<p>This creates an evidence chain.</p>
+
+<hr>
+
+<h1 id="section-71">49. Provenance Requirements</h1>
+
+<p>Every result should preserve:</p>
+
+<pre><code class="language-text">source
+dataset
+variable
+timestamp
+forecast_valid_time
+spatial resolution
+temporal resolution
+units
+quality flags
+processing method
+algorithm version
+evidence IDs</code></pre>
+
+<p>The user should be able to ask:</p>
+
+<blockquote>Why did ORCA say this?</blockquote>
+
+<p>And the system should be able to reconstruct the reasoning chain.</p>
+
+<hr>
+
+<h1 id="section-72">50. Confidence Model</h1>
+
+<p>Confidence should be derived from evidence quality.</p>
+
+<p>Potential factors:</p>
+
+<pre><code class="language-text">source reliability
+data freshness
+coverage
+missingness
+forecast agreement
+observation availability
+spatial resolution
+temporal resolution
+algorithm stability</code></pre>
+
+<p>Conceptual model:</p>
+
+<pre><code class="language-text">Confidence
+=
+f(
+source quality,
+freshness,
+coverage,
+agreement,
+data quality,
+method reliability
+)</code></pre>
+
+<p>The exact scoring formula should be implemented transparently and versioned.</p>
+
+<hr>
+
+<h1 id="section-73">51. Scientific Output Must Be Structured</h1>
+
+<p>Do not return only natural language from scientific engines.</p>
+
+<p>Bad:</p>
+
+<pre><code class="language-text">The ocean seems favorable.</code></pre>
+
+<p>Good:</p>
+
+<pre><code class="language-json">{
+  &quot;assessment&quot;: &quot;elevated_productivity_conditions&quot;,
+  &quot;indicators&quot;: [
+    {
+      &quot;name&quot;: &quot;chlorophyll_anomaly&quot;,
+      &quot;value&quot;: 0.35,
+      &quot;unit&quot;: &quot;fraction&quot;
+    },
+    {
+      &quot;name&quot;: &quot;sst_anomaly&quot;,
+      &quot;value&quot;: -1.2,
+      &quot;unit&quot;: &quot;degC&quot;
+    }
+  ],
+  &quot;confidence&quot;: &quot;moderate&quot;,
+  &quot;evidence_ids&quot;: [&quot;ev1&quot;, &quot;ev2&quot;],
+  &quot;method_version&quot;: &quot;ecosystem-v1&quot;
+}</code></pre>
+
+<p>The LLM can then turn this into natural language.</p>
+
+<hr>
+
+<h1 id="section-74">52. Scientific Engines vs Agents</h1>
+
+<p>This distinction is fundamental.</p>
+
+<h2 id="section-75">Scientific Engine</h2>
+
+<pre><code class="language-text">Input
+→ deterministic computation
+→ structured output</code></pre>
+
+<h2 id="section-76">Agent</h2>
+
+<pre><code class="language-text">Goal
+→ decide what information is needed
+→ select tools
+→ execute tasks
+→ evaluate results
+→ request additional information
+→ collaborate
+→ produce structured conclusion</code></pre>
+
+<p>Therefore:</p>
+
+<pre><code class="language-text">Agent ≠ Scientific Engine</code></pre>
+
+<hr>
+
+<h1 id="section-77">53. Example Agent Interaction</h1>
+
+<p>User:</p>
+
+<blockquote>“Why is fishing productivity lower near this region than last month?”</blockquote>
+
+<p>Orchestrator creates:</p>
+
+<pre><code class="language-json">{
+  &quot;intent&quot;: &quot;ecosystem_change_analysis&quot;,
+  &quot;region&quot;: &quot;...&quot;,
+  &quot;current_period&quot;: &quot;...&quot;,
+  &quot;comparison_period&quot;: &quot;last_month&quot;
+}</code></pre>
+
+<p>Planner determines required analysis:</p>
+
+<pre><code class="language-text">chlorophyll
+SST
+currents
+historical baseline
+PFZ
+front indicators
+weather</code></pre>
+
+<p>Scientific system executes:</p>
+
+<pre><code class="language-text">chlorophyll anomaly
+SST anomaly
+current analysis
+front detection
+PFZ comparison</code></pre>
+
+<p>Evidence validator checks:</p>
+
+<pre><code class="language-text">freshness
+missing data
+source conflicts
+confidence</code></pre>
+
+<p>Response synthesizer produces:</p>
+
+<pre><code class="language-text">Observed:
+chlorophyll decreased.
+
+Observed:
+SST increased.
+
+Derived:
+front intensity decreased.
+
+Assessment:
+the available evidence is consistent with reduced productivity indicators.
+
+Caveat:
+this does not prove a single causal mechanism.</code></pre>
+
+<hr>
+
+<h1 id="section-78">54. Engine Registry</h1>
+
+<p>A registry should allow agents to discover available scientific operations.</p>
+
+<p>Example:</p>
+
+<pre><code class="language-json">{
+  &quot;engine_id&quot;: &quot;ocean&quot;,
+  &quot;description&quot;: &quot;Ocean physical and biogeochemical analysis&quot;,
+  &quot;operations&quot;: [
+    &quot;sst_lookup&quot;,
+    &quot;sst_statistics&quot;,
+    &quot;sst_anomaly&quot;,
+    &quot;chlorophyll_lookup&quot;,
+    &quot;chlorophyll_anomaly&quot;,
+    &quot;gradient&quot;,
+    &quot;front_detection&quot;,
+    &quot;current_analysis&quot;,
+    &quot;pfz_analysis&quot;
+  ]
+}</code></pre>
+
+<p>Weather:</p>
+
+<pre><code class="language-json">{
+  &quot;engine_id&quot;: &quot;weather&quot;,
+  &quot;operations&quot;: [
+    &quot;wind_analysis&quot;,
+    &quot;wave_analysis&quot;,
+    &quot;rain_analysis&quot;,
+    &quot;cyclone_proximity&quot;,
+    &quot;lightning_analysis&quot;,
+    &quot;forecast_comparison&quot;
+  ]
+}</code></pre>
+
+<p>Spatial:</p>
+
+<pre><code class="language-json">{
+  &quot;engine_id&quot;: &quot;spatial&quot;,
+  &quot;operations&quot;: [
+    &quot;point_in_polygon&quot;,
+    &quot;distance&quot;,
+    &quot;intersection&quot;,
+    &quot;buffer&quot;,
+    &quot;nearest_feature&quot;,
+    &quot;geofence_check&quot;,
+    &quot;raster_sample&quot;
+  ]
+}</code></pre>
+
+<hr>
+
+<h1 id="section-79">55. V1 Scientific Capability Set</h1>
+
+<p>The first implementation should be practical.</p>
+
+<h2 id="section-80">Ocean</h2>
+
+<pre><code class="language-text">SST lookup
+SST statistics
+SST anomaly
+Chlorophyll lookup
+Chlorophyll statistics
+Chlorophyll anomaly
+SST gradient
+Chlorophyll gradient
+Basic front detection
+Current speed/direction
+PFZ context</code></pre>
+
+<h2 id="section-81">Weather</h2>
+
+<pre><code class="language-text">Wind
+Wave
+Rain
+Cyclone proximity
+Marine warning extraction
+Lightning
+Basic forecast comparison</code></pre>
+
+<h2 id="section-82">Spatial</h2>
+
+<pre><code class="language-text">Point-in-polygon
+Distance
+Intersection
+Nearest port
+Geofence
+Raster sampling</code></pre>
+
+<h2 id="section-83">Temporal</h2>
+
+<pre><code class="language-text">Forecast alignment
+Historical baseline
+Rolling average
+Anomaly
+Time-window filtering
+Trend</code></pre>
+
+<h2 id="section-84">Ecosystem</h2>
+
+<pre><code class="language-text">Productivity indicators
+Ecosystem anomaly
+Basic front context
+PFZ-ocean relationship</code></pre>
+
+<h2 id="section-85">Risk</h2>
+
+<pre><code class="language-text">Wave assessment
+Wind assessment
+Cyclone assessment
+Lightning exposure
+Geofence/access constraint
+Combined operational suitability</code></pre>
+
+<h2 id="section-86">Route</h2>
+
+<pre><code class="language-text">Candidate route generation
+Geofence avoidance
+Distance
+ETA
+Environmental exposure
+A*/Dijkstra routing
+Route ranking</code></pre>
+
+<hr>
+
+<h1 id="section-87">56. V2 Scientific Capability Set</h1>
+
+<p>After V1 is stable:</p>
+
+<pre><code class="language-text">advanced eddy detection
+upwelling detection
+front persistence
+current convergence/divergence
+vertical ocean structure
+marine heatwave analysis
+HAB intelligence
+advanced BGC analysis
+species-specific models
+advanced route optimization
+uncertainty propagation
+multi-model ensemble analysis</code></pre>
+
+<p>Do not implement these merely to increase the feature count.</p>
+
+<p>Each must answer a real decision need.</p>
+
+<hr>
+
+<h1 id="section-88">57. Recommended Implementation Order</h1>
+
+<h2 id="section-89">Phase 1 — Scientific Data Interface</h2>
+
+<p>Implement:</p>
+
+<pre><code class="language-text">dataset readers
+unit normalization
+coordinate normalization
+time normalization
+quality flags</code></pre>
+
+<hr>
+
+<h2 id="section-90">Phase 2 — Core Mathematical Operations</h2>
+
+<p>Implement:</p>
+
+<pre><code class="language-text">statistics
+gradient
+anomaly
+distance
+intersection
+point-in-polygon
+time filtering
+interpolation</code></pre>
+
+<hr>
+
+<h2 id="section-91">Phase 3 — Ocean Engine</h2>
+
+<p>Implement:</p>
+
+<pre><code class="language-text">SST
+chlorophyll
+currents
+PFZ
+front detection</code></pre>
+
+<hr>
+
+<h2 id="section-92">Phase 4 — Weather Engine</h2>
+
+<p>Implement:</p>
+
+<pre><code class="language-text">wind
+waves
+rain
+cyclone
+lightning
+warnings</code></pre>
+
+<hr>
+
+<h2 id="section-93">Phase 5 — Spatial Engine</h2>
+
+<p>Implement:</p>
+
+<pre><code class="language-text">GIS
+geofencing
+spatial joins
+raster sampling</code></pre>
+
+<hr>
+
+<h2 id="section-94">Phase 6 — Temporal Engine</h2>
+
+<p>Implement:</p>
+
+<pre><code class="language-text">forecast alignment
+historical baseline
+anomaly
+trend</code></pre>
+
+<hr>
+
+<h2 id="section-95">Phase 7 — Ecosystem Engine</h2>
+
+<p>Combine:</p>
+
+<pre><code class="language-text">SST
+chlorophyll
+currents
+fronts
+historical data
+PFZ</code></pre>
+
+<hr>
+
+<h2 id="section-96">Phase 8 — Risk Engine</h2>
+
+<p>Combine scientific outputs with operational context.</p>
+
+<hr>
+
+<h2 id="section-97">Phase 9 — Route Engine</h2>
+
+<p>Build:</p>
+
+<pre><code class="language-text">grid
+constraints
+cost function
+A*
+route validation
+ranking</code></pre>
+
+<hr>
+
+<h2 id="section-98">Phase 10 — Agent Integration</h2>
+
+<p>Only after the scientific layer works independently.</p>
+
+<p>Agents should call scientific operations rather than reproduce them.</p>
+
+<hr>
+
+<h1 id="section-99">58. Testing Strategy</h1>
+
+<p>Every engine must have deterministic tests.</p>
+
+<h2 id="section-100">Ocean tests</h2>
+
+<pre><code class="language-text">known SST grid
+→ expected gradient
+
+known baseline
+→ expected anomaly
+
+known current vectors
+→ expected speed/direction</code></pre>
+
+<h2 id="section-101">Spatial tests</h2>
+
+<pre><code class="language-text">point inside polygon
+point outside polygon
+route crossing polygon
+nearest feature</code></pre>
+
+<h2 id="section-102">Temporal tests</h2>
+
+<pre><code class="language-text">forecast valid-time matching
+missing timestamp
+interpolation
+historical baseline</code></pre>
+
+<h2 id="section-103">Risk tests</h2>
+
+<pre><code class="language-text">high wind
+high wave
+cyclone proximity
+geofence violation
+combined conditions</code></pre>
+
+<h2 id="section-104">Route tests</h2>
+
+<pre><code class="language-text">blocked cell
+restricted polygon
+shortest route
+environmental penalty</code></pre>
+
+<hr>
+
+<h1 id="section-105">59. Synthetic / Mock Data Mode</h1>
+
+<p>Because some operational data sources may be inaccessible during development or demos, every engine should support mock datasets.</p>
+
+<p>Example:</p>
+
+<pre><code class="language-text">mock_sst.nc
+mock_chlorophyll.nc
+mock_currents.nc
+mock_wave.nc
+mock_wind.nc
+mock_cyclone.json
+mock_restricted_zones.geojson</code></pre>
+
+<p>The same scientific code should run against:</p>
+
+<pre><code class="language-text">REAL DATA
+or
+MOCK DATA</code></pre>
+
+<p>without changing its scientific logic.</p>
+
+<p>This is critical for hackathon reliability.</p>
+
+<hr>
+
+<h1 id="section-106">60. Caching</h1>
+
+<p>Not every scientific operation needs a fresh download.</p>
+
+<p>Cache:</p>
+
+<pre><code class="language-text">recent forecasts
+recent satellite products
+static GIS
+historical baselines
+derived grids</code></pre>
+
+<p>Cache metadata should include:</p>
+
+<pre><code class="language-text">dataset
+time
+region
+source
+created_at
+expires_at</code></pre>
+
+<p>Do not serve stale data as live data.</p>
+
+<hr>
+
+<h1 id="section-107">61. Computational Storage</h1>
+
+<p>Scientific data should retain appropriate formats.</p>
+
+<p>Prefer:</p>
+
+<pre><code class="language-text">NetCDF / Zarr
+→ multidimensional scientific arrays
+
+GeoTIFF
+→ raster products
+
+Parquet
+→ large analytical tables
+
+PostgreSQL/PostGIS
+→ metadata, vector geometry, spatial queries
+
+Object storage
+→ raw files and large products</code></pre>
+
+<p>Do not force every scientific dataset into JSON.</p>
+
+<p>JSON should primarily represent:</p>
+
+<pre><code class="language-text">metadata
+requests
+structured results
+evidence
+agent state</code></pre>
+
+<hr>
+
+<h1 id="section-108">62. API Layer</h1>
+
+<p>The Scientific Intelligence System should expose a stable internal API.</p>
+
+<p>Example:</p>
+
+<pre><code class="language-text">POST /scientific/ocean/sst
+POST /scientific/ocean/anomaly
+POST /scientific/ocean/front
+POST /scientific/ocean/current
+POST /scientific/weather/wave
+POST /scientific/weather/wind
+POST /scientific/weather/cyclone
+POST /scientific/spatial/distance
+POST /scientific/spatial/geofence
+POST /scientific/temporal/anomaly
+POST /scientific/risk/assess
+POST /scientific/route/optimize
+POST /scientific/ecosystem/analyze</code></pre>
+
+<p>Exact public exposure is not required; these can be internal service endpoints.</p>
+
+<hr>
+
+<h1 id="section-109">63. Generic Scientific Request</h1>
+
+<pre><code class="language-json">{
+  &quot;task_id&quot;: &quot;task-001&quot;,
+  &quot;operation&quot;: &quot;sst_anomaly&quot;,
+  &quot;region&quot;: {
+    &quot;type&quot;: &quot;polygon&quot;,
+    &quot;coordinates&quot;: []
+  },
+  &quot;time&quot;: {
+    &quot;start&quot;: &quot;...&quot;,
+    &quot;end&quot;: &quot;...&quot;
+  },
+  &quot;baseline&quot;: {
+    &quot;type&quot;: &quot;historical&quot;,
+    &quot;start&quot;: &quot;...&quot;,
+    &quot;end&quot;: &quot;...&quot;
+  },
+  &quot;options&quot;: {
+    &quot;spatial_resolution&quot;: &quot;...&quot;
+  }
+}</code></pre>
+
+<hr>
+
+<h1 id="section-110">64. Generic Scientific Response</h1>
+
+<pre><code class="language-json">{
+  &quot;task_id&quot;: &quot;task-001&quot;,
+  &quot;status&quot;: &quot;success&quot;,
+  &quot;result&quot;: {
+    &quot;value&quot;: -1.2,
+    &quot;unit&quot;: &quot;degC&quot;
+  },
+  &quot;quality&quot;: {
+    &quot;missing_fraction&quot;: 0.03,
+    &quot;coverage&quot;: 0.97
+  },
+  &quot;confidence&quot;: &quot;high&quot;,
+  &quot;evidence_ids&quot;: [
+    &quot;ev-001&quot;,
+    &quot;ev-002&quot;
+  ],
+  &quot;method&quot;: {
+    &quot;name&quot;: &quot;sst_anomaly&quot;,
+    &quot;version&quot;: &quot;1.0&quot;
+  }
+}</code></pre>
+
+<hr>
+
+<h1 id="section-111">65. Failure Handling</h1>
+
+<p>Scientific engines must explicitly return failure states.</p>
+
+<p>Examples:</p>
+
+<pre><code class="language-text">NO_DATA
+PARTIAL_DATA
+STALE_DATA
+INVALID_REGION
+INVALID_TIME
+SOURCE_UNAVAILABLE
+CONFLICTING_SOURCES
+INSUFFICIENT_RESOLUTION
+CALCULATION_ERROR</code></pre>
+
+<p>Never silently replace missing scientific data with invented values.</p>
+
+<hr>
+
+<h1 id="section-112">66. Source Conflict Handling</h1>
+
+<p>Example:</p>
+
+<pre><code class="language-text">Source A:
+Wave = 1.4 m
+
+Source B:
+Wave = 2.4 m</code></pre>
+
+<p>The system should not arbitrarily select one.</p>
+
+<p>Instead:</p>
+
+<pre><code class="language-text">identify source priority
+compare forecast valid times
+compare resolutions
+check observations
+record disagreement
+adjust confidence</code></pre>
+
+<p>For official warnings:</p>
+
+<pre><code class="language-text">Authoritative advisory
+→ highest operational priority</code></pre>
+
+<p>Derived calculations should not casually override it.</p>
+
+<hr>
+
+<h1 id="section-113">67. Explainability</h1>
+
+<p>A final response should be traceable.</p>
+
+<p>Example:</p>
+
+<pre><code class="language-text">Recommendation
+     ↓
+Decision factors
+     ↓
+Scientific analyses
+     ↓
+Raw/normalized evidence
+     ↓
+Source</code></pre>
+
+<p>The UI can expose:</p>
+
+<pre><code class="language-text">Why this recommendation?</code></pre>
+
+<p>with:</p>
+
+<ul>
+<li>source</li>
+<li>timestamp</li>
+<li>variable</li>
+<li>value</li>
+<li>calculation</li>
+<li>confidence</li>
+</ul>
+
+<hr>
+
+<h1 id="section-114">68. Map Integration</h1>
+
+<p>Scientific output must be visualizable.</p>
+
+<p>Required map layers can include:</p>
+
+<pre><code class="language-text">SST
+Chlorophyll
+PFZ
+Waves
+Wind
+Currents
+Cyclone
+Lightning
+Restricted zones
+MPA
+EEZ
+Bathymetry
+Risk
+Routes
+Ecosystem anomalies</code></pre>
+
+<p>The scientific system should return geometries or raster references that the visualization layer can consume.</p>
+
+<hr>
+
+<h1 id="section-115">69. Charts</h1>
+
+<p>Useful scientific visualizations:</p>
+
+<pre><code class="language-text">SST time series
+chlorophyll time series
+anomaly chart
+wind forecast
+wave forecast
+cyclone track
+current vectors
+vertical profiles
+regional comparisons
+route exposure profile</code></pre>
+
+<p>The chart layer should consume structured scientific results rather than perform calculations itself.</p>
+
+<hr>
+
+<h1 id="section-116">70. Alert Support</h1>
+
+<p>Alerts should not depend entirely on a user asking a question.</p>
+
+<p>Scientific conditions can trigger:</p>
+
+<pre><code class="language-text">cyclone proximity
+lightning increase
+extreme waves
+marine warning
+large ecosystem anomaly
+geofence entry
+route hazard change</code></pre>
+
+<p>The alert system should use the same validated scientific outputs.</p>
+
+<hr>
+
+<h1 id="section-117">71. Security and Safety Boundaries</h1>
+
+<p>Safety-critical outputs should use:</p>
+
+<pre><code class="language-text">authoritative advisories
++
+validated forecast products
++
+observations
++
+derived analysis</code></pre>
+
+<p>The LLM should never invent:</p>
+
+<ul>
+<li>marine warnings</li>
+<li>cyclone positions</li>
+<li>safety thresholds</li>
+<li>restricted zones</li>
+<li>navigational permissions</li>
+</ul>
+
+<p>When evidence is insufficient:</p>
+
+<pre><code class="language-text">insufficient evidence</code></pre>
+
+<p>is a valid output.</p>
+
+<hr>
+
+<h1 id="section-118">72. LLM Boundary</h1>
+
+<p>The LLM is responsible for:</p>
+
+<pre><code class="language-text">natural language understanding
+intent extraction
+context interpretation
+task planning
+tool selection
+multi-turn reasoning
+evidence synthesis
+explanation
+language generation</code></pre>
+
+<p>The LLM should NOT be responsible for:</p>
+
+<pre><code class="language-text">gradient calculations
+distance calculations
+polygon intersection
+route search
+anomaly calculation
+forecast interpolation
+risk arithmetic
+scientific classification</code></pre>
+
+<p>Those belong to deterministic systems.</p>
+
+<hr>
+
+<h1 id="section-119">73. Core Separation</h1>
+
+<p>This should be treated as a fundamental ORCA engineering rule:</p>
+
+<pre><code class="language-text">┌──────────────────────────────┐
+│             LLM              │
+│ reasoning + interpretation   │
+└──────────────┬───────────────┘
+               │
+               ▼
+┌──────────────────────────────┐
+│       SCIENTIFIC ENGINES     │
+│ deterministic computation    │
+└──────────────┬───────────────┘
+               │
+               ▼
+┌──────────────────────────────┐
+│             DATA             │
+│ observations + forecasts +   │
+│ advisories + GIS + history   │
+└──────────────────────────────┘</code></pre>
+
+<hr>
+
+<h1 id="section-120">74. Anti-Patterns to Avoid</h1>
+
+<h2 id="section-121">Anti-pattern 1 — Fisherman-first architecture</h2>
+
+<p>Bad:</p>
+
+<pre><code class="language-text">Fishing App
++ Research Mode
++ Disaster Mode
++ Shipping Mode</code></pre>
+
+<p>Better:</p>
+
+<pre><code class="language-text">Marine Intelligence Core
+→ Contextual decision modes</code></pre>
+
+<hr>
+
+<h2 id="section-122">Anti-pattern 2 — Agent for every noun</h2>
+
+<p>Bad:</p>
+
+<pre><code class="language-text">SST Agent
+Chlorophyll Agent
+Wind Agent
+Wave Agent
+PFZ Agent</code></pre>
+
+<p>Better:</p>
+
+<pre><code class="language-text">Ocean Intelligence Engine
+Weather Intelligence Engine</code></pre>
+
+<p>with deterministic operations.</p>
+
+<hr>
+
+<h2 id="section-123">Anti-pattern 3 — LLM mathematics</h2>
+
+<p>Bad:</p>
+
+<pre><code class="language-text">LLM calculates route distance
+LLM estimates cyclone distance
+LLM detects a front from numbers</code></pre>
+
+<p>Better:</p>
+
+<pre><code class="language-text">LLM calls scientific tool
+→ tool calculates
+→ LLM interprets</code></pre>
+
+<hr>
+
+<h2 id="section-124">Anti-pattern 4 — Black-box risk score</h2>
+
+<p>Bad:</p>
+
+<pre><code class="language-text">Risk = 87%</code></pre>
+
+<p>without explanation.</p>
+
+<p>Better:</p>
+
+<pre><code class="language-text">Wind: high
+Wave: moderate
+Cyclone: low
+Lightning: elevated
+Geofence: clear
+
+Overall operational assessment:
+Unfavorable
+
+Confidence:
+High</code></pre>
+
+<hr>
+
+<h2 id="section-125">Anti-pattern 5 — Treating inference as observation</h2>
+
+<p>Bad:</p>
+
+<pre><code class="language-text">High chlorophyll = fish abundance</code></pre>
+
+<p>Better:</p>
+
+<pre><code class="language-text">High chlorophyll
+→ elevated productivity indicator
+→ potentially favorable ecological conditions</code></pre>
+
+<hr>
+
+<h2 id="section-126">Anti-pattern 6 — Treating bathymetry as a navigation chart</h2>
+
+<p>Never do this.</p>
+
+<p>General bathymetry can support analysis but is not automatically certified navigation information.</p>
+
+<hr>
+
+<h1 id="section-127">75. Recommended ORCA Scientific Architecture</h1>
+
+<p>The final architecture should be:</p>
+
+<pre><code class="language-text">                         ORCA
+                           │
+                           ▼
+                     USER CONTEXT
+                 role + location + time
+                 objective + constraints
+                           │
+                           ▼
+                     ORCHESTRATOR
+                           │
+                           ▼
+                    TASK PLANNER
+                           │
+                           ▼
+                DATA DISCOVERY / RETRIEVAL
+                           │
+                           ▼
+                ┌─────────────────────────┐
+                │ MARINE STATE BUILDER    │
+                └────────────┬────────────┘
+                             │
+          ┌──────────────────┼───────────────────┐
+          ▼                  ▼                   ▼
+      OCEAN              WEATHER              SPATIAL
+   INTELLIGENCE        INTELLIGENCE         INTELLIGENCE
+          │                  │                   │
+          └───────────┬──────┴───────┬──────────┘
+                      ▼              ▼
+                TEMPORAL        ECOSYSTEM
+                INTELLIGENCE    INTELLIGENCE
+                      │              │
+                      └──────┬───────┘
+                             ▼
+                        RISK ENGINE
+                             │
+                             ▼
+                       ROUTE ENGINE
+                             │
+                             ▼
+                    DECISION INTELLIGENCE
+                             │
+                             ▼
+                     EVIDENCE VALIDATOR
+                             │
+                             ▼
+                    RESPONSE SYNTHESIZER
+                             │
+                ┌────────────┼────────────┐
+                ▼            ▼            ▼
+              CHAT         MAP         CHARTS
+                             │
+                             ▼
+                           ALERTS</code></pre>
+
+<hr>
+
+<h1 id="section-128">76. Final Design Philosophy</h1>
+
+<p>ORCA should think of the marine environment as a continuously changing state.</p>
+
+<p>The user provides:</p>
+
+<pre><code class="language-text">WHO AM I?
+WHAT DO I WANT TO KNOW?
+WHERE?
+WHEN?
+WHAT ARE MY CONSTRAINTS?</code></pre>
+
+<p>The system determines:</p>
+
+<pre><code class="language-text">WHAT DATA IS REQUIRED?
+WHAT SCIENTIFIC ANALYSIS IS REQUIRED?
+WHAT CONSTRAINTS APPLY?
+WHAT EVIDENCE SUPPORTS THE RESULT?
+WHAT DECISION CAN BE JUSTIFIED?</code></pre>
+
+<p>Therefore the fundamental ORCA pipeline is:</p>
+
+<pre><code class="language-text">Stakeholder
+    ↓
+Intent
+    ↓
+Context
+    ↓
+Required information
+    ↓
+Data discovery
+    ↓
+Data retrieval
+    ↓
+Marine state
+    ↓
+Scientific analysis
+    ↓
+Risk / constraints
+    ↓
+Decision
+    ↓
+Evidence validation
+    ↓
+Explanation</code></pre>
+
+<hr>
+
+<h1 id="section-129">77. One-Sentence System Definition</h1>
+
+<blockquote><strong>ORCA's Scientific & Marine Intelligence System is a deterministic, evidence-grounded computational layer that transforms heterogeneous oceanographic, meteorological, Earth-observation, ecosystem, temporal, and geospatial data into a machine-readable marine state and contextual scientific analyses that can support different marine stakeholders and operational decisions.</strong></blockquote>
+
+<hr>
+
+<h1 id="section-130">78. Engineering Rule to Lock</h1>
+
+<p>The most important architectural rule for the entire project is:</p>
+
+<blockquote><strong>Do not build scientific intelligence around a particular stakeholder. Build a reusable marine intelligence core, and let stakeholder context determine how that intelligence is applied.</strong></blockquote>
+
+<p>Thus:</p>
+
+<pre><code class="language-text">Fisherman
+Researcher
+Authority
+Disaster Manager
+Maritime Operator
+Port Operator
+Environmental Agency
+        │
+        ▼
+   SAME MARINE
+ INTELLIGENCE CORE
+        │
+        ▼
+ DIFFERENT DECISIONS</code></pre>
+
+<p>This makes ORCA a genuine <strong>marine decision-intelligence platform</strong>, rather than a fishing application with additional features.</p>
+
+    </div>
+
+    <div class="page-nav">
+      <a href="agentic-spec.html">
+      <span class="page-nav-label">&#8592; Previous</span>
+      <span class="page-nav-title">Agentic Spec</span>
+    </a>
+      <a href="core-agentic-technical.html" class="next">
+      <span class="page-nav-label">Next &#8594;</span>
+      <span class="page-nav-title">Core Agentic Tech</span>
+    </a>
+    </div>
+  </div>
+</div>
+
+<footer class="container">
+  <strong>ORCA</strong> &#183; Marine EcOsystem Reasoning with Collaborative Agents &#183; SIH 2026 &#183; PS 26176
+</footer>
+
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
+
+<script>
+// Back to top button
+window.addEventListener('scroll', function() {
+  var btn = document.getElementById('backToTop');
+  if (window.scrollY > 300) { btn.classList.add('visible'); }
+  else { btn.classList.remove('visible'); }
+});
+
+// Scroll-spy: highlight active TOC link
+(function() {
+  var tocLinks = document.querySelectorAll('#tocList a');
+  if (!tocLinks.length) return;
+
+  var headingEls = [];
+  tocLinks.forEach(function(link) {
+    var target = link.getAttribute('data-target');
+    var el = document.getElementById(target);
+    if (el) headingEls.push({ el: el, link: link });
+  });
+
+  function updateActive() {
+    var scrollY = window.scrollY + 80;
+    var current = null;
+
+    for (var i = 0; i < headingEls.length; i++) {
+      if (headingEls[i].el.offsetTop <= scrollY) {
+        current = headingEls[i];
+      }
+    }
+
+    tocLinks.forEach(function(l) { l.classList.remove('active'); });
+    if (current) {
+      current.link.classList.add('active');
+      // Scroll TOC to keep active item visible
+      var tocSticky = current.link.closest('.toc-sticky');
+      if (tocSticky) {
+        var linkTop = current.link.offsetTop - tocSticky.offsetTop;
+        var stickyHeight = tocSticky.clientHeight;
+        if (linkTop < tocSticky.scrollTop || linkTop > tocSticky.scrollTop + stickyHeight - 40) {
+          tocSticky.scrollTop = linkTop - stickyHeight / 3;
+        }
+      }
+    }
+  }
+
+  window.addEventListener('scroll', updateActive);
+  updateActive();
+})();
+
+// --- Mermaid Diagram Compiler & Interactive Viewer ---
+(function() {
+  if (typeof mermaid === 'undefined') return;
+
+  try {
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'neutral',
+      securityLevel: 'loose',
+      fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+      maxTextSize: 100000,
+      flowchart: {
+        htmlLabels: true,
+        curve: 'basis',
+        useMaxWidth: true
+      },
+      er: {
+        useMaxWidth: true
+      }
+    });
+  } catch (e) {
+    console.error('Mermaid init error:', e);
+  }
+
+  window.mmZoomState = window.mmZoomState || {};
+
+  async function compileMermaidDiagrams() {
+    var containers = document.querySelectorAll('.mermaid-container');
+    if (!containers.length) return;
+
+    for (var i = 0; i < containers.length; i++) {
+      var container = containers[i];
+      var id = container.id;
+      var preEl = container.querySelector('pre.mermaid-source');
+      var stageEl = document.getElementById(id + '-stage');
+      if (!preEl || !stageEl) continue;
+
+      var code = preEl.textContent.trim();
+      mmZoomState[id] = 1.0;
+
+      try {
+        var renderId = 'mm-svg-' + id.replace(/[^a-zA-Z0-9_-]/g, '_') + '-' + i;
+        var res = await mermaid.render(renderId, code);
+        stageEl.innerHTML = res.svg;
+        var svgEl = stageEl.querySelector('svg');
+        if (svgEl) {
+          svgEl.style.maxWidth = '100%';
+          svgEl.style.height = 'auto';
+          svgEl.style.display = 'block';
+          svgEl.style.margin = '0 auto';
+          svgEl.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+        }
+      } catch (err) {
+        console.error('Mermaid render error for ' + id + ':', err);
+        stageEl.innerHTML = '<div class="mermaid-error">' +
+          '<div class="mermaid-error-title">&#9888; Diagram Compilation Notice</div>' +
+          '<p>' + (err.message || String(err)) + '</p>' +
+          '</div>';
+      }
+    }
+  }
+
+  window.mermaidZoom = function(id, factor) {
+    var stage = document.getElementById(id + '-stage');
+    if (!stage) return;
+    var svg = stage.querySelector('svg');
+    if (!svg) return;
+    mmZoomState[id] = (mmZoomState[id] || 1.0) * factor;
+    if (mmZoomState[id] < 0.25) mmZoomState[id] = 0.25;
+    if (mmZoomState[id] > 4.0) mmZoomState[id] = 4.0;
+    stage.style.transform = 'scale(' + mmZoomState[id] + ')';
+    if (mmZoomState[id] > 1.0) {
+      svg.style.maxWidth = 'none';
+    } else {
+      svg.style.maxWidth = '100%';
+    }
+  };
+
+  window.mermaidReset = function(id) {
+    var stage = document.getElementById(id + '-stage');
+    if (!stage) return;
+    var svg = stage.querySelector('svg');
+    if (!svg) return;
+    mmZoomState[id] = 1.0;
+    stage.style.transform = 'scale(1)';
+    svg.style.maxWidth = '100%';
+  };
+
+  window.mermaidToggleCode = function(id) {
+    var codeDiv = document.getElementById(id + '-code');
+    if (!codeDiv) return;
+    codeDiv.style.display = (codeDiv.style.display === 'none') ? 'block' : 'none';
+  };
+
+  window.mermaidCopy = function(id) {
+    var container = document.getElementById(id);
+    if (!container) return;
+    var codePre = container.querySelector('.mermaid-code pre code') || container.querySelector('pre.mermaid-source');
+    if (!codePre) return;
+    navigator.clipboard.writeText(codePre.textContent).then(function() {
+      var btn = container.querySelector('.mm-btn-copy');
+      if (btn) {
+        var orig = btn.innerHTML;
+        btn.innerHTML = '&#10003; Copied!';
+        btn.style.color = '#137333';
+        setTimeout(function() { btn.innerHTML = orig; btn.style.color = ''; }, 2000);
+      }
+    });
+  };
+
+  window.mermaidFullscreen = function(id) {
+    var container = document.getElementById(id);
+    if (!container) return;
+    if (!document.fullscreenElement) {
+      if (container.requestFullscreen) {
+        container.requestFullscreen().catch(function() { container.classList.toggle('is-fullscreen'); });
+      } else {
+        container.classList.toggle('is-fullscreen');
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  };
+
+  document.addEventListener('fullscreenchange', function() {
+    var containers = document.querySelectorAll('.mermaid-container');
+    containers.forEach(function(c) {
+      if (c === document.fullscreenElement) {
+        c.classList.add('is-fullscreen');
+      } else {
+        c.classList.remove('is-fullscreen');
+      }
+    });
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', compileMermaidDiagrams);
+  } else {
+    compileMermaidDiagrams();
+  }
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Doc 5 — Implementation Plan & PS Reminder | ORCA Research Dossier</title>
+<meta name="description" content="ORCA &#8212; Doc 5 — Implementation Plan & PS Reminder. Complete research and architecture documentation.">
+<link rel="stylesheet" type="text/css" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="mermaid.min.js"></script>
+<script>
+if (typeof mermaid === 'undefined') {
+  document.write('<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"><\/script>');
+}
+</script>
+</head>
+<body>
+
+<header id="dhead" class="container">
+  <div class="row">
+    <div id="dpic">
+      <img src="ORCA_architecture.svg" class="ppic" alt="ORCA" onerror="this.style.background='#f0f0f0'" />
+    </div>
+    <div id="ddesc">
+      <h1>ORCA</h1>
+      <h2>Doc 5 — Implementation Plan & PS Reminder</h2>
+      <nav class="doc-nav">
+        <a href="index.html">Home</a>
+<a href="architecture.html">Architecture Diagram</a>
+<a href="doc1.html">User Flows</a>
+<a href="doc2.html">Agentic System</a>
+<a href="doc3.html">Data Pipeline</a>
+<a href="doc4.html">Database</a>
+<a href="doc5.html" class="active">Implementation</a>
+<a href="doc6.html">Memory & Context</a>
+<a href="fisher.html">Fisher Research</a>
+<a href="data-sources.html">Data Sources</a>
+
+      </nav>
+    </div>
+  </div>
+</header>
+
+<hr>
+
+<div class="page-with-toc">
+  <!-- Sidebar TOC -->
+  <aside class="toc-sidebar">
+    <div class="toc-sticky">
+      <div class="toc-header">
+        <span class="toc-label">&#9679; Table of Contents</span>
+        <a class="toc-top-link" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593; TOP</a>
+      </div>
+      <ul class="toc-list" id="tocList">
+        <li><a href="#section-1" data-target="section-1">ORCA Architecture Document 5 — Implementation Plan & PS Reminder</a></li>
+<li><a href="#section-2" data-target="section-2">0. The Problem Statement — What ISRO Actually Asks</a></li>
+<li><a href="#section-3" data-target="section-3">0.1 The Exact PS Description (Preserved)</a></li>
+<li><a href="#section-4" data-target="section-4">0.2 The PS Example Queries (Must-Demo)</a></li>
+<li><a href="#section-5" data-target="section-5">0.3 The PS Expected Features</a></li>
+<li><a href="#section-6" data-target="section-6">1. The Core Realization</a></li>
+<li><a href="#section-7" data-target="section-7">2. The 10 PS Capabilities We Must Demonstrably Implement</a></li>
+<li><a href="#section-8" data-target="section-8">3. The Hero Investigation Loop</a></li>
+<li><a href="#section-9" data-target="section-9">4. Two Execution Modes</a></li>
+<li><a href="#section-10" class="toc-h3" data-target="section-10">4.1 Reactive Mode (User Asks)</a></li>
+<li><a href="#section-11" class="toc-h3" data-target="section-11">4.2 Proactive Mode (System Monitors)</a></li>
+<li><a href="#section-12" data-target="section-12">5. Implementation Phases</a></li>
+<li><a href="#section-13" class="toc-h3" data-target="section-13">Phase 0 — Foundation Sprint (Days 1–3)</a></li>
+<li><a href="#section-14" class="toc-h3" data-target="section-14">Phase 1 — Data Foundation Minimum (Days 3–6)</a></li>
+<li><a href="#section-15" class="toc-h3" data-target="section-15">Phase 2 — Agentic Brain (Days 5–9)</a></li>
+<li><a href="#section-16" class="toc-h3" data-target="section-16">Phase 3 — Scientific Engines (Days 7–11)</a></li>
+<li><a href="#section-17" class="toc-h3" data-target="section-17">Phase 4 — Visualization & Experience (Days 9–13)</a></li>
+<li><a href="#section-18" class="toc-h3" data-target="section-18">Phase 5 — Proactive Operations (Days 11–14)</a></li>
+<li><a href="#section-19" class="toc-h3" data-target="section-19">Phase 6 — Polish, Demo & Evaluation (Days 13–15)</a></li>
+<li><a href="#section-20" data-target="section-20">6. The 8 Demo Scenarios</a></li>
+<li><a href="#section-21" class="toc-h3" data-target="section-21">Demo 1: "Where is the nearest PFZ today?"</a></li>
+<li><a href="#section-22" class="toc-h3" data-target="section-22">Demo 2: "Is it safe to venture into the sea tomorrow morning?"</a></li>
+<li><a href="#section-23" class="toc-h3" data-target="section-23">Demo 3: "What are the tide, weather, and sea conditions near my fishing locat...</a></li>
+<li><a href="#section-24" class="toc-h3" data-target="section-24">Demo 4: "Are there any lightning or cyclone alerts in my area?"</a></li>
+<li><a href="#section-25" class="toc-h3" data-target="section-25">Demo 5: "Which regions show high chlorophyll and favourable SST?"</a></li>
+<li><a href="#section-26" class="toc-h3" data-target="section-26">Demo 6: "What is the safest route considering weather and sea conditions?"</a></li>
+<li><a href="#section-27" class="toc-h3" data-target="section-27">Demo 7: "Why has fish productivity declined near Veraval?" (HERO DEMO)</a></li>
+<li><a href="#section-28" class="toc-h3" data-target="section-28">Demo 8: "Which fishing zones should be avoided due to hazardous conditions?"</a></li>
+<li><a href="#section-29" data-target="section-29">7. Tech Stack</a></li>
+<li><a href="#section-30" class="toc-h3" data-target="section-30">7.1 Frontend</a></li>
+<li><a href="#section-31" class="toc-h3" data-target="section-31">7.2 Backend</a></li>
+<li><a href="#section-32" class="toc-h3" data-target="section-32">7.3 Data Sources (V1 — Working Demo)</a></li>
+<li><a href="#section-33" data-target="section-33">8. What the Investigation UI Should Look Like</a></li>
+<li><a href="#section-34" data-target="section-34">9. Context-Aware Responses</a></li>
+<li><a href="#section-35" data-target="section-35">10. Scenario Exploration (Multi-Turn)</a></li>
+<li><a href="#section-36" data-target="section-36">11. What NOT to Build for the Hackathon</a></li>
+<li><a href="#section-37" data-target="section-37">12. Sprint Calendar (15-Day Hackathon)</a></li>
+<li><a href="#section-38" data-target="section-38">13. File Structure</a></li>
+<li><a href="#section-39" data-target="section-39">14. Architecture Slide Strategy</a></li>
+<li><a href="#section-40" class="toc-h3" data-target="section-40">Slide 1: The Problem</a></li>
+<li><a href="#section-41" class="toc-h3" data-target="section-41">Slide 2: The Hero Loop</a></li>
+<li><a href="#section-42" class="toc-h3" data-target="section-42">Slide 3: Multi-Agent Task Graph</a></li>
+<li><a href="#section-43" class="toc-h3" data-target="section-43">Slide 4: Multi-Source Correlation</a></li>
+<li><a href="#section-44" class="toc-h3" data-target="section-44">Slide 5: Live Demo</a></li>
+<li><a href="#section-45" class="toc-h3" data-target="section-45">Slide 6: The Full Stack</a></li>
+<li><a href="#section-46" data-target="section-46">15. Success Criteria</a></li>
+<li><a href="#section-47" data-target="section-47">16. Cross-Document Traceability</a></li>
+<li><a href="#section-48" data-target="section-48">17. PS Capability → Architecture Document Matrix</a></li>
+<li><a href="#section-49" data-target="section-49">18. Reminder — What Judges Will Evaluate</a></li>
+<li><a href="#section-50" data-target="section-50">19. Immediate Next Steps</a></li>
+<li><a href="#section-51" data-target="section-51">20. Mock Mode and Golden Datasets (Phase 0 Requirement)</a></li>
+<li><a href="#section-52" class="toc-h3" data-target="section-52">LIVE vs MOCK Mode</a></li>
+<li><a href="#section-53" class="toc-h3" data-target="section-53">Golden Datasets</a></li>
+<li><a href="#section-54" class="toc-h3" data-target="section-54">Why This Matters</a></li>
+<li><a href="#section-55" data-target="section-55">21. Phase 2.5 -- Adaptive Intelligence (Days 7-9)</a></li>
+<li><a href="#section-56" data-target="section-56">22. Phase 3.5 -- Decision Intelligence (Days 10-12)</a></li>
+<li><a href="#section-57" data-target="section-57">23. Updated Sprint Calendar (with new phases)</a></li>
+<li><a href="#section-58" data-target="section-58">24. Updated File Structure (with new components)</a></li>
+<li><a href="#section-59" data-target="section-59">25. Scientific Language Contract</a></li>
+<li><a href="#section-60" class="toc-h3" data-target="section-60">Safety Wording</a></li>
+<li><a href="#section-61" class="toc-h3" data-target="section-61">Causal Wording</a></li>
+<li><a href="#section-62" class="toc-h3" data-target="section-62">PFZ Wording</a></li>
+<li><a href="#section-63" class="toc-h3" data-target="section-63">Forecast Wording</a></li>
+<li><a href="#section-64" class="toc-h3" data-target="section-64">Route Wording</a></li>
+<li><a href="#section-65" class="toc-h3" data-target="section-65">HAB Wording</a></li>
+<li><a href="#section-66" data-target="section-66">26. MOSDAC Engineering Constraints</a></li>
+<li><a href="#section-67" data-target="section-67">27. Evaluation Framework (from Deep Research)</a></li>
+<li><a href="#section-68" class="toc-h3" data-target="section-68">Event Intelligence Metrics</a></li>
+<li><a href="#section-69" class="toc-h3" data-target="section-69">Decision Trade-off Metrics</a></li>
+<li><a href="#section-70" class="toc-h3" data-target="section-70">4D Marine State Metrics</a></li>
+<li><a href="#section-71" class="toc-h3" data-target="section-71">Scientific Wording Metrics</a></li>
+<li><a href="#section-72" class="toc-h3" data-target="section-72">Investigation Activity UI Metrics</a></li>
+<li><a href="#section-73" data-target="section-73">28. V2 Roadmap (Future Capabilities)</a></li>
+<li><a href="#section-74" data-target="section-74">29. Companion Research Documents Reference</a></li>
+<li><a href="#section-75" data-target="section-75">30. Regional Language Architecture (PS Requirement — P0)</a></li>
+<li><a href="#section-76" class="toc-h3" data-target="section-76">Language Flow Through Memory</a></li>
+<li><a href="#section-77" class="toc-h3" data-target="section-77">V1 Demo Languages (minimum)</a></li>
+<li><a href="#section-78" class="toc-h3" data-target="section-78">Implementation</a></li>
+<li><a href="#section-79" class="toc-h3" data-target="section-79">Demo Script</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <div class="toc-content">
+    <div class="breadcrumb"><a href="index.html">Home</a> / Doc 5 — Implementation Plan & PS Reminder</div>
+
+    <div class="md-content">
+<h1 id="section-1">ORCA Architecture Document 5 — Implementation Plan & PS Reminder</h1>
+
+<p><strong>Project:</strong> ORCA — Marine EcOsystem Reasoning with Collaborative Agents</p>
+<p><strong>Problem Statement ID:</strong> 26176</p>
+<p><strong>Organization:</strong> ISRO / Department of Space</p>
+<p><strong>Document:</strong> Strategic Implementation Blueprint + Problem Statement Alignment Guide</p>
+<p><strong>Status:</strong> Planning Phase — Architecture Design</p>
+<p><strong>Date:</strong> 26 September 2026</p>
+<p><strong>PS Alignment:</strong> This document is the master reference that connects the Problem Statement's actual requirements to our implementation strategy. Every sprint task, every demo scenario, and every architecture decision traces back to this document.</p>
+
+<hr>
+
+<h1 id="section-2">0. The Problem Statement — What ISRO Actually Asks</h1>
+
+<blockquote><strong>PS Title:</strong> Design and Develop an Intelligent Conversational Platform for Marine Ecosystem Data Exploration and Decision-Making</blockquote>
+
+<blockquote><strong>PS ID:</strong> 26176 | <strong>Organization:</strong> ISRO / Department of Space</blockquote>
+
+<h2 id="section-3">0.1 The Exact PS Description (Preserved)</h2>
+
+<blockquote>The marine ecosystem plays a vital role in supporting livelihoods, food security, biodiversity, maritime transportation, coastal resilience, and the blue economy. Every day, vast volumes of satellite Earth Observation and oceanographic data, including Sea Surface Temperature (SST), chlorophyll concentration, and weather forecasts, are generated by ISRO and other global agencies.<br><br>Marine stakeholders such as fishermen, researchers, coastal authorities, disaster management agencies, and maritime operators rely on timely access to oceanographic and meteorological information for operational planning and decision-making. As the volume, diversity, and complexity of marine data continue to increase, there is a growing need for an intelligent conversational platform that enables users to interact naturally with marine information, ask questions, explore scenarios, and receive synthesized, evidence-based recommendations tailored to their context.<br><br>Advances in Agentic AI, conversational intelligence, and large language models (LLMs) make it feasible to build systems that can interpret user queries, identify relevant datasets, retrieve and analyze marine data, and provide actionable insights — all through natural dialogue, interactive maps, and dynamic visual dashboards.</blockquote>
+
+<h2 id="section-4">0.2 The PS Example Queries (Must-Demo)</h2>
+
+<p>The PS explicitly lists these example user queries:</p>
+
+<pre><code class="language-text">1. &quot;Where is the nearest Potential Fishing Zone (PFZ) today?&quot;
+2. &quot;Is it safe to venture into the sea tomorrow morning?&quot;
+3. &quot;What are the tide, weather, and sea conditions near my fishing location?&quot;
+4. &quot;Are there any lightning or cyclone alerts in my area?&quot;
+5. &quot;Which regions show high chlorophyll concentration and favourable SST for fish aggregation?&quot;
+6. &quot;What is the safest route from port A to port B, considering weather and sea conditions?&quot;
+7. &quot;Why has fish productivity declined near [coastal area] in recent months?&quot;
+8. &quot;Which fishing zones should be avoided due to hazardous conditions?&quot;</code></pre>
+
+<div class="warning"><strong>CAUTION:</strong> Every one of these 8 queries must work in the demo. Not with hardcoded data — with real investigation.</div>
+
+<h2 id="section-5">0.3 The PS Expected Features</h2>
+
+<pre><code class="language-text">✓ Conversational AI interface (chat, voice, regional language)
+✓ Agentic AI for autonomous data discovery and retrieval
+✓ Multi-source data integration (SST, CHL, wind, waves, advisories)
+✓ Evidence-grounded recommendations
+✓ Interactive map visualization
+✓ Scenario exploration (multi-turn)
+✓ Proactive alerts (cyclone, weather, geofencing)
+✓ Context-aware responses (stakeholder-specific)</code></pre>
+
+<hr>
+
+<h1 id="section-6">1. The Core Realization</h1>
+
+<p>The PS does <strong>not</strong> ask us to build a marine data platform that happens to have an AI chatbot.</p>
+
+<p>It asks us to build:</p>
+
+<blockquote><strong>An autonomous conversational investigation system that happens to use marine data.</strong></blockquote>
+
+<p>The architecture, the demo, and the code should all tell this story:</p>
+
+<pre><code class="language-text">USER asks a hard marine question
+      ↓
+ORCA autonomously investigates
+      ↓
+Multiple agents collaborate on evidence
+      ↓
+Evidence is correlated across sources
+      ↓
+A decision is made with full reasoning
+      ↓
+The user sees chat + map + charts + alerts</code></pre>
+
+<p>Everything else — data pipelines, databases, connectors — is the <strong>engine underneath</strong>, not the product itself.</p>
+
+<hr>
+
+<h1 id="section-7">2. The 10 PS Capabilities We Must Demonstrably Implement</h1>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>#</th><th>PS Requirement</th><th>What the Judge Must See</th></tr></thead>
+<tbody><tr><td>1</td><td>Natural language understanding</td><td>User types normal marine question, system understands</td></tr>
+<tr><td>2</td><td>Intent decomposition</td><td>System identifies WHAT / WHERE / WHEN / WHY / WHO</td></tr>
+<tr><td>3</td><td>Autonomous planning</td><td>System builds a task plan <strong>visibly</strong> without user guidance</td></tr>
+<tr><td>4</td><td>Tool & agent selection</td><td>System chooses which agents and tools are needed</td></tr>
+<tr><td>5</td><td>Multi-agent collaboration</td><td>Ocean + Weather + Geo + Risk agents work together</td></tr>
+<tr><td>6</td><td>Autonomous data discovery & retrieval</td><td>System finds and fetches needed datasets from catalog</td></tr>
+<tr><td>7</td><td>Spatial-temporal reasoning</td><td>Combines location + time + multiple data layers</td></tr>
+<tr><td>8</td><td>Evidence-grounded decision</td><td>Decision has traceable evidence chain, not just LLM text</td></tr>
+<tr><td>9</td><td>Explainable visualization</td><td>Map + charts change dynamically based on investigation</td></tr>
+<tr><td>10</td><td>Proactive operations</td><td>Alerts, geofencing, monitoring, route optimization</td></tr>
+</tbody></table></div>
+
+<div class="important"><strong>IMPORTANT:</strong> Every architecture decision, every sprint task, and every demo scenario must trace back to one or more of these 10 capabilities.</div>
+
+<hr>
+
+<h1 id="section-8">3. The Hero Investigation Loop</h1>
+
+<p>This is the single most important thing in the entire system — the core product:</p>
+
+<pre><code class="language-text">                    ASK
+                     ↓
+                 UNDERSTAND
+             (intent + context)
+                     ↓
+                    PLAN
+          (task decomposition)
+                     ↓
+              DISCOVER DATA
+       (catalog search + selection)
+                     ↓
+           SELECT TOOLS / AGENTS
+                     ↓
+                  EXECUTE
+            ┌────────┼────────┐
+            ▼        ▼        ▼
+          OCEAN   WEATHER    GEO
+            └────────┼────────┘
+                     ▼
+                CORRELATE
+          (multi-source fusion)
+                     ↓
+              OBSERVE STATE
+          (is evidence sufficient?)
+                     ↓
+           ┌─────────┴─────────┐
+           │                   │
+      ENOUGH?                 NO
+           │                   │
+          YES               REPLAN
+           │                   │
+           │             MORE EVIDENCE
+           │                   │
+           └──────────←────────┘
+                     ↓
+                  DECIDE
+                     ↓
+                 EXPLAIN
+          (evidence chain + reasoning)
+                     ↓
+           ┌─────────┼──────────┐
+           ▼         ▼          ▼
+         CHAT       MAP       CHART
+                     │
+                     ▼
+                   ALERT</code></pre>
+
+<div class="important"><strong>IMPORTANT:</strong> This loop must be <strong>visible to the user</strong> during the demo. The user should see ORCA thinking, planning, fetching, correlating, and reasoning — not just returning an answer.</div>
+
+<hr>
+
+<h1 id="section-9">4. Two Execution Modes</h1>
+
+<h3 id="section-10">4.1 Reactive Mode (User Asks)</h3>
+
+<pre><code class="language-text">User question → Investigation → Response</code></pre>
+
+<h3 id="section-11">4.2 Proactive Mode (System Monitors)</h3>
+
+<pre><code class="language-text">Monitoring rule → New marine condition detected
+     ↓
+Data retrieval → Risk analysis → Validation
+     ↓
+Alert pushed to user</code></pre>
+
+<p>Both modes must exist. The PS explicitly requires proactive alerts for weather, cyclones, lightning, and geofencing.</p>
+
+<hr>
+
+<h1 id="section-12">5. Implementation Phases</h1>
+
+<h3 id="section-13">Phase 0 — Foundation Sprint (Days 1–3)</h3>
+
+<p><strong>Goal:</strong> Skeleton that can accept a question and show the investigation loop.</p>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>Task</th><th>Details</th><th>Priority</th></tr></thead>
+<tbody><tr><td>Project scaffold</td><td>Next.js or Vite + FastAPI backend</td><td>P0</td></tr>
+<tr><td>Chat UI shell</td><td>Input box, message stream, thinking indicators</td><td>P0</td></tr>
+<tr><td>Map component</td><td>Leaflet/MapLibre with Indian Ocean view</td><td>P0</td></tr>
+<tr><td>Backend conversation endpoint</td><td><code>/api/chat</code> WebSocket or SSE</td><td>P0</td></tr>
+<tr><td>Intent parser stub</td><td>Extract WHAT/WHERE/WHEN/WHY from text</td><td>P0</td></tr>
+<tr><td>Planner stub</td><td>Generate a visible task plan from intent</td><td>P0</td></tr>
+<tr><td>Location gazetteer</td><td>~80 Indian coastal towns/harbors → lat/lng</td><td>P0</td></tr>
+</tbody></table></div>
+
+<p><strong>Exit criteria:</strong> User types "Where can I fish near Veraval tomorrow?" → System shows intent breakdown + task plan in the chat UI.</p>
+
+<hr>
+
+<h3 id="section-14">Phase 1 — Data Foundation Minimum (Days 3–6)</h3>
+
+<p><strong>Goal:</strong> Real marine data flowing through the system.</p>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>Task</th><th>Details</th><th>Priority</th></tr></thead>
+<tbody><tr><td>Data catalog</td><td>JSON registry of available datasets (SST, CHL, wind, waves, PFZ, advisories)</td><td>P0</td></tr>
+<tr><td>INCOIS ERDDAP connector</td><td>SST + Chlorophyll retrieval</td><td>P0</td></tr>
+<tr><td>Open-Meteo / IMD connector</td><td>Wind, waves, weather forecast</td><td>P0</td></tr>
+<tr><td>PFZ data loader</td><td>INCOIS PFZ advisories (scrape or static)</td><td>P0</td></tr>
+<tr><td>Marine advisory loader</td><td>Cyclone/warning from IMD/INCOIS</td><td>P0</td></tr>
+<tr><td>Boundary GIS loader</td><td>EEZ, MPA, restricted zones (GeoJSON)</td><td>P1</td></tr>
+<tr><td>GEBCO bathymetry</td><td>Tile or simplified depth contour</td><td>P1</td></tr>
+<tr><td>Data validation</td><td>Freshness check, coverage check, unit validation</td><td>P1</td></tr>
+</tbody></table></div>
+
+<p><strong>Exit criteria:</strong> System can fetch real SST, chlorophyll, wind, and wave data for any Indian coastal location + time window.</p>
+
+<hr>
+
+<h3 id="section-15">Phase 2 — Agentic Brain (Days 5–9)</h3>
+
+<p><strong>Goal:</strong> The autonomous investigation loop works end-to-end.</p>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>Task</th><th>Details</th><th>Priority</th></tr></thead>
+<tbody><tr><td>Supervisor / Planner</td><td>LLM-powered planner that decomposes questions into task graphs</td><td>P0</td></tr>
+<tr><td>Task graph executor</td><td>Runs tasks in parallel/sequential based on dependencies</td><td>P0</td></tr>
+<tr><td>Data Discovery Agent</td><td>Maps semantic requirements → catalog → source selection</td><td>P0</td></tr>
+<tr><td>Ocean Agent</td><td>Interprets SST, CHL, PFZ, anomalies via deterministic engines</td><td>P0</td></tr>
+<tr><td>Weather Agent</td><td>Interprets wind, waves, forecasts, advisories</td><td>P0</td></tr>
+<tr><td>Geospatial Agent</td><td>Point-in-polygon, distance, geofencing checks</td><td>P0</td></tr>
+<tr><td>Decision / Risk / Operations Agent</td><td>Combines domain findings + user context → recommendation</td><td>P0</td></tr>
+<tr><td>Evidence Validator</td><td>Checks completeness, freshness, conflicts</td><td>P0</td></tr>
+<tr><td>Response Synthesizer</td><td>Produces chat + map + chart instructions</td><td>P0</td></tr>
+<tr><td>Adaptive replanning</td><td>If evidence gate says NO → planner creates new tasks</td><td>P0</td></tr>
+<tr><td>Thinking stream</td><td>Show investigation steps in real-time to user</td><td>P0</td></tr>
+</tbody></table></div>
+
+<p><strong>Exit criteria:</strong> Full investigation loop for "Is it safe to go fishing near Ratnagiri tomorrow morning?" showing plan → execute → correlate → decide → explain.</p>
+
+<hr>
+
+<h3 id="section-16">Phase 3 — Scientific Engines (Days 7–11)</h3>
+
+<p><strong>Goal:</strong> Deterministic marine science, not LLM guessing.</p>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>Task</th><th>Details</th><th>Priority</th></tr></thead>
+<tbody><tr><td>SST anomaly engine</td><td>Current vs. climatology comparison</td><td>P0</td></tr>
+<tr><td>CHL anomaly engine</td><td>Current vs. baseline, productivity assessment</td><td>P0</td></tr>
+<tr><td>Safety scoring engine</td><td>Wind + waves + weather → composite safety score</td><td>P0</td></tr>
+<tr><td>PFZ suitability engine</td><td>CHL + SST + conditions → fishing suitability</td><td>P0</td></tr>
+<tr><td>Risk assessment engine</td><td>Hazards + conditions → risk level + reasoning</td><td>P0</td></tr>
+<tr><td>Route optimizer</td><td>A* or grid-based with environmental cost layers</td><td>P1</td></tr>
+<tr><td>Tide calculator</td><td>Harmonic tide prediction for Indian ports</td><td>P1</td></tr>
+<tr><td>Marine State assembler</td><td>Unified snapshot of all conditions at location+time</td><td>P0</td></tr>
+</tbody></table></div>
+
+<p><strong>Exit criteria:</strong> Scientific engines produce deterministic, reproducible results with evidence chains — not LLM-generated numbers.</p>
+
+<hr>
+
+<h3 id="section-17">Phase 4 — Visualization & Experience (Days 9–13)</h3>
+
+<p><strong>Goal:</strong> The map is alive. The chat is intelligent. The experience is premium.</p>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>Task</th><th>Details</th><th>Priority</th></tr></thead>
+<tbody><tr><td>Dynamic map layers</td><td>SST heatmap, CHL overlay, PFZ zones, wind arrows, wave height</td><td>P0</td></tr>
+<tr><td>Investigation-driven map</td><td>Map changes based on what ORCA investigates</td><td>P0</td></tr>
+<tr><td>Evidence panel</td><td>Collapsible panel showing data sources, timestamps, reasoning</td><td>P0</td></tr>
+<tr><td>Chart generation</td><td>Time series, comparison charts for conditions</td><td>P0</td></tr>
+<tr><td>Alert cards</td><td>Weather warnings, cyclone alerts, geofence notifications</td><td>P0</td></tr>
+<tr><td>Route visualization</td><td>Safe route on map with hazard annotations</td><td>P1</td></tr>
+<tr><td>Multi-turn conversation</td><td>Context maintained across questions</td><td>P0</td></tr>
+<tr><td>Scenario comparison</td><td>"What if I leave at 6 AM vs 9 AM?" side-by-side</td><td>P1</td></tr>
+<tr><td>Regional language</td><td>Hindi + Gujarati + English (minimum 3 languages; PS explicit requirement)</td><td>P0</td></tr>
+<tr><td>Mobile-responsive</td><td>Chat + map works on phone-sized screens</td><td>P1</td></tr>
+</tbody></table></div>
+
+<p><strong>Exit criteria:</strong> A question like "Where is the nearest PFZ today?" produces a chat response + map with PFZ zones highlighted + SST/CHL overlays + safety assessment.</p>
+
+<hr>
+
+<h3 id="section-18">Phase 5 — Proactive Operations (Days 11–14)</h3>
+
+<p><strong>Goal:</strong> ORCA doesn't just answer — it watches and warns.</p>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>Task</th><th>Details</th><th>Priority</th></tr></thead>
+<tbody><tr><td>Monitoring service</td><td>Periodic check of weather/advisory conditions</td><td>P0</td></tr>
+<tr><td>Geofence engine</td><td>User location vs. EEZ/MPA/restricted zones</td><td>P0</td></tr>
+<tr><td>Alert generation</td><td>When conditions breach thresholds → push alert</td><td>P0</td></tr>
+<tr><td>Cyclone tracker</td><td>Track active cyclones, show predicted path on map</td><td>P1</td></tr>
+<tr><td>Advisory aggregator</td><td>Aggregate INCOIS/IMD marine warnings</td><td>P0</td></tr>
+</tbody></table></div>
+
+<p><strong>Exit criteria:</strong> System proactively shows "⚠️ High wave warning issued for your area" without being asked.</p>
+
+<hr>
+
+<h3 id="section-19">Phase 6 — Polish, Demo & Evaluation (Days 13–15)</h3>
+
+<p><strong>Goal:</strong> Demo-ready. Every PS requirement is demonstrable.</p>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>Task</th><th>Details</th><th>Priority</th></tr></thead>
+<tbody><tr><td>8 demo scenarios</td><td>One for each PS example query, fully working</td><td>P0</td></tr>
+<tr><td>Investigation replay</td><td>Show the full PLAN→ACT→OBSERVE→REPLAN→DECIDE chain</td><td>P0</td></tr>
+<tr><td>Evidence traceability</td><td>Every recommendation links to source data</td><td>P0</td></tr>
+<tr><td>Performance optimization</td><td>Fast path < 8s response time</td><td>P0</td></tr>
+<tr><td>Error handling</td><td>Graceful degradation when data unavailable</td><td>P0</td></tr>
+<tr><td>Presentation architecture diagram</td><td>The PS-first hero diagram, not the infra diagram</td><td>P0</td></tr>
+</tbody></table></div>
+
+<hr>
+
+<h1 id="section-20">6. The 8 Demo Scenarios</h1>
+
+<p>Each scenario must demonstrate multiple PS capabilities simultaneously.</p>
+
+<h3 id="section-21">Demo 1: "Where is the nearest PFZ today?"</h3>
+<pre><code class="language-text">Capabilities: intent, planning, data discovery, ocean analysis,
+              spatial reasoning, visualization
+Investigation: locate user → find PFZ data → get SST/CHL →
+               assess suitability → find nearest → render on map
+PS Coverage: 1, 2, 3, 6, 7, 9</code></pre>
+
+<h3 id="section-22">Demo 2: "Is it safe to venture into the sea tomorrow morning?"</h3>
+<pre><code class="language-text">Capabilities: intent, planning, multi-agent, weather, risk,
+              evidence-grounded decision, explainability
+Investigation: resolve location → get wind forecast → get wave
+               forecast → check advisories → check cyclones →
+               composite safety score → explain reasoning
+PS Coverage: 1, 2, 3, 4, 5, 7, 8</code></pre>
+
+<h3 id="section-23">Demo 3: "What are the tide, weather, and sea conditions near my fishing location?"</h3>
+<pre><code class="language-text">Capabilities: multi-source correlation, spatial-temporal reasoning,
+              comprehensive state assessment
+Investigation: resolve location → parallel fetch (tide + weather +
+               waves + SST + currents) → assemble marine state →
+               present unified view
+PS Coverage: 1, 5, 6, 7, 8, 9</code></pre>
+
+<h3 id="section-24">Demo 4: "Are there any lightning or cyclone alerts in my area?"</h3>
+<pre><code class="language-text">Capabilities: proactive alerts, hazard assessment, advisory
+              integration, geospatial reasoning
+Investigation: resolve area → check IMD advisories → check
+               INCOIS warnings → check active cyclones →
+               assess proximity → alert with evidence
+PS Coverage: 1, 7, 8, 10</code></pre>
+
+<h3 id="section-25">Demo 5: "Which regions show high chlorophyll and favourable SST?"</h3>
+<pre><code class="language-text">Capabilities: autonomous data discovery, multi-variable correlation,
+              spatial analysis, map visualization
+Investigation: discover CHL dataset → discover SST dataset →
+               retrieve both → identify overlap regions →
+               rank by combined favorability → render heatmap
+PS Coverage: 2, 3, 5, 6, 7, 9</code></pre>
+
+<h3 id="section-26">Demo 6: "What is the safest route considering weather and sea conditions?"</h3>
+<pre><code class="language-text">Capabilities: route optimization, multi-source integration,
+              risk assessment, scenario exploration
+Investigation: resolve origin/destination → get weather grid →
+               get wave grid → get restricted zones → generate
+               candidate routes → score environmental exposure →
+               compare → recommend with evidence
+PS Coverage: 3, 4, 5, 7, 8, 9</code></pre>
+
+<h3 id="section-27">Demo 7: "Why has fish productivity declined near Veraval?" (HERO DEMO)</h3>
+<pre><code class="language-text">Capabilities: autonomous investigation, adaptive replanning,
+              historical comparison, causal reasoning, explainability
+Investigation: get current CHL → get historical baseline →
+               detect anomaly → REPLAN: also get SST, wind,
+               currents → correlate changes → explain causal
+               factors with evidence
+PS Coverage: 1, 2, 3, 4, 5, 6, 7, 8, 9 (ALL NINE!)</code></pre>
+
+<h3 id="section-28">Demo 8: "Which fishing zones should be avoided due to hazardous conditions?"</h3>
+<pre><code class="language-text">Capabilities: geofencing, risk assessment, advisory integration,
+              multi-zone analysis, proactive warning
+Investigation: get all PFZ zones → assess conditions at each →
+               check advisories → check restricted areas →
+               classify: safe / caution / avoid → render map
+               with risk overlays
+PS Coverage: 5, 7, 8, 9, 10</code></pre>
+
+<hr>
+
+<h1 id="section-29">7. Tech Stack</h1>
+
+<h3 id="section-30">7.1 Frontend</h3>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>Component</th><th>Technology</th><th>Rationale</th></tr></thead>
+<tbody><tr><td>Framework</td><td>Next.js 14+ or Vite + React</td><td>SSR for SEO, fast dev</td></tr>
+<tr><td>Map</td><td>MapLibre GL JS or Leaflet</td><td>Free, powerful, Indian Ocean tiles</td></tr>
+<tr><td>Charts</td><td>Recharts or Chart.js</td><td>Simple, effective</td></tr>
+<tr><td>Chat UI</td><td>Custom React components</td><td>Full control over investigation display</td></tr>
+<tr><td>Styling</td><td>Vanilla CSS + CSS variables</td><td>Per project guidelines</td></tr>
+<tr><td>Real-time</td><td>WebSocket or SSE</td><td>Stream investigation steps</td></tr>
+</tbody></table></div>
+
+<h3 id="section-31">7.2 Backend</h3>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>Component</th><th>Technology</th><th>Rationale</th></tr></thead>
+<tbody><tr><td>API Server</td><td>FastAPI (Python)</td><td>Async, fast, typed, great for ML/AI</td></tr>
+<tr><td>LLM</td><td>Google Gemini API or OpenAI</td><td>Planning, synthesis, intent</td></tr>
+<tr><td>Agent Framework</td><td>LangGraph or custom</td><td>Task graph execution with state</td></tr>
+<tr><td>Data connectors</td><td>Python (requests, erddapy, xarray)</td><td>Scientific data access</td></tr>
+<tr><td>Geospatial</td><td>Shapely, GeoPandas</td><td>Spatial operations</td></tr>
+<tr><td>Scientific</td><td>NumPy, xarray</td><td>Array operations on gridded data</td></tr>
+<tr><td>Database</td><td>PostgreSQL + PostGIS</td><td>Metadata, catalog, spatial queries</td></tr>
+<tr><td>Cache</td><td>Redis (optional)</td><td>Response cache, rate limiting</td></tr>
+<tr><td>File storage</td><td>Local filesystem or MinIO</td><td>NetCDF/GeoTIFF storage</td></tr>
+</tbody></table></div>
+
+<h3 id="section-32">7.3 Data Sources (V1 — Working Demo)</h3>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>Source</th><th>What</th><th>Access Method</th></tr></thead>
+<tbody><tr><td>INCOIS ERDDAP</td><td>SST, Chlorophyll, Ocean data</td><td>ERDDAP API</td></tr>
+<tr><td>Open-Meteo Marine</td><td>Wind, waves, swell forecast</td><td>REST API (free)</td></tr>
+<tr><td>IMD / INCOIS advisories</td><td>Cyclone, marine warnings</td><td>Scrape or static</td></tr>
+<tr><td>INCOIS PFZ</td><td>Potential Fishing Zones</td><td>Advisory download</td></tr>
+<tr><td>Natural Earth / OSM</td><td>Coastlines, boundaries</td><td>GeoJSON static</td></tr>
+<tr><td>MarineRegions.org</td><td>EEZ, MPA boundaries</td><td>GeoJSON download</td></tr>
+<tr><td>GEBCO</td><td>Bathymetry</td><td>NetCDF/tiles</td></tr>
+</tbody></table></div>
+
+<hr>
+
+<h1 id="section-33">8. What the Investigation UI Should Look Like</h1>
+
+<p>The user should see the <strong>investigation happening</strong>:</p>
+
+<pre><code class="language-text">┌─────────────────────────────────────────────────────────────┐
+│  🔍 ORCA is investigating your question...                  │
+│                                                             │
+│  ✅ Understood: You want to know if it&#x27;s safe to fish       │
+│     near Ratnagiri tomorrow morning (6 AM)                  │
+│                                                             │
+│  📋 Plan:                                                    │
+│     ├── Get wind forecast          ⏳ fetching...            │
+│     ├── Get wave forecast          ✅ done                   │
+│     ├── Check marine advisories    ✅ no warnings            │
+│     ├── Check cyclone status       ✅ none active            │
+│     └── Assess safety              ⏳ analyzing...           │
+│                                                             │
+│  🔄 Evidence review: Need additional current data...        │
+│     └── Get ocean currents         ⏳ fetching...            │
+│                                                             │
+│  ✅ Decision ready                                           │
+└─────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────┐
+│  ✅ It is MODERATELY SAFE to fish near Ratnagiri tomorrow   │
+│     morning.                                                │
+│                                                             │
+│  Evidence:                                                  │
+│  • Wind: 12 km/h NW — within safe limits                   │
+│  • Waves: 1.2m — moderate, manageable for small boats       │
+│  • No active cyclone or marine warning                      │
+│  • SST: 28.3°C — normal for this season                     │
+│  • Current: mild westward — favorable                       │
+│                                                             │
+│  ⚠️ Note: Wind may increase to 18 km/h by afternoon.       │
+│     Recommend returning by 2 PM.                            │
+│                                                             │
+│  📊 Sources: INCOIS ERDDAP (SST), Open-Meteo (wind/waves), │
+│     IMD (advisories) — all retrieved at 13:45 IST           │
+└─────────────────────────────────────────────────────────────┘</code></pre>
+
+<hr>
+
+<h1 id="section-34">9. Context-Aware Responses</h1>
+
+<p>The same data should produce different responses for different stakeholders:</p>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>Stakeholder</th><th>Same Wind + Wave Data → Different Response</th></tr></thead>
+<tbody><tr><td><strong>Fisherman</strong></td><td>"Winds are 15 km/h. Safe for your boat. Return before afternoon."</td></tr>
+<tr><td><strong>Port Operator</strong></td><td>"Wind 15 km/h. No impact on port operations. Vessel movements normal."</td></tr>
+<tr><td><strong>Researcher</strong></td><td>"Wind anomaly: +4 km/h above September climatology. Correlated with SST shift."</td></tr>
+<tr><td><strong>Coastal Authority</strong></td><td>"No coastal flood risk. Wave height within design limits."</td></tr>
+</tbody></table></div>
+
+<hr>
+
+<h1 id="section-35">10. Scenario Exploration (Multi-Turn)</h1>
+
+<pre><code class="language-text">User:  &quot;Is it safe to go tomorrow at 6 AM?&quot;
+ORCA:  [investigation] → &quot;Moderately safe. Wind increases by afternoon.&quot;
+
+User:  &quot;What if I go at 9 AM instead?&quot;
+ORCA:  [reuses partial context, updates forecast window]
+       → &quot;Slightly worse. Wind already at 18 km/h by 9 AM.
+          The 6 AM departure is better.&quot;
+
+User:  &quot;What about the day after tomorrow?&quot;
+ORCA:  [new forecast fetch] → &quot;Better conditions. Wind drops to 8 km/h.&quot;</code></pre>
+
+<hr>
+
+<h1 id="section-36">11. What NOT to Build for the Hackathon</h1>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>Don't Build</th><th>Why</th></tr></thead>
+<tbody><tr><td>Production-grade data pipeline</td><td>Static/cached data is fine for demo</td></tr>
+<tr><td>Real-time vessel tracking</td><td>Not required for PS demonstration</td></tr>
+<tr><td>Full ontology reasoning</td><td>Curated JSON crosswalk is enough</td></tr>
+<tr><td>Multiple LLM providers</td><td>One good LLM is sufficient</td></tr>
+<tr><td>Kubernetes deployment</td><td>Local or single-server is fine</td></tr>
+<tr><td>User authentication</td><td>Demo doesn't need login</td></tr>
+<tr><td>Payment/subscription</td><td>Not relevant</td></tr>
+</tbody></table></div>
+
+<div class="warning"><strong>CAUTION:</strong> Every hour spent on infrastructure that isn't visible in the demo is an hour stolen from demonstrating agentic intelligence.</div>
+
+<hr>
+
+<h1 id="section-37">12. Sprint Calendar (15-Day Hackathon)</h1>
+
+<pre><code class="language-text">Day  1-2:  Project scaffold + Chat UI + Map + Intent parser
+Day  3-4:  Data catalog + First 3 connectors (SST, CHL, Weather)
+Day  5-6:  Planner + Task graph + First 2 agents (Ocean, Weather)
+Day  7-8:  All 6 agents working + Evidence gate + Replanning
+Day  9-10: Scientific engines (anomaly, safety, PFZ suitability)
+Day 11-12: Visualization (dynamic map layers, charts, alerts)
+Day 13:    Proactive alerts + Geofencing + Route optimization
+Day 14:    8 demo scenarios polished + Regional language
+Day 15:    Final polish + Demo rehearsal + Architecture slides</code></pre>
+
+<hr>
+
+<h1 id="section-38">13. File Structure</h1>
+
+<pre><code class="language-text">orca/
+├── frontend/                    # Next.js or Vite + React
+│   ├── components/
+│   │   ├── Chat/                # Chat panel + investigation display
+│   │   ├── Map/                 # MapLibre + dynamic layers
+│   │   ├── Charts/              # Data visualization
+│   │   ├── Alerts/              # Warning cards
+│   │   └── Evidence/            # Evidence panel
+│   ├── pages/                   # Main app layout
+│   └── styles/                  # Design system
+│
+├── backend/                     # FastAPI
+│   ├── api/                     # Endpoints
+│   │   ├── chat.py              # WebSocket/SSE chat
+│   │   └── data.py              # Data query endpoints
+│   │
+│   ├── agents/                  # The Agentic Brain
+│   │   ├── supervisor.py        # Planner + orchestrator
+│   │   ├── task_graph.py        # Task decomposition + execution
+│   │   ├── data_agent.py        # Data discovery + retrieval
+│   │   ├── ocean_agent.py       # SST, CHL, PFZ, ecosystem
+│   │   ├── weather_agent.py     # Wind, waves, forecasts, hazards
+│   │   ├── geo_agent.py         # Spatial reasoning, geofencing
+│   │   ├── decision_agent.py    # Risk, route, recommendation
+│   │   ├── evidence_gate.py     # Validates sufficiency
+│   │   └── synthesizer.py       # Chat + map + chart generation
+│   │
+│   ├── engines/                 # Deterministic Scientific Engines
+│   │   ├── sst_engine.py        # SST analysis + anomaly
+│   │   ├── chl_engine.py        # Chlorophyll analysis
+│   │   ├── safety_engine.py     # Composite safety scoring
+│   │   ├── pfz_engine.py        # PFZ suitability
+│   │   ├── risk_engine.py       # Risk assessment
+│   │   ├── route_engine.py      # Route optimization
+│   │   └── marine_state.py      # Unified state assembler
+│   │
+│   ├── data/                    # Data Foundation
+│   │   ├── catalog.py           # Dataset registry
+│   │   ├── discovery.py         # Semantic mapping + selection
+│   │   ├── connectors/          # Source-specific adapters
+│   │   │   ├── incois.py        # ERDDAP connector
+│   │   │   ├── openmeteo.py     # Weather API
+│   │   │   ├── imd.py           # Indian Met Department
+│   │   │   └── static.py        # GeoJSON boundaries
+│   │   ├── gazetteer.py         # Location resolution
+│   │   └── validation.py        # Data quality checks
+│   │
+│   ├── context/                 # Context + Intent
+│   │   ├── intent.py            # Intent extraction
+│   │   ├── language.py          # Language detection
+│   │   └── stakeholder.py       # User profile + constraints
+│   │
+│   └── monitoring/              # Proactive Operations
+│       ├── alert_service.py     # Condition monitoring
+│       └── geofence.py          # Boundary checking
+│
+├── data/                        # Static data files
+│   ├── gazetteer.json           # Coastal locations
+│   ├── crosswalk.json           # Semantic variable mapping
+│   ├── boundaries/              # GeoJSON boundaries
+│   └── climatology/             # Historical baselines
+│
+└── README.md</code></pre>
+
+<hr>
+
+<h1 id="section-39">14. Architecture Slide Strategy</h1>
+
+<h3 id="section-40">Slide 1: The Problem</h3>
+<blockquote>"Fishermen risk their lives because marine information is fragmented across dozens of sources."</blockquote>
+
+<h3 id="section-41">Slide 2: The Hero Loop</h3>
+<blockquote>The autonomous investigation diagram from Section 3. This is the <strong>biggest slide</strong>.</blockquote>
+
+<h3 id="section-42">Slide 3: Multi-Agent Task Graph</h3>
+<blockquote>Show how a complex question becomes a task graph with parallel agents.</blockquote>
+
+<h3 id="section-43">Slide 4: Multi-Source Correlation</h3>
+<blockquote>Show SST + CHL + Wind + Waves + Advisories → Marine State → Decision.</blockquote>
+
+<h3 id="section-44">Slide 5: Live Demo</h3>
+<blockquote>Run Demo 7 ("Why has productivity declined near Veraval?") showing the full PLAN → REPLAN → DECIDE chain.</blockquote>
+
+<h3 id="section-45">Slide 6: The Full Stack</h3>
+<blockquote>Only now show the data foundation underneath.</blockquote>
+
+<div class="tip"><strong>TIP:</strong> The judge should leave thinking: <strong>"That system actually investigates marine questions autonomously."</strong> Not: <strong>"That's a nice marine database."</strong></div>
+
+<hr>
+
+<h1 id="section-46">15. Success Criteria</h1>
+
+<p>The implementation succeeds if:</p>
+
+<ul>
+<li>[ ] A user can ask any of the 8 PS example queries and get a real, evidence-based answer</li>
+<li>[ ] The investigation loop is visible: PLAN → ACT → OBSERVE → REPLAN → DECIDE</li>
+<li>[ ] Multiple agents collaborate on complex questions</li>
+<li>[ ] Data comes from real marine sources (not hardcoded)</li>
+<li>[ ] Decisions include evidence chains with sources and timestamps</li>
+<li>[ ] The map dynamically reflects the investigation</li>
+<li>[ ] At least one scenario shows adaptive replanning</li>
+<li>[ ] Proactive alerts work for weather/cyclone warnings</li>
+<li>[ ] Geofencing works for restricted zone detection</li>
+<li>[ ] The system responds in the user's language (at least Hindi + English)</li>
+</ul>
+
+<hr>
+
+<h1 id="section-47">16. Cross-Document Traceability</h1>
+
+<p>This section maps how each architecture document serves the implementation plan:</p>
+
+<pre><code class="language-text">Document 1 (User Flow)           → Implements PS-1, PS-2, PS-9, PS-10
+  Defines: Stakeholder personas, interaction surfaces, UI behavior
+  Sprint: Phase 0 (UI shell) + Phase 4 (visualization)
+
+Document 2 (Core Agentic System) → Implements PS-3, PS-4, PS-5, PS-8
+  Defines: Agent topology, tool registry, execution modes, evidence chain
+  Sprint: Phase 2 (agentic brain)
+
+Document 3 (Data Pipeline)       → Implements PS-6, PS-7
+  Defines: Source connectors, normalization, scientific engines, marine state
+  Sprint: Phase 1 (data foundation) + Phase 3 (scientific engines)
+
+Document 4 (Database Design)     → Supports ALL PS capabilities
+  Defines: Storage layer for every step in the hero loop
+  Sprint: Phase 0 (schema creation) + ongoing
+
+Document 5 (This Document)       → Master reference for PS alignment
+  Defines: Implementation plan, demo scenarios, success criteria
+  Sprint: All phases</code></pre>
+
+<hr>
+
+<h1 id="section-48">17. PS Capability → Architecture Document Matrix</h1>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>PS #</th><th>Capability</th><th>Doc 1</th><th>Doc 2</th><th>Doc 3</th><th>Doc 4</th><th>Doc 5</th></tr></thead>
+<tbody><tr><td>1</td><td>Natural language</td><td>✓ flows</td><td>✓ intent</td><td></td><td>✓ gazetteer</td><td>✓ demos</td></tr>
+<tr><td>2</td><td>Intent decomposition</td><td>✓ routing</td><td>✓ planner</td><td></td><td>✓ workflows</td><td>✓ demos</td></tr>
+<tr><td>3</td><td>Autonomous planning</td><td>✓ hero flow</td><td>✓ task graph</td><td>✓ data plan</td><td>✓ tasks</td><td>✓ demos</td></tr>
+<tr><td>4</td><td>Tool & agent selection</td><td>✓ activity</td><td>✓ permission</td><td></td><td>✓ tool_exec</td><td>✓ demos</td></tr>
+<tr><td>5</td><td>Multi-agent collab</td><td>✓ parallel</td><td>✓ delegation</td><td>✓ reconciliation</td><td>✓ evidence</td><td>✓ demos</td></tr>
+<tr><td>6</td><td>Data discovery</td><td></td><td>✓ data agent</td><td>✓ catalog</td><td>✓ datasets</td><td>✓ demos</td></tr>
+<tr><td>7</td><td>Spatial-temporal</td><td>✓ map</td><td>✓ geo agent</td><td>✓ alignment</td><td>✓ PostGIS</td><td>✓ demos</td></tr>
+<tr><td>8</td><td>Evidence decision</td><td>✓ evidence</td><td>✓ evidence gate</td><td>✓ marine state</td><td>✓ claims</td><td>✓ demos</td></tr>
+<tr><td>9</td><td>Visualization</td><td>✓ surfaces</td><td>✓ synthesizer</td><td>✓ tiles</td><td>✓ tiles</td><td>✓ demos</td></tr>
+<tr><td>10</td><td>Proactive ops</td><td>✓ alerts</td><td>✓ alert tools</td><td></td><td>✓ alerts</td><td>✓ demos</td></tr>
+</tbody></table></div>
+
+<hr>
+
+<h1 id="section-49">18. Reminder — What Judges Will Evaluate</h1>
+
+<pre><code class="language-text">┌────────────────────────────────────────────────────────────────┐
+│                    WHAT JUDGES CARE ABOUT                       │
+├────────────────────────────────────────────────────────────────┤
+│                                                                │
+│  1. Does it WORK?                                              │
+│     → Can I ask the 8 example queries and get real answers?    │
+│                                                                │
+│  2. Is it INTELLIGENT?                                         │
+│     → Does it investigate autonomously, not just look up data? │
+│                                                                │
+│  3. Is it TRUSTWORTHY?                                         │
+│     → Can I trace every claim to real evidence?                │
+│                                                                │
+│  4. Is it USEFUL?                                              │
+│     → Would a fisherman actually use this?                     │
+│                                                                │
+│  5. Is it TECHNICALLY IMPRESSIVE?                              │
+│     → Multi-agent, multi-source, adaptive replanning           │
+│                                                                │
+│  6. Is it BEAUTIFUL?                                           │
+│     → Premium UI with interactive map, not a terminal output   │
+│                                                                │
+└────────────────────────────────────────────────────────────────┘</code></pre>
+
+<div class="important"><strong>IMPORTANT:</strong> <strong>Build the investigation system. Show the investigation system. Win with the investigation system.</strong> The data platform is the engine underneath. Important, but not the hero.</div>
+
+<hr>
+
+<h1 id="section-50">19. Immediate Next Steps</h1>
+
+<ol>
+<li><strong>Confirm this plan</strong> — Does this align with what you want to build?</li>
+<li><strong>Choose tech stack details</strong> — Next.js vs Vite? Gemini vs OpenAI? LangGraph vs custom?</li>
+<li><strong>Start Phase 0</strong> — Scaffold project, get chat + map rendering</li>
+<li><strong>Get first data flowing</strong> — INCOIS ERDDAP SST query working</li>
+<li><strong>Build the planner</strong> — The heart of the agentic system</li>
+</ol>
+
+<div class="note"><strong>NOTE:</strong> The existing specification documents contain excellent research on agent contracts, tool governance, scientific engines, and data connectors. That work is <strong>not wasted</strong> — it becomes the implementation reference for each sprint. We're just inverting the presentation and execution priority.</div>
+
+<hr>
+
+<h1 id="section-51">20. Mock Mode and Golden Datasets (Phase 0 Requirement)</h1>
+
+<blockquote>A hackathon demo should NEVER depend on perfect internet/API availability.</blockquote>
+
+<h3 id="section-52">LIVE vs MOCK Mode</h3>
+
+<pre><code class="language-text">LIVE MODE  - uses real external sources (INCOIS, IMD, Copernicus, etc.)
+MOCK MODE  - uses cached/frozen golden data</code></pre>
+
+<p>Implementation:</p>
+
+<pre><code class="language-text">ORCA_DATA_MODE=live    -&gt; real API calls
+ORCA_DATA_MODE=mock    -&gt; golden dataset responses</code></pre>
+
+<h3 id="section-53">Golden Datasets</h3>
+
+<p>Maintain small frozen examples for every connector:</p>
+
+<pre><code class="language-text">golden/
++-- argo/          - 5 real Argo profiles from Arabian Sea
++-- osf/           - 1 INCOIS Ocean State Forecast cycle
++-- pfz/           - 2 PFZ advisories with geometries
++-- imd/           - 1 marine bulletin + 1 cyclone track
++-- mosdac/        - 1 OCM-3 chlorophyll product
++-- gebco/         - Gujarat/Arabian Sea bathymetry subset
++-- copernicus/    - 1 physics + 1 wave product subset
++-- noaa/          - 1 SST + 1 ocean colour product</code></pre>
+
+<h3 id="section-54">Why This Matters</h3>
+
+<pre><code class="language-text">Scenario: Demo day, INCOIS ERDDAP is temporarily down.
+
+WITHOUT mock mode: &quot;Sorry, system is unavailable.&quot;
+WITH mock mode:    Full demo runs on golden data.
+                   UI shows &quot;(demo mode)&quot; badge.</code></pre>
+
+<p>BUILD THIS IN PHASE 0. Not Phase 5.</p>
+
+<hr>
+
+<h1 id="section-55">21. Phase 2.5 -- Adaptive Intelligence (Days 7-9)</h1>
+
+<blockquote>Between basic agentic brain and scientific engines.</blockquote>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>Task</th><th>Details</th><th>Priority</th></tr></thead>
+<tbody><tr><td>EO Intelligence Service</td><td>Satellite product discovery, scene quality, raster analysis</td><td>P1</td></tr>
+<tr><td>GeoFlow Spatial Reasoning</td><td>Spatial workflow graphs (buffer, intersect, difference, rank)</td><td>P0</td></tr>
+<tr><td>Next-Best-Evidence Selector</td><td>Information value scoring for replanning decisions</td><td>P0</td></tr>
+<tr><td>Uncertainty State</td><td>Structured confidence model for evidence and decisions</td><td>P0</td></tr>
+<tr><td>Event and Change Engine</td><td>Event lifecycle: CANDIDATE to ACTIVE to ENDED</td><td>P1</td></tr>
+<tr><td>Data Availability Service</td><td>Pre-check source availability before retrieval</td><td>P0</td></tr>
+<tr><td>Source Conflict Engine</td><td>Cross-source agreement/disagreement reporting</td><td>P1</td></tr>
+</tbody></table></div>
+
+<p><strong>Exit criteria:</strong> When the evidence gate says "insufficient," ORCA knows WHICH evidence to get next and WHY, not just "get more data."</p>
+
+<hr>
+
+<h1 id="section-56">22. Phase 3.5 -- Decision Intelligence (Days 10-12)</h1>
+
+<blockquote>Between scientific engines and visualization.</blockquote>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>Task</th><th>Details</th><th>Priority</th></tr></thead>
+<tbody><tr><td>Scenario Engine</td><td>Temporal/spatial shift comparisons, state reuse</td><td>P0</td></tr>
+<tr><td>Decision Trade-off Engine</td><td>Hard constraints + Pareto + MCDA + sensitivity</td><td>P0</td></tr>
+<tr><td>State Versioning</td><td>Marine state snapshots with parent chains and deltas</td><td>P1</td></tr>
+<tr><td>4D State Queries</td><td>STATE_AT, STATE_DIFF, STATE_ALONG_ROUTE operations</td><td>P1</td></tr>
+<tr><td>Causal Strength Taxonomy</td><td>L0-L4 explanation levels in Response Synthesizer</td><td>P0</td></tr>
+<tr><td>Risk Vocabulary</td><td>Standardized LOW/MODERATE/HIGH/CRITICAL vocabulary</td><td>P0</td></tr>
+</tbody></table></div>
+
+<p><strong>Exit criteria:</strong> Route optimization shows 3 alternatives with trade-off explanation. "What if I leave at 9 AM?" reuses computed state and shows comparison.</p>
+
+<hr>
+
+<h1 id="section-57">23. Updated Sprint Calendar (with new phases)</h1>
+
+<pre><code class="language-text">Day  1-2:   Phase 0 - Project scaffold + Chat UI + Map + Intent + Mock Mode
+Day  3-4:   Phase 1 - Data catalog + First 3 connectors + Golden datasets
+Day  5-6:   Phase 2 - Planner + Task graph + First agents (Ocean, Weather)
+Day  7-8:   Phase 2.5 - GeoFlow + Next-Best-Evidence + Uncertainty + Events
+Day  9-10:  Phase 3 - Scientific engines (anomaly, safety, PFZ suitability)
+Day 10-11:  Phase 3.5 - Scenario Engine + Decision Trade-offs + State Versioning
+Day 12-13:  Phase 4 - Dynamic map layers + Charts + Evidence panel + Investigation Activity
+Day 13-14:  Phase 5 - Proactive alerts + Geofencing + Route optimization
+Day 15:     Phase 6 - 8 demo scenarios polished + Final evaluation</code></pre>
+
+<hr>
+
+<h1 id="section-58">24. Updated File Structure (with new components)</h1>
+
+<pre><code class="language-text">orca/
++-- frontend/
+|   +-- components/
+|   |   +-- Chat/
+|   |   |   +-- InvestigationActivity.jsx    # NOT &quot;ThinkingStream&quot;
+|   |   |   +-- WhyThisResult.jsx            # Evidence explanation panel
+|   |   |   +-- ChatPanel.jsx
+|   |   +-- Map/
+|   |   +-- Charts/
+|   |   +-- Alerts/
+|   |   +-- Evidence/
+|   |   +-- Scenarios/                        # NEW: scenario comparison UI
+|   |   +-- Tradeoffs/                        # NEW: decision trade-off display
+|   +-- pages/
+|   +-- styles/
+|
++-- backend/
+|   +-- api/
+|   |   +-- chat.py
+|   |   +-- data.py
+|   |   +-- events.py                         # NEW: event intelligence API
+|   |   +-- scenarios.py                      # NEW: scenario comparison API
+|   |
+|   +-- agents/
+|   |   +-- supervisor.py
+|   |   +-- task_graph.py
+|   |   +-- data_agent.py
+|   |   +-- ocean_agent.py
+|   |   +-- weather_agent.py
+|   |   +-- geo_agent.py
+|   |   +-- decision_agent.py
+|   |   +-- evidence_gate.py
+|   |   +-- synthesizer.py
+|   |
+|   +-- engines/
+|   |   +-- sst_engine.py
+|   |   +-- chl_engine.py
+|   |   +-- safety_engine.py                  # RENAMED: operational_risk_engine.py
+|   |   +-- pfz_engine.py
+|   |   +-- risk_engine.py
+|   |   +-- route_engine.py
+|   |   +-- marine_state.py
+|   |   +-- event_engine.py                   # NEW: event and change detection
+|   |   +-- scenario_engine.py                # NEW: scenario comparison
+|   |   +-- tradeoff_engine.py                # NEW: Pareto + MCDA + sensitivity
+|   |   +-- uncertainty_engine.py             # NEW: confidence propagation
+|   |   +-- next_best_evidence.py             # NEW: information value scoring
+|   |
+|   +-- data/
+|   |   +-- catalog.py
+|   |   +-- discovery.py
+|   |   +-- availability.py                   # NEW: pre-check source availability
+|   |   +-- conflict.py                       # NEW: source conflict resolution
+|   |   +-- connectors/
+|   |   |   +-- erddap/                       # NEW: generic reusable ERDDAP client
+|   |   |   |   +-- client.py
+|   |   |   |   +-- catalog.py
+|   |   |   |   +-- query.py
+|   |   |   |   +-- parser.py
+|   |   |   +-- incois.py                     # uses erddap/ client
+|   |   |   +-- noaa.py                       # uses erddap/ client
+|   |   |   +-- openmeteo.py
+|   |   |   +-- imd.py
+|   |   |   +-- mosdac.py
+|   |   |   +-- copernicus.py
+|   |   |   +-- static.py
+|   |   +-- gazetteer.py
+|   |   +-- validation.py
+|   |
+|   +-- geoflow/                              # NEW: spatial reasoning graphs
+|   |   +-- graph.py                          # GeoFlow graph builder
+|   |   +-- operations.py                     # buffer, intersect, difference, etc.
+|   |   +-- executor.py                       # PostGIS query generation
+|   |
+|   +-- state/                                # NEW: marine state management
+|   |   +-- versioning.py                     # state snapshots and deltas
+|   |   +-- queries.py                        # STATE_AT, STATE_DIFF, etc.
+|   |
+|   +-- context/
+|   |   +-- intent.py
+|   |   +-- language.py
+|   |   +-- stakeholder.py
+|   |
+|   +-- monitoring/
+|       +-- alert_service.py
+|       +-- geofence.py
+|       +-- event_monitor.py                  # NEW: event lifecycle monitoring
+|
++-- data/
+|   +-- gazetteer.json
+|   +-- crosswalk.json
+|   +-- boundaries/
+|   +-- climatology/
+|   +-- golden/                               # NEW: golden datasets for mock mode
+|       +-- argo/
+|       +-- osf/
+|       +-- pfz/
+|       +-- imd/
+|       +-- mosdac/
+|       +-- gebco/
+|
++-- README.md</code></pre>
+
+<hr>
+
+<h1 id="section-59">25. Scientific Language Contract</h1>
+
+<blockquote>These rules apply to ALL user-facing text generated by ORCA.</blockquote>
+
+<h3 id="section-60">Safety Wording</h3>
+
+<pre><code class="language-text">DO NOT: &quot;It is safe.&quot;
+DO:     &quot;Available evidence indicates LOW operational risk
+         for the requested time window.&quot;
+
+DO NOT: &quot;Safety scoring engine&quot;
+DO:     &quot;Operational Risk / Suitability Engine&quot;
+
+DO NOT: &quot;It is MODERATELY SAFE to fish&quot;
+DO:     &quot;Conditions assessed as MODERATE OPERATIONAL RISK&quot;</code></pre>
+
+<h3 id="section-61">Causal Wording</h3>
+
+<pre><code class="language-text">DO NOT: &quot;SST caused the productivity decline.&quot;
+DO:     &quot;The SST change is associated with the observed decline
+         and is consistent with known mechanisms.&quot;
+
+DO NOT: &quot;explain causal factors with evidence&quot;
+DO:     &quot;identify contributing factors supported by evidence&quot;</code></pre>
+
+<h3 id="section-62">PFZ Wording</h3>
+
+<pre><code class="language-text">DO NOT: &quot;Fish will be here.&quot;
+DO:     &quot;PFZ advisory indicates favorable conditions for
+         fish aggregation in this zone.&quot;</code></pre>
+
+<h3 id="section-63">Forecast Wording</h3>
+
+<pre><code class="language-text">DO NOT: &quot;This will happen.&quot;
+DO:     &quot;The forecast indicates...&quot;</code></pre>
+
+<h3 id="section-64">Route Wording</h3>
+
+<pre><code class="language-text">DO NOT: &quot;This is the safest route.&quot;
+DO:     &quot;This route has the lowest assessed risk under the
+         selected objectives and constraints.&quot;</code></pre>
+
+<h3 id="section-65">HAB Wording</h3>
+
+<pre><code class="language-text">high chlorophyll != confirmed HAB</code></pre>
+
+<hr>
+
+<h1 id="section-66">26. MOSDAC Engineering Constraints</h1>
+
+<pre><code class="language-text">1. MOSDAC access requires registration for full data
+2. General users: 3-day latency
+3. Privileged users: NRT access (requires approval)
+4. SSTM (Oceansat-3): NOT operational (scan mechanism failure)
+5. SST must come from INCOIS/NOAA/Copernicus for V1
+6. OCM-3 chlorophyll: available but registration-dependent
+7. SCAT-3 wind: available at 12.5km and 25km resolution</code></pre>
+
+<hr>
+
+<h1 id="section-67">27. Evaluation Framework (from Deep Research)</h1>
+
+<h3 id="section-68">Event Intelligence Metrics</h3>
+
+<pre><code class="language-text">event precision
+recall
+false alert rate
+onset-time error
+end-time error
+spatial overlap (IoU)
+duration error
+corroboration rate</code></pre>
+
+<h3 id="section-69">Decision Trade-off Metrics</h3>
+
+<pre><code class="language-text">constraint violation rate
+feasible-option rate
+objective consistency
+weight sensitivity
+Pareto quality
+explanation fidelity</code></pre>
+
+<h3 id="section-70">4D Marine State Metrics</h3>
+
+<pre><code class="language-text">temporal consistency
+spatial consistency
+source freshness
+lineage completeness
+forecast/observation semantics
+reconstruction reproducibility</code></pre>
+
+<h3 id="section-71">Scientific Wording Metrics</h3>
+
+<pre><code class="language-text">unsupported causal claim rate     (target: 0)
+absolute-safety claim rate        (target: 0)
+unsupported numerical claim rate  (target: 0)
+evidence coverage
+source-authority compliance
+limitation disclosure</code></pre>
+
+<h3 id="section-72">Investigation Activity UI Metrics</h3>
+
+<pre><code class="language-text">activity-event correctness
+sequence correctness
+state synchronization
+evidence click-through rate
+user comprehension
+task completion rate</code></pre>
+
+<hr>
+
+<h1 id="section-73">28. V2 Roadmap (Future Capabilities)</h1>
+
+<blockquote>These are documented for completeness. NOT required for SIH V1 demo but should be architecturally accommodated.</blockquote>
+
+<pre><code class="language-text">V2 Event Detection:
+  - CUSUM (cumulative sum control chart)
+  - EWMA (exponentially weighted moving average)
+  - Bayesian change points
+  - PELT (Pruned Exact Linear Time)
+  - Kernel change points
+  - Siamese change detectors
+  - Transformer-based change detection
+  - Multimodal EO change detection
+  - Foundation-model-assisted change detection
+
+V2 Uncertainty:
+  - Ensemble uncertainty propagation
+  - Monte Carlo simulation through decision chain
+  - Probabilistic scenario analysis
+  - Calibrated confidence intervals
+
+V2 4D State:
+  - Full depth profiles for all variables
+  - STATE_DEPTH_PROFILE queries
+  - External analysis/reanalysis product integration
+  - Coupled data assimilation products
+
+V2 Decision:
+  - NSGA-II multi-objective optimization
+  - Evolutionary route optimization
+  - Full Pareto frontier visualization
+  - Outcome-based calibration
+
+V2 EO:
+  - Raw satellite scene processing
+  - Custom spectral index computation
+  - Spatial-temporal change detection on imagery
+  - Foundation model embeddings for ocean features
+
+V2 Multi-Modal Fusion:
+  - Cross-modal attention mechanisms
+  - Learned fusion weights
+  - Dynamic modality importance</code></pre>
+
+<hr>
+
+<h1 id="section-74">29. Companion Research Documents Reference</h1>
+
+<blockquote>The following research documents provide detailed engineering specifications beyond what is in the 5 main architecture documents. They should be consulted during implementation.</blockquote>
+
+<pre><code class="language-text">Document                                                  Content
+---------------------------------------------------------  ----------------------------------------
+ORCA_Data_Acquisition_Matrix_and_Engineering_Specification  30+ dataset IDs, connector specs,
+(64KB, 94 sections)                                        fallback matrix, ERDDAP architecture,
+                                                           provider-specific access policies,
+                                                           ingestion manager, testing strategy
+
+ORCA_Event_Change_4D_Decision_UI_Deep_Research_README       Event engine design, decision trade-offs,
+(41KB, 51 sections)                                        4D marine state research, scientific
+                                                           wording rules, investigation UI design,
+                                                           12 peer-reviewed research references</code></pre>
+
+<p>Both documents are implementation companions to the 5 main architecture documents.</p>
+
+<hr>
+
+<h1 id="section-75">30. Regional Language Architecture (PS Requirement — P0)</h1>
+
+<blockquote>The PS explicitly requires: automatic language identification, same-language response, Indian regional languages.</blockquote>
+
+<h3 id="section-76">Language Flow Through Memory</h3>
+
+<pre><code class="language-text">User asks in Gujarati
+        |
+        v
+Language detected = Gujarati
+        |
+        v
+Memory / Context
+preferred_response_language = Gujarati
+        |
+        v
+Planner
+        |
+        v
+Agents (work in English internally)
+        |
+        v
+Evidence (structured, language-independent)
+        |
+        v
+Response Synthesizer
+        |
+        v
+Gujarati response</code></pre>
+
+<h3 id="section-77">V1 Demo Languages (minimum)</h3>
+
+<pre><code class="language-text">English     - full support
+Hindi       - full support  
+Gujarati    - full support (primary demo persona)</code></pre>
+
+<h3 id="section-78">Implementation</h3>
+
+<pre><code class="language-text">Language detection:  LLM-based (no separate NLP model needed)
+Translation:         LLM generates response directly in target language
+Memory:              preferred_language stored as USER_PREFERENCE in memory_items
+Context:             Language preference injected into every Context Packet
+Response:            Synthesizer generates in detected/preferred language</code></pre>
+
+<h3 id="section-79">Demo Script</h3>
+
+<pre><code class="language-text">TURN 1 (Gujarati):
+&quot;વેરાવળ પાસે માછીમારી માટે સારી જગ્યા ક્યાં છે?&quot;
+
+ORCA Response (Gujarati):
+&quot;વેરાવળથી 45 km દૂર PFZ-17 પર અનુકૂળ પરિસ્થિતિઓ છે...&quot;
+
+TURN 2 (Gujarati, follow-up):
+&quot;કાલે સવારે કેવું રહેશે?&quot;
+
+ORCA Response (Gujarati):
+&quot;કાલે સવારે PFZ-17 પર...&quot;
+
+TURN 3 (Switch to English):
+&quot;Show me the route on the map.&quot;
+
+ORCA Response (English):
+&quot;Here is the optimized route from Veraval to PFZ-17...&quot;</code></pre>
+
+<p>This demonstrates: language detection, same-language response, language switching within conversation, and memory-based language preference.</p>
+
+    </div>
+
+    <div class="page-nav">
+      <a href="doc4.html">
+      <span class="page-nav-label">&#8592; Previous</span>
+      <span class="page-nav-title">Doc 4: Database</span>
+    </a>
+      <a href="doc6.html" class="next">
+      <span class="page-nav-label">Next &#8594;</span>
+      <span class="page-nav-title">Doc 6: Memory & Context</span>
+    </a>
+    </div>
+  </div>
+</div>
+
+<footer class="container">
+  <strong>ORCA</strong> &#183; Marine EcOsystem Reasoning with Collaborative Agents &#183; SIH 2026 &#183; PS 26176
+</footer>
+
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
+
+<script>
+// Back to top button
+window.addEventListener('scroll', function() {
+  var btn = document.getElementById('backToTop');
+  if (window.scrollY > 300) { btn.classList.add('visible'); }
+  else { btn.classList.remove('visible'); }
+});
+
+// Scroll-spy: highlight active TOC link
+(function() {
+  var tocLinks = document.querySelectorAll('#tocList a');
+  if (!tocLinks.length) return;
+
+  var headingEls = [];
+  tocLinks.forEach(function(link) {
+    var target = link.getAttribute('data-target');
+    var el = document.getElementById(target);
+    if (el) headingEls.push({ el: el, link: link });
+  });
+
+  function updateActive() {
+    var scrollY = window.scrollY + 80;
+    var current = null;
+
+    for (var i = 0; i < headingEls.length; i++) {
+      if (headingEls[i].el.offsetTop <= scrollY) {
+        current = headingEls[i];
+      }
+    }
+
+    tocLinks.forEach(function(l) { l.classList.remove('active'); });
+    if (current) {
+      current.link.classList.add('active');
+      // Scroll TOC to keep active item visible
+      var tocSticky = current.link.closest('.toc-sticky');
+      if (tocSticky) {
+        var linkTop = current.link.offsetTop - tocSticky.offsetTop;
+        var stickyHeight = tocSticky.clientHeight;
+        if (linkTop < tocSticky.scrollTop || linkTop > tocSticky.scrollTop + stickyHeight - 40) {
+          tocSticky.scrollTop = linkTop - stickyHeight / 3;
+        }
+      }
+    }
+  }
+
+  window.addEventListener('scroll', updateActive);
+  updateActive();
+})();
+
+// --- Mermaid Diagram Compiler & Interactive Viewer ---
+(function() {
+  if (typeof mermaid === 'undefined') return;
+
+  try {
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'neutral',
+      securityLevel: 'loose',
+      fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+      maxTextSize: 100000,
+      flowchart: {
+        htmlLabels: true,
+        curve: 'basis',
+        useMaxWidth: true
+      },
+      er: {
+        useMaxWidth: true
+      }
+    });
+  } catch (e) {
+    console.error('Mermaid init error:', e);
+  }
+
+  window.mmZoomState = window.mmZoomState || {};
+
+  async function compileMermaidDiagrams() {
+    var containers = document.querySelectorAll('.mermaid-container');
+    if (!containers.length) return;
+
+    for (var i = 0; i < containers.length; i++) {
+      var container = containers[i];
+      var id = container.id;
+      var preEl = container.querySelector('pre.mermaid-source');
+      var stageEl = document.getElementById(id + '-stage');
+      if (!preEl || !stageEl) continue;
+
+      var code = preEl.textContent.trim();
+      mmZoomState[id] = 1.0;
+
+      try {
+        var renderId = 'mm-svg-' + id.replace(/[^a-zA-Z0-9_-]/g, '_') + '-' + i;
+        var res = await mermaid.render(renderId, code);
+        stageEl.innerHTML = res.svg;
+        var svgEl = stageEl.querySelector('svg');
+        if (svgEl) {
+          svgEl.style.maxWidth = '100%';
+          svgEl.style.height = 'auto';
+          svgEl.style.display = 'block';
+          svgEl.style.margin = '0 auto';
+          svgEl.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+        }
+      } catch (err) {
+        console.error('Mermaid render error for ' + id + ':', err);
+        stageEl.innerHTML = '<div class="mermaid-error">' +
+          '<div class="mermaid-error-title">&#9888; Diagram Compilation Notice</div>' +
+          '<p>' + (err.message || String(err)) + '</p>' +
+          '</div>';
+      }
+    }
+  }
+
+  window.mermaidZoom = function(id, factor) {
+    var stage = document.getElementById(id + '-stage');
+    if (!stage) return;
+    var svg = stage.querySelector('svg');
+    if (!svg) return;
+    mmZoomState[id] = (mmZoomState[id] || 1.0) * factor;
+    if (mmZoomState[id] < 0.25) mmZoomState[id] = 0.25;
+    if (mmZoomState[id] > 4.0) mmZoomState[id] = 4.0;
+    stage.style.transform = 'scale(' + mmZoomState[id] + ')';
+    if (mmZoomState[id] > 1.0) {
+      svg.style.maxWidth = 'none';
+    } else {
+      svg.style.maxWidth = '100%';
+    }
+  };
+
+  window.mermaidReset = function(id) {
+    var stage = document.getElementById(id + '-stage');
+    if (!stage) return;
+    var svg = stage.querySelector('svg');
+    if (!svg) return;
+    mmZoomState[id] = 1.0;
+    stage.style.transform = 'scale(1)';
+    svg.style.maxWidth = '100%';
+  };
+
+  window.mermaidToggleCode = function(id) {
+    var codeDiv = document.getElementById(id + '-code');
+    if (!codeDiv) return;
+    codeDiv.style.display = (codeDiv.style.display === 'none') ? 'block' : 'none';
+  };
+
+  window.mermaidCopy = function(id) {
+    var container = document.getElementById(id);
+    if (!container) return;
+    var codePre = container.querySelector('.mermaid-code pre code') || container.querySelector('pre.mermaid-source');
+    if (!codePre) return;
+    navigator.clipboard.writeText(codePre.textContent).then(function() {
+      var btn = container.querySelector('.mm-btn-copy');
+      if (btn) {
+        var orig = btn.innerHTML;
+        btn.innerHTML = '&#10003; Copied!';
+        btn.style.color = '#137333';
+        setTimeout(function() { btn.innerHTML = orig; btn.style.color = ''; }, 2000);
+      }
+    });
+  };
+
+  window.mermaidFullscreen = function(id) {
+    var container = document.getElementById(id);
+    if (!container) return;
+    if (!document.fullscreenElement) {
+      if (container.requestFullscreen) {
+        container.requestFullscreen().catch(function() { container.classList.toggle('is-fullscreen'); });
+      } else {
+        container.classList.toggle('is-fullscreen');
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  };
+
+  document.addEventListener('fullscreenchange', function() {
+    var containers = document.querySelectorAll('.mermaid-container');
+    containers.forEach(function(c) {
+      if (c === document.fullscreenElement) {
+        c.classList.add('is-fullscreen');
+      } else {
+        c.classList.remove('is-fullscreen');
+      }
+    });
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', compileMermaidDiagrams);
+  } else {
+    compileMermaidDiagrams();
+  }
+})();
+</script>
+
+</body>
+</html>

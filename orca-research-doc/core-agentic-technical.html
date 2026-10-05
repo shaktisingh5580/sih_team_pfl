@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Core Agentic Technical Architecture | ORCA Research Dossier</title>
+<meta name="description" content="ORCA &#8212; Core Agentic Technical Architecture. Complete research and architecture documentation.">
+<link rel="stylesheet" type="text/css" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="mermaid.min.js"></script>
+<script>
+if (typeof mermaid === 'undefined') {
+  document.write('<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"><\/script>');
+}
+</script>
+</head>
+<body>
+
+<header id="dhead" class="container">
+  <div class="row">
+    <div id="dpic">
+      <img src="ORCA_architecture.svg" class="ppic" alt="ORCA" onerror="this.style.background='#f0f0f0'" />
+    </div>
+    <div id="ddesc">
+      <h1>ORCA</h1>
+      <h2>Core Agentic Technical Architecture</h2>
+      <nav class="doc-nav">
+        <a href="index.html">Home</a>
+<a href="architecture.html">Architecture Diagram</a>
+<a href="doc1.html">User Flows</a>
+<a href="doc2.html">Agentic System</a>
+<a href="doc3.html">Data Pipeline</a>
+<a href="doc4.html">Database</a>
+<a href="doc5.html">Implementation</a>
+<a href="doc6.html">Memory & Context</a>
+<a href="fisher.html">Fisher Research</a>
+<a href="data-sources.html">Data Sources</a>
+
+      </nav>
+    </div>
+  </div>
+</header>
+
+<hr>
+
+<div class="page-with-toc">
+  <!-- Sidebar TOC -->
+  <aside class="toc-sidebar">
+    <div class="toc-sticky">
+      <div class="toc-header">
+        <span class="toc-label">&#9679; Table of Contents</span>
+        <a class="toc-top-link" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593; TOP</a>
+      </div>
+      <ul class="toc-list" id="tocList">
+        <li><a href="#section-1" data-target="section-1">ORCA — Core Agentic System Architecture</a></li>
+<li><a href="#section-2" data-target="section-2">The Core Idea</a></li>
+<li><a href="#section-3" data-target="section-3">Core Technical Architecture</a></li>
+<li><a href="#section-4" data-target="section-4">How an Agent Actually Works Internally</a></li>
+<li><a href="#section-5" data-target="section-5">Where LLM is Used vs Where Code Runs</a></li>
+<li><a href="#section-6" data-target="section-6">The Key Rule</a></li>
+<li><a href="#section-7" data-target="section-7">Agent Communication — How They Talk</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <div class="toc-content">
+    <div class="breadcrumb"><a href="index.html">Home</a> / Core Agentic Technical Architecture</div>
+
+    <div class="md-content">
+<h1 id="section-1">ORCA — Core Agentic System Architecture</h1>
+
+<p><strong>How the AI brain actually works — where the LLM sits, what it controls, and what it does NOT control.</strong></p>
+
+<hr>
+
+<h2 id="section-2">The Core Idea</h2>
+
+<pre><code>LLM = thinks, plans, interprets, explains
+Scientific Engines = calculates (no LLM involved)
+Data Foundation = provides evidence (no LLM involved)</code></pre>
+
+<p>The LLM never does the math. It decides WHAT math to do, WHICH data to get, and EXPLAINS the result.</p>
+
+<hr>
+
+<h2 id="section-3">Core Technical Architecture</h2>
+
+<div class="mermaid-container" id="core-agentic-technical-mermaid-1">
+  <div class="mermaid-toolbar">
+    <div class="mermaid-title"><span class="mermaid-icon">&#9881;</span> Architecture Diagram</div>
+    <div class="mermaid-controls">
+      <button type="button" class="mm-btn" onclick="mermaidZoom('core-agentic-technical-mermaid-1', 1.25)" title="Zoom In">&#65291; Zoom</button>
+      <button type="button" class="mm-btn" onclick="mermaidZoom('core-agentic-technical-mermaid-1', 0.8)" title="Zoom Out">&#65293;</button>
+      <button type="button" class="mm-btn" onclick="mermaidReset('core-agentic-technical-mermaid-1')" title="Fit to Screen">&#x26F6; Fit</button>
+      <button type="button" class="mm-btn" onclick="mermaidFullscreen('core-agentic-technical-mermaid-1')" title="Expand Fullscreen">&#x2922; Expand</button>
+      <button type="button" class="mm-btn mm-btn-copy" onclick="mermaidCopy('core-agentic-technical-mermaid-1')" title="Copy Mermaid Syntax">Copy Code</button>
+      <button type="button" class="mm-btn" onclick="mermaidToggleCode('core-agentic-technical-mermaid-1')" title="Toggle Source Code">&lt;/&gt; Code</button>
+    </div>
+  </div>
+  <div class="mermaid-viewport" id="core-agentic-technical-mermaid-1-viewport">
+    <div class="mermaid-stage" id="core-agentic-technical-mermaid-1-stage">
+      <div style="color: #64748b; font-size: 13px; padding: 20px;">Rendering diagram...</div>
+    </div>
+    <pre class="mermaid-source" style="display:none;">flowchart TD
+    User((User))
+
+    User --&gt;|natural language\ntext or voice| NLU
+
+    subgraph LLM_CORE[&quot;LLM — The Brain (Planning &amp; Intent)&quot;]
+        direction TB
+        NLU[&quot;NLU Intent Parser\n- What does user want? Where? When?\n- Language detection &amp; complexity tier&quot;]
+        Planner[&quot;Supervisor Planner\n- What data is needed?\n- Which agents work in what order?&quot;]
+        Replan[&quot;Dynamic Re-planner\n- Checks if evidence is sufficient\n- Refines plan if data is missing&quot;]
+
+        NLU --&gt; Planner
+        Replan --&gt; Planner
+    end
+
+    Planner --&gt;|sends tasks to| Supervisor
+
+    subgraph ORCHESTRATOR[&quot;Supervisor / Orchestrator&quot;]
+        Supervisor[&quot;Execution Supervisor\n- Tracks running tasks &amp; execution state\n- Enforces latency, time &amp; budget limits\n- Manages parallel vs sequential tasks&quot;]
+    end
+
+    Supervisor --&gt;|assigns work to| AgentLayer
+
+    subgraph AgentLayer[&quot;Specialist Agents — each has its own LLM prompt&quot;]
+        direction TB
+        subgraph EnvironmentalAgents[&quot;Marine &amp; Atmospheric Intelligence&quot;]
+            OceanAgent[&quot;Ocean Agent\n• Analyzes SST, chlorophyll, fronts, upwelling\n• Decides which ocean analyses to run&quot;]
+            WeatherAgent[&quot;Weather Agent\n• Assesses wind, wave risk &amp; cyclone threat\n• Evaluates official IMD/INCOIS warnings&quot;]
+        end
+        subgraph SpatialAgents[&quot;Geospatial &amp; Data Retrieval Intelligence&quot;]
+            DataAgent[&quot;Data Agent\n• Identifies and retrieves marine datasets\n• Manages INCOIS / MOSDAC source fallbacks&quot;]
+            GeoAgent[&quot;Geo Agent\n• Evaluates EEZ, geofences &amp; marine zones\n• Calculates distance to nearest safe port&quot;]
+        end
+        DecisionAgent[&quot;Decision Agent\n• Combines all findings into clear recommendations\n• Evaluates trade-offs &amp; enforces safety boundaries&quot;]
+    end
+
+    AgentLayer --&gt;|agents invoke| ToolGateway
+
+    subgraph ToolGateway[&quot;Tool Gateway — Deterministic Code, No LLM&quot;]
+        direction TB
+        ToolCheck[&quot;Tool Validator: Checks permissions, schemas, input bounds &amp; rate limits&quot;]
+        ToolCheck --&gt; Tools
+        
+        subgraph Tools[&quot;Deterministic Compute Engines&quot;]
+            direction TB
+            subgraph DataAndOcean[&quot;Data &amp; Ocean Compute&quot;]
+                T1[&quot;Data Retrieval\nDownload INCOIS, MOSDAC, IMD via ERDDAP/REST&quot;]
+                T2[&quot;Ocean Science Engine\nSST anomaly, chlorophyll gradient, fronts, upwelling&quot;]
+            end
+            subgraph HazardAndSpatial[&quot;Hazard &amp; Spatial Compute&quot;]
+                T3[&quot;Weather Engine\nWind risk, wave risk, cyclone distance, lightning&quot;]
+                T4[&quot;Spatial Engine\nPostGIS point-in-polygon, distance, geofence&quot;]
+            end
+            T5[&quot;Risk Engine\nDeterministic hazard scoring &amp; safety rules&quot;]
+        end
+    end
+
+    Tools --&gt;|structured results| EvidenceCheck
+
+    subgraph EvidenceCheck[&quot;Evidence Validator — Code Verification + LLM Guardrails&quot;]
+        direction TB
+        Check1[&quot;Deterministic Code Checks:\n- Data source verification &amp; freshness\n- Physical units &amp; spatial coverage&quot;]
+        Check2[&quot;LLM Guardrail Checks:\n- Reasoning coherence &amp; safety\n- Claims strictly supported by evidence&quot;]
+        Check1 --&gt; PassFail
+        Check2 --&gt; PassFail
+        PassFail{Sufficient\nEvidence?}
+    end
+
+    PassFail --&gt;|No — need more data| Replan
+    PassFail --&gt;|Yes — evidence verified| Synthesizer
+
+    Synthesizer[&quot;Response Synthesizer (LLM)\n- Explains findings in plain language\n- Cites every source, timestamp &amp; confidence\n- Explicitly highlights uncertainty boundaries\n- Responds in user&#x27;s preferred regional language&quot;]
+
+    Synthesizer --&gt; Response
+
+    subgraph Response[&quot;User Decision Workspace (Output Surfaces)&quot;]
+        direction TB
+        R1[&quot;Chat: Plain language answer with citations&quot;]
+        R2[&quot;Interactive Map: Auto-selected ocean layers &amp; alerts&quot;]
+        R3[&quot;Evidence Panel: Source, timestamp &amp; confidence scores&quot;]
+        R4[&quot;Agent Activity Log: Step-by-step verified execution trace&quot;]
+    end
+
+    Response --&gt; User
+
+    subgraph Memory[&quot;Memory System — Injected into LLM Prompts&quot;]
+        direction TB
+        M1[&quot;Working Memory: Current investigation state &amp; scratchpad&quot;]
+        M2[&quot;User Profile: Vessel type, home port, language &amp; preferences&quot;]
+        M3[&quot;Investigation Memory: Past inquiries &amp; verified fishing spots&quot;]
+    end
+
+    Memory -.-&gt;|context injection| LLM_CORE
+    Memory -.-&gt;|context injection| AgentLayer</pre>
+  </div>
+  <div class="mermaid-code" id="core-agentic-technical-mermaid-1-code" style="display:none;">
+    <pre><code>flowchart TD
+    User((User))
+
+    User --&gt;|natural language\ntext or voice| NLU
+
+    subgraph LLM_CORE[&quot;LLM — The Brain (Planning &amp; Intent)&quot;]
+        direction TB
+        NLU[&quot;NLU Intent Parser\n- What does user want? Where? When?\n- Language detection &amp; complexity tier&quot;]
+        Planner[&quot;Supervisor Planner\n- What data is needed?\n- Which agents work in what order?&quot;]
+        Replan[&quot;Dynamic Re-planner\n- Checks if evidence is sufficient\n- Refines plan if data is missing&quot;]
+
+        NLU --&gt; Planner
+        Replan --&gt; Planner
+    end
+
+    Planner --&gt;|sends tasks to| Supervisor
+
+    subgraph ORCHESTRATOR[&quot;Supervisor / Orchestrator&quot;]
+        Supervisor[&quot;Execution Supervisor\n- Tracks running tasks &amp; execution state\n- Enforces latency, time &amp; budget limits\n- Manages parallel vs sequential tasks&quot;]
+    end
+
+    Supervisor --&gt;|assigns work to| AgentLayer
+
+    subgraph AgentLayer[&quot;Specialist Agents — each has its own LLM prompt&quot;]
+        direction TB
+        subgraph EnvironmentalAgents[&quot;Marine &amp; Atmospheric Intelligence&quot;]
+            OceanAgent[&quot;Ocean Agent\n• Analyzes SST, chlorophyll, fronts, upwelling\n• Decides which ocean analyses to run&quot;]
+            WeatherAgent[&quot;Weather Agent\n• Assesses wind, wave risk &amp; cyclone threat\n• Evaluates official IMD/INCOIS warnings&quot;]
+        end
+        subgraph SpatialAgents[&quot;Geospatial &amp; Data Retrieval Intelligence&quot;]
+            DataAgent[&quot;Data Agent\n• Identifies and retrieves marine datasets\n• Manages INCOIS / MOSDAC source fallbacks&quot;]
+            GeoAgent[&quot;Geo Agent\n• Evaluates EEZ, geofences &amp; marine zones\n• Calculates distance to nearest safe port&quot;]
+        end
+        DecisionAgent[&quot;Decision Agent\n• Combines all findings into clear recommendations\n• Evaluates trade-offs &amp; enforces safety boundaries&quot;]
+    end
+
+    AgentLayer --&gt;|agents invoke| ToolGateway
+
+    subgraph ToolGateway[&quot;Tool Gateway — Deterministic Code, No LLM&quot;]
+        direction TB
+        ToolCheck[&quot;Tool Validator: Checks permissions, schemas, input bounds &amp; rate limits&quot;]
+        ToolCheck --&gt; Tools
+        
+        subgraph Tools[&quot;Deterministic Compute Engines&quot;]
+            direction TB
+            subgraph DataAndOcean[&quot;Data &amp; Ocean Compute&quot;]
+                T1[&quot;Data Retrieval\nDownload INCOIS, MOSDAC, IMD via ERDDAP/REST&quot;]
+                T2[&quot;Ocean Science Engine\nSST anomaly, chlorophyll gradient, fronts, upwelling&quot;]
+            end
+            subgraph HazardAndSpatial[&quot;Hazard &amp; Spatial Compute&quot;]
+                T3[&quot;Weather Engine\nWind risk, wave risk, cyclone distance, lightning&quot;]
+                T4[&quot;Spatial Engine\nPostGIS point-in-polygon, distance, geofence&quot;]
+            end
+            T5[&quot;Risk Engine\nDeterministic hazard scoring &amp; safety rules&quot;]
+        end
+    end
+
+    Tools --&gt;|structured results| EvidenceCheck
+
+    subgraph EvidenceCheck[&quot;Evidence Validator — Code Verification + LLM Guardrails&quot;]
+        direction TB
+        Check1[&quot;Deterministic Code Checks:\n- Data source verification &amp; freshness\n- Physical units &amp; spatial coverage&quot;]
+        Check2[&quot;LLM Guardrail Checks:\n- Reasoning coherence &amp; safety\n- Claims strictly supported by evidence&quot;]
+        Check1 --&gt; PassFail
+        Check2 --&gt; PassFail
+        PassFail{Sufficient\nEvidence?}
+    end
+
+    PassFail --&gt;|No — need more data| Replan
+    PassFail --&gt;|Yes — evidence verified| Synthesizer
+
+    Synthesizer[&quot;Response Synthesizer (LLM)\n- Explains findings in plain language\n- Cites every source, timestamp &amp; confidence\n- Explicitly highlights uncertainty boundaries\n- Responds in user&#x27;s preferred regional language&quot;]
+
+    Synthesizer --&gt; Response
+
+    subgraph Response[&quot;User Decision Workspace (Output Surfaces)&quot;]
+        direction TB
+        R1[&quot;Chat: Plain language answer with citations&quot;]
+        R2[&quot;Interactive Map: Auto-selected ocean layers &amp; alerts&quot;]
+        R3[&quot;Evidence Panel: Source, timestamp &amp; confidence scores&quot;]
+        R4[&quot;Agent Activity Log: Step-by-step verified execution trace&quot;]
+    end
+
+    Response --&gt; User
+
+    subgraph Memory[&quot;Memory System — Injected into LLM Prompts&quot;]
+        direction TB
+        M1[&quot;Working Memory: Current investigation state &amp; scratchpad&quot;]
+        M2[&quot;User Profile: Vessel type, home port, language &amp; preferences&quot;]
+        M3[&quot;Investigation Memory: Past inquiries &amp; verified fishing spots&quot;]
+    end
+
+    Memory -.-&gt;|context injection| LLM_CORE
+    Memory -.-&gt;|context injection| AgentLayer</code></pre>
+  </div>
+</div>
+
+<hr>
+
+<h2 id="section-4">How an Agent Actually Works Internally</h2>
+
+<p>Each agent follows the same pattern. Here is what happens inside ONE agent:</p>
+
+<div class="mermaid-container" id="core-agentic-technical-mermaid-2">
+  <div class="mermaid-toolbar">
+    <div class="mermaid-title"><span class="mermaid-icon">&#9881;</span> Architecture Diagram</div>
+    <div class="mermaid-controls">
+      <button type="button" class="mm-btn" onclick="mermaidZoom('core-agentic-technical-mermaid-2', 1.25)" title="Zoom In">&#65291; Zoom</button>
+      <button type="button" class="mm-btn" onclick="mermaidZoom('core-agentic-technical-mermaid-2', 0.8)" title="Zoom Out">&#65293;</button>
+      <button type="button" class="mm-btn" onclick="mermaidReset('core-agentic-technical-mermaid-2')" title="Fit to Screen">&#x26F6; Fit</button>
+      <button type="button" class="mm-btn" onclick="mermaidFullscreen('core-agentic-technical-mermaid-2')" title="Expand Fullscreen">&#x2922; Expand</button>
+      <button type="button" class="mm-btn mm-btn-copy" onclick="mermaidCopy('core-agentic-technical-mermaid-2')" title="Copy Mermaid Syntax">Copy Code</button>
+      <button type="button" class="mm-btn" onclick="mermaidToggleCode('core-agentic-technical-mermaid-2')" title="Toggle Source Code">&lt;/&gt; Code</button>
+    </div>
+  </div>
+  <div class="mermaid-viewport" id="core-agentic-technical-mermaid-2-viewport">
+    <div class="mermaid-stage" id="core-agentic-technical-mermaid-2-stage">
+      <div style="color: #64748b; font-size: 13px; padding: 20px;">Rendering diagram...</div>
+    </div>
+    <pre class="mermaid-source" style="display:none;">flowchart TD
+    Task[&quot;Supervisor sends a task:\nAnalyze SST near Gujarat&quot;]
+
+    Task --&gt; AgentLLM[&quot;Agent&#x27;s LLM reads the task\nand its prompt&quot;]
+
+    AgentLLM --&gt; Think[&quot;LLM thinks:\nI need to run SST lookup,\nthen SST anomaly,\nthen check if there is\na temperature front&quot;]
+
+    Think --&gt; Call1[&quot;LLM calls Tool:\nsst_lookup\nregion: Gujarat offshore\ntime: today&quot;]
+
+    Call1 --&gt; Gateway1[&quot;Tool Gateway validates\nand runs the code&quot;]
+    Gateway1 --&gt; Result1[&quot;Result: SST = 28.4 C\nSource: INCOIS\nTime: 6 hours ago&quot;]
+
+    Result1 --&gt; AgentLLM2[&quot;LLM reads the result\nand decides next step&quot;]
+
+    AgentLLM2 --&gt; Call2[&quot;LLM calls Tool:\nsst_anomaly\nregion: Gujarat offshore\nbaseline: September average&quot;]
+
+    Call2 --&gt; Gateway2[&quot;Tool Gateway validates\nand runs the code&quot;]
+    Gateway2 --&gt; Result2[&quot;Result: Anomaly = +1.1 C\nabove 30-year average&quot;]
+
+    Result2 --&gt; AgentLLM3[&quot;LLM reads both results\nand decides: done or more?&quot;]
+
+    AgentLLM3 --&gt; Done{Enough\ninformation?}
+
+    Done --&gt;|Yes| Return[&quot;Return structured result\nto Supervisor:\nSST = 28.4 C\nAnomaly = +1.1 C\nNo front detected\nSources: INCOIS, ERDDAP\nConfidence: High&quot;]
+
+    Done --&gt;|No| MoreTools[&quot;Call another tool\nand repeat&quot;]
+    MoreTools --&gt; AgentLLM2</pre>
+  </div>
+  <div class="mermaid-code" id="core-agentic-technical-mermaid-2-code" style="display:none;">
+    <pre><code>flowchart TD
+    Task[&quot;Supervisor sends a task:\nAnalyze SST near Gujarat&quot;]
+
+    Task --&gt; AgentLLM[&quot;Agent&#x27;s LLM reads the task\nand its prompt&quot;]
+
+    AgentLLM --&gt; Think[&quot;LLM thinks:\nI need to run SST lookup,\nthen SST anomaly,\nthen check if there is\na temperature front&quot;]
+
+    Think --&gt; Call1[&quot;LLM calls Tool:\nsst_lookup\nregion: Gujarat offshore\ntime: today&quot;]
+
+    Call1 --&gt; Gateway1[&quot;Tool Gateway validates\nand runs the code&quot;]
+    Gateway1 --&gt; Result1[&quot;Result: SST = 28.4 C\nSource: INCOIS\nTime: 6 hours ago&quot;]
+
+    Result1 --&gt; AgentLLM2[&quot;LLM reads the result\nand decides next step&quot;]
+
+    AgentLLM2 --&gt; Call2[&quot;LLM calls Tool:\nsst_anomaly\nregion: Gujarat offshore\nbaseline: September average&quot;]
+
+    Call2 --&gt; Gateway2[&quot;Tool Gateway validates\nand runs the code&quot;]
+    Gateway2 --&gt; Result2[&quot;Result: Anomaly = +1.1 C\nabove 30-year average&quot;]
+
+    Result2 --&gt; AgentLLM3[&quot;LLM reads both results\nand decides: done or more?&quot;]
+
+    AgentLLM3 --&gt; Done{Enough\ninformation?}
+
+    Done --&gt;|Yes| Return[&quot;Return structured result\nto Supervisor:\nSST = 28.4 C\nAnomaly = +1.1 C\nNo front detected\nSources: INCOIS, ERDDAP\nConfidence: High&quot;]
+
+    Done --&gt;|No| MoreTools[&quot;Call another tool\nand repeat&quot;]
+    MoreTools --&gt; AgentLLM2</code></pre>
+  </div>
+</div>
+
+<hr>
+
+<h2 id="section-5">Where LLM is Used vs Where Code Runs</h2>
+
+<div style="overflow-x:auto;"><table>
+<thead><tr><th>Step</th><th>Who does it</th><th>Why</th></tr></thead>
+<tbody><tr><td>Understand the user's question</td><td><strong>LLM</strong></td><td>Only AI can understand natural language</td></tr>
+<tr><td>Create a plan of what to investigate</td><td><strong>LLM</strong></td><td>Requires reasoning about what is needed</td></tr>
+<tr><td>Pick which agent to use</td><td><strong>LLM</strong></td><td>Requires judgment about which domain matters</td></tr>
+<tr><td>Pick which tool to call inside an agent</td><td><strong>LLM</strong></td><td>Agent decides what analysis is relevant</td></tr>
+<tr><td>Actually download data from INCOIS</td><td><strong>Code</strong></td><td>Deterministic API call, no AI needed</td></tr>
+<tr><td>Calculate SST anomaly</td><td><strong>Code</strong></td><td>Math formula, no AI needed</td></tr>
+<tr><td>Run PostGIS distance query</td><td><strong>Code</strong></td><td>Database query, no AI needed</td></tr>
+<tr><td>Calculate wind risk score</td><td><strong>Code</strong></td><td>Fixed rules, no AI needed</td></tr>
+<tr><td>Check if evidence is fresh and complete</td><td><strong>Code</strong></td><td>Rule-based validation</td></tr>
+<tr><td>Check if interpretation makes sense</td><td><strong>LLM</strong></td><td>Requires reasoning</td></tr>
+<tr><td>Decide if more evidence is needed</td><td><strong>LLM</strong></td><td>Requires judgment</td></tr>
+<tr><td>Write the final answer</td><td><strong>LLM</strong></td><td>Only AI can explain in natural language</td></tr>
+<tr><td>Translate to regional language</td><td><strong>LLM</strong></td><td>Language generation</td></tr>
+</tbody></table></div>
+
+<hr>
+
+<h2 id="section-6">The Key Rule</h2>
+
+<pre><code>LLM reasons about WHAT to do.
+Code does the actual DOING.
+LLM explains WHAT happened.</code></pre>
+
+<p>The LLM never calculates sea temperature.</p>
+<p>The LLM never runs a database query.</p>
+<p>The LLM never downloads a file.</p>
+
+<p>The code never understands a question.</p>
+<p>The code never writes an explanation.</p>
+<p>The code never decides what to investigate next.</p>
+
+<hr>
+
+<h2 id="section-7">Agent Communication — How They Talk</h2>
+
+<p>Agents do NOT talk to each other directly. Everything goes through the Supervisor.</p>
+
+<div class="mermaid-container" id="core-agentic-technical-mermaid-3">
+  <div class="mermaid-toolbar">
+    <div class="mermaid-title"><span class="mermaid-icon">&#9881;</span> Architecture Diagram</div>
+    <div class="mermaid-controls">
+      <button type="button" class="mm-btn" onclick="mermaidZoom('core-agentic-technical-mermaid-3', 1.25)" title="Zoom In">&#65291; Zoom</button>
+      <button type="button" class="mm-btn" onclick="mermaidZoom('core-agentic-technical-mermaid-3', 0.8)" title="Zoom Out">&#65293;</button>
+      <button type="button" class="mm-btn" onclick="mermaidReset('core-agentic-technical-mermaid-3')" title="Fit to Screen">&#x26F6; Fit</button>
+      <button type="button" class="mm-btn" onclick="mermaidFullscreen('core-agentic-technical-mermaid-3')" title="Expand Fullscreen">&#x2922; Expand</button>
+      <button type="button" class="mm-btn mm-btn-copy" onclick="mermaidCopy('core-agentic-technical-mermaid-3')" title="Copy Mermaid Syntax">Copy Code</button>
+      <button type="button" class="mm-btn" onclick="mermaidToggleCode('core-agentic-technical-mermaid-3')" title="Toggle Source Code">&lt;/&gt; Code</button>
+    </div>
+  </div>
+  <div class="mermaid-viewport" id="core-agentic-technical-mermaid-3-viewport">
+    <div class="mermaid-stage" id="core-agentic-technical-mermaid-3-stage">
+      <div style="color: #64748b; font-size: 13px; padding: 20px;">Rendering diagram...</div>
+    </div>
+    <pre class="mermaid-source" style="display:none;">flowchart LR
+    S[&quot;Supervisor\n(LLM)&quot;]
+    
+    S --&gt;|Task: Get SST data| A1[&quot;Data Agent\n(LLM + Tools)&quot;]
+    A1 --&gt;|Result: SST data ready| S
+
+    S --&gt;|Task: Analyze ocean state| A2[&quot;Ocean Agent\n(LLM + Tools)&quot;]
+    A2 --&gt;|Result: SST analysis done| S
+
+    S --&gt;|Task: Check weather| A3[&quot;Weather Agent\n(LLM + Tools)&quot;]
+    A3 --&gt;|Result: Weather analysis done| S
+
+    S --&gt;|Task: Check location| A4[&quot;Geo Agent\n(LLM + Tools)&quot;]
+    A4 --&gt;|Result: Location checks done| S
+
+    S --&gt;|Task: Make recommendation| A5[&quot;Decision Agent\n(LLM + Tools)&quot;]
+    A5 --&gt;|Result: Final recommendation| S
+
+    S --&gt;|All results collected| V[&quot;Evidence Validator&quot;]
+    V --&gt;|Validated| R[&quot;Response Synthesizer\n(LLM writes answer)&quot;]</pre>
+  </div>
+  <div class="mermaid-code" id="core-agentic-technical-mermaid-3-code" style="display:none;">
+    <pre><code>flowchart LR
+    S[&quot;Supervisor\n(LLM)&quot;]
+    
+    S --&gt;|Task: Get SST data| A1[&quot;Data Agent\n(LLM + Tools)&quot;]
+    A1 --&gt;|Result: SST data ready| S
+
+    S --&gt;|Task: Analyze ocean state| A2[&quot;Ocean Agent\n(LLM + Tools)&quot;]
+    A2 --&gt;|Result: SST analysis done| S
+
+    S --&gt;|Task: Check weather| A3[&quot;Weather Agent\n(LLM + Tools)&quot;]
+    A3 --&gt;|Result: Weather analysis done| S
+
+    S --&gt;|Task: Check location| A4[&quot;Geo Agent\n(LLM + Tools)&quot;]
+    A4 --&gt;|Result: Location checks done| S
+
+    S --&gt;|Task: Make recommendation| A5[&quot;Decision Agent\n(LLM + Tools)&quot;]
+    A5 --&gt;|Result: Final recommendation| S
+
+    S --&gt;|All results collected| V[&quot;Evidence Validator&quot;]
+    V --&gt;|Validated| R[&quot;Response Synthesizer\n(LLM writes answer)&quot;]</code></pre>
+  </div>
+</div>
+
+<p><strong>Why this design:</strong></p>
+<ul>
+<li>No agent can go rogue — Supervisor controls everything</li>
+<li>No infinite loops — agents cannot call other agents</li>
+<li>Clear responsibility — each agent has one job</li>
+<li>Easy to debug — every step is logged through Supervisor</li>
+</ul>
+
+    </div>
+
+    <div class="page-nav">
+      <a href="scientific.html">
+      <span class="page-nav-label">&#8592; Previous</span>
+      <span class="page-nav-title">Scientific System</span>
+    </a>
+      <a href="master-arch.html" class="next">
+      <span class="page-nav-label">Next &#8594;</span>
+      <span class="page-nav-title">Master Architecture</span>
+    </a>
+    </div>
+  </div>
+</div>
+
+<footer class="container">
+  <strong>ORCA</strong> &#183; Marine EcOsystem Reasoning with Collaborative Agents &#183; SIH 2026 &#183; PS 26176
+</footer>
+
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
+
+<script>
+// Back to top button
+window.addEventListener('scroll', function() {
+  var btn = document.getElementById('backToTop');
+  if (window.scrollY > 300) { btn.classList.add('visible'); }
+  else { btn.classList.remove('visible'); }
+});
+
+// Scroll-spy: highlight active TOC link
+(function() {
+  var tocLinks = document.querySelectorAll('#tocList a');
+  if (!tocLinks.length) return;
+
+  var headingEls = [];
+  tocLinks.forEach(function(link) {
+    var target = link.getAttribute('data-target');
+    var el = document.getElementById(target);
+    if (el) headingEls.push({ el: el, link: link });
+  });
+
+  function updateActive() {
+    var scrollY = window.scrollY + 80;
+    var current = null;
+
+    for (var i = 0; i < headingEls.length; i++) {
+      if (headingEls[i].el.offsetTop <= scrollY) {
+        current = headingEls[i];
+      }
+    }
+
+    tocLinks.forEach(function(l) { l.classList.remove('active'); });
+    if (current) {
+      current.link.classList.add('active');
+      // Scroll TOC to keep active item visible
+      var tocSticky = current.link.closest('.toc-sticky');
+      if (tocSticky) {
+        var linkTop = current.link.offsetTop - tocSticky.offsetTop;
+        var stickyHeight = tocSticky.clientHeight;
+        if (linkTop < tocSticky.scrollTop || linkTop > tocSticky.scrollTop + stickyHeight - 40) {
+          tocSticky.scrollTop = linkTop - stickyHeight / 3;
+        }
+      }
+    }
+  }
+
+  window.addEventListener('scroll', updateActive);
+  updateActive();
+})();
+
+// --- Mermaid Diagram Compiler & Interactive Viewer ---
+(function() {
+  if (typeof mermaid === 'undefined') return;
+
+  try {
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'neutral',
+      securityLevel: 'loose',
+      fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+      maxTextSize: 100000,
+      flowchart: {
+        htmlLabels: true,
+        curve: 'basis',
+        useMaxWidth: true
+      },
+      er: {
+        useMaxWidth: true
+      }
+    });
+  } catch (e) {
+    console.error('Mermaid init error:', e);
+  }
+
+  window.mmZoomState = window.mmZoomState || {};
+
+  async function compileMermaidDiagrams() {
+    var containers = document.querySelectorAll('.mermaid-container');
+    if (!containers.length) return;
+
+    for (var i = 0; i < containers.length; i++) {
+      var container = containers[i];
+      var id = container.id;
+      var preEl = container.querySelector('pre.mermaid-source');
+      var stageEl = document.getElementById(id + '-stage');
+      if (!preEl || !stageEl) continue;
+
+      var code = preEl.textContent.trim();
+      mmZoomState[id] = 1.0;
+
+      try {
+        var renderId = 'mm-svg-' + id.replace(/[^a-zA-Z0-9_-]/g, '_') + '-' + i;
+        var res = await mermaid.render(renderId, code);
+        stageEl.innerHTML = res.svg;
+        var svgEl = stageEl.querySelector('svg');
+        if (svgEl) {
+          svgEl.style.maxWidth = '100%';
+          svgEl.style.height = 'auto';
+          svgEl.style.display = 'block';
+          svgEl.style.margin = '0 auto';
+          svgEl.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+        }
+      } catch (err) {
+        console.error('Mermaid render error for ' + id + ':', err);
+        stageEl.innerHTML = '<div class="mermaid-error">' +
+          '<div class="mermaid-error-title">&#9888; Diagram Compilation Notice</div>' +
+          '<p>' + (err.message || String(err)) + '</p>' +
+          '</div>';
+      }
+    }
+  }
+
+  window.mermaidZoom = function(id, factor) {
+    var stage = document.getElementById(id + '-stage');
+    if (!stage) return;
+    var svg = stage.querySelector('svg');
+    if (!svg) return;
+    mmZoomState[id] = (mmZoomState[id] || 1.0) * factor;
+    if (mmZoomState[id] < 0.25) mmZoomState[id] = 0.25;
+    if (mmZoomState[id] > 4.0) mmZoomState[id] = 4.0;
+    stage.style.transform = 'scale(' + mmZoomState[id] + ')';
+    if (mmZoomState[id] > 1.0) {
+      svg.style.maxWidth = 'none';
+    } else {
+      svg.style.maxWidth = '100%';
+    }
+  };
+
+  window.mermaidReset = function(id) {
+    var stage = document.getElementById(id + '-stage');
+    if (!stage) return;
+    var svg = stage.querySelector('svg');
+    if (!svg) return;
+    mmZoomState[id] = 1.0;
+    stage.style.transform = 'scale(1)';
+    svg.style.maxWidth = '100%';
+  };
+
+  window.mermaidToggleCode = function(id) {
+    var codeDiv = document.getElementById(id + '-code');
+    if (!codeDiv) return;
+    codeDiv.style.display = (codeDiv.style.display === 'none') ? 'block' : 'none';
+  };
+
+  window.mermaidCopy = function(id) {
+    var container = document.getElementById(id);
+    if (!container) return;
+    var codePre = container.querySelector('.mermaid-code pre code') || container.querySelector('pre.mermaid-source');
+    if (!codePre) return;
+    navigator.clipboard.writeText(codePre.textContent).then(function() {
+      var btn = container.querySelector('.mm-btn-copy');
+      if (btn) {
+        var orig = btn.innerHTML;
+        btn.innerHTML = '&#10003; Copied!';
+        btn.style.color = '#137333';
+        setTimeout(function() { btn.innerHTML = orig; btn.style.color = ''; }, 2000);
+      }
+    });
+  };
+
+  window.mermaidFullscreen = function(id) {
+    var container = document.getElementById(id);
+    if (!container) return;
+    if (!document.fullscreenElement) {
+      if (container.requestFullscreen) {
+        container.requestFullscreen().catch(function() { container.classList.toggle('is-fullscreen'); });
+      } else {
+        container.classList.toggle('is-fullscreen');
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  };
+
+  document.addEventListener('fullscreenchange', function() {
+    var containers = document.querySelectorAll('.mermaid-container');
+    containers.forEach(function(c) {
+      if (c === document.fullscreenElement) {
+        c.classList.add('is-fullscreen');
+      } else {
+        c.classList.remove('is-fullscreen');
+      }
+    });
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', compileMermaidDiagrams);
+  } else {
+    compileMermaidDiagrams();
+  }
+})();
+</script>
+
+</body>
+</html>

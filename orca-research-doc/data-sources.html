@@ -1,0 +1,3458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Data Acquisition Matrix & Engineering Specification | ORCA Research Dossier</title>
+<meta name="description" content="ORCA &#8212; Data Acquisition Matrix & Engineering Specification. Complete research and architecture documentation.">
+<link rel="stylesheet" type="text/css" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="mermaid.min.js"></script>
+<script>
+if (typeof mermaid === 'undefined') {
+  document.write('<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"><\/script>');
+}
+</script>
+</head>
+<body>
+
+<header id="dhead" class="container">
+  <div class="row">
+    <div id="dpic">
+      <img src="ORCA_architecture.svg" class="ppic" alt="ORCA" onerror="this.style.background='#f0f0f0'" />
+    </div>
+    <div id="ddesc">
+      <h1>ORCA</h1>
+      <h2>Data Acquisition Matrix & Engineering Specification</h2>
+      <nav class="doc-nav">
+        <a href="index.html">Home</a>
+<a href="architecture.html">Architecture Diagram</a>
+<a href="doc1.html">User Flows</a>
+<a href="doc2.html">Agentic System</a>
+<a href="doc3.html">Data Pipeline</a>
+<a href="doc4.html">Database</a>
+<a href="doc5.html">Implementation</a>
+<a href="doc6.html">Memory & Context</a>
+<a href="fisher.html">Fisher Research</a>
+<a href="data-sources.html" class="active">Data Sources</a>
+
+      </nav>
+    </div>
+  </div>
+</header>
+
+<hr>
+
+<div class="page-with-toc">
+  <!-- Sidebar TOC -->
+  <aside class="toc-sidebar">
+    <div class="toc-sticky">
+      <div class="toc-header">
+        <span class="toc-label">&#9679; Table of Contents</span>
+        <a class="toc-top-link" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593; TOP</a>
+      </div>
+      <ul class="toc-list" id="tocList">
+        <li><a href="#section-1" data-target="section-1">ORCA Marine Ecosystem Reasoning with Collaborative Agents</a></li>
+<li><a href="#section-2" data-target="section-2">Data Acquisition Matrix & Engineering Specification</a></li>
+<li><a href="#section-3" data-target="section-3">0. INTRODUCTION --- WHAT IS ALREADY COVERED</a></li>
+<li><a href="#section-4" data-target="section-4">1. THE CORE DATA ACQUISITION PRINCIPLE</a></li>
+<li><a href="#section-5" data-target="section-5">2. FINAL DATA-SOURCE INVENTORY</a></li>
+<li><a href="#section-6" data-target="section-6">2.1 Primary Indian sources</a></li>
+<li><a href="#section-7" data-target="section-7">2.2 International scientific sources</a></li>
+<li><a href="#section-8" data-target="section-8">2.3 Physical/geospatial sources</a></li>
+<li><a href="#section-9" data-target="section-9">3. MASTER DATA ACQUISITION MATRIX</a></li>
+<li><a href="#section-10" data-target="section-10">4. INCOIS --- DETAILED ACQUISITION SPECIFICATION</a></li>
+<li><a href="#section-11" data-target="section-11">5. INCOIS ARGO</a></li>
+<li><a href="#section-12" data-target="section-12">5.1 Purpose</a></li>
+<li><a href="#section-13" data-target="section-13">5.2 Acquisition</a></li>
+<li><a href="#section-14" data-target="section-14">5.3 Storage</a></li>
+<li><a href="#section-15" data-target="section-15">5.4 Argo canonical record</a></li>
+<li><a href="#section-16" data-target="section-16">6. BGC-ARGO</a></li>
+<li><a href="#section-17" data-target="section-17">7. INCOIS PFZ</a></li>
+<li><a href="#section-18" data-target="section-18">8. INCOIS OCEAN STATE FORECAST</a></li>
+<li><a href="#section-19" data-target="section-19">8.1 Forecast representation</a></li>
+<li><a href="#section-20" data-target="section-20">9. INCOIS BUOYS</a></li>
+<li><a href="#section-21" class="toc-h3" data-target="section-21">Drifting buoy</a></li>
+<li><a href="#section-22" class="toc-h3" data-target="section-22">Moored buoy</a></li>
+<li><a href="#section-23" data-target="section-23">10. INCOIS HF RADAR</a></li>
+<li><a href="#section-24" data-target="section-24">11. INCOIS TIDE GAUGES</a></li>
+<li><a href="#section-25" data-target="section-25">12. INCOIS TSUNAMI BUOYS</a></li>
+<li><a href="#section-26" data-target="section-26">13. INCOIS ROMS / MODEL PRODUCTS</a></li>
+<li><a href="#section-27" data-target="section-27">14. MOSDAC / ISRO ACQUISITION</a></li>
+<li><a href="#section-28" data-target="section-28">15. MOSDAC ACCESS POLICY</a></li>
+<li><a href="#section-29" data-target="section-29">16. OCM-3</a></li>
+<li><a href="#section-30" data-target="section-30">17. SCAT-3</a></li>
+<li><a href="#section-31" data-target="section-31">18. SSTM</a></li>
+<li><a href="#section-32" data-target="section-32">19. IMD ACQUISITION</a></li>
+<li><a href="#section-33" data-target="section-33">20. IMD DATA CONNECTORS</a></li>
+<li><a href="#section-34" data-target="section-34">21. IMD CYCLONE</a></li>
+<li><a href="#section-35" data-target="section-35">22. IMD MARINE WARNINGS</a></li>
+<li><a href="#section-36" data-target="section-36">23. GIS ACQUISITION</a></li>
+<li><a href="#section-37" data-target="section-37">24. GEBCO ACQUISITION</a></li>
+<li><a href="#section-38" data-target="section-38">25. GEBCO TID GRID</a></li>
+<li><a href="#section-39" data-target="section-39">26. COPERNICUS MARINE ACQUISITION</a></li>
+<li><a href="#section-40" data-target="section-40">27. COPERNICUS CATALOGUE-FIRST WORKFLOW</a></li>
+<li><a href="#section-41" data-target="section-41">28. COPERNICUS SUBSETTING</a></li>
+<li><a href="#section-42" data-target="section-42">29. COPERNICUS CREDENTIALS</a></li>
+<li><a href="#section-43" data-target="section-43">30. NOAA COASTWATCH</a></li>
+<li><a href="#section-44" data-target="section-44">31. NOAA ERDDAP CONNECTOR</a></li>
+<li><a href="#section-45" data-target="section-45">32. NASA OCEAN DATA</a></li>
+<li><a href="#section-46" data-target="section-46">33. OPENSTREETMAP</a></li>
+<li><a href="#section-47" data-target="section-47">34. GENERIC CONNECTOR INTERFACE</a></li>
+<li><a href="#section-48" data-target="section-48">35. DATASET REQUEST OBJECT</a></li>
+<li><a href="#section-49" data-target="section-49">36. DATASET RESPONSE OBJECT</a></li>
+<li><a href="#section-50" data-target="section-50">37. INGESTION MANAGER</a></li>
+<li><a href="#section-51" data-target="section-51">38. RAW DATA NAMING</a></li>
+<li><a href="#section-52" data-target="section-52">39. CHECKSUMS AND DUPLICATES</a></li>
+<li><a href="#section-53" data-target="section-53">40. RETRY POLICY</a></li>
+<li><a href="#section-54" data-target="section-54">41. DATA FRESHNESS ENGINE</a></li>
+<li><a href="#section-55" data-target="section-55">42. SPATIAL ALIGNMENT ENGINE</a></li>
+<li><a href="#section-56" data-target="section-56">43. TEMPORAL ALIGNMENT ENGINE</a></li>
+<li><a href="#section-57" data-target="section-57">44. SPATIO-TEMPORAL JOIN</a></li>
+<li><a href="#section-58" data-target="section-58">45. OBSERVATION VS FORECAST</a></li>
+<li><a href="#section-59" data-target="section-59">46. PROVENANCE</a></li>
+<li><a href="#section-60" data-target="section-60">47. EVIDENCE OBJECT</a></li>
+<li><a href="#section-61" data-target="section-61">48. DATA SOURCE PRIORITY</a></li>
+<li><a href="#section-62" data-target="section-62">Cyclone warning</a></li>
+<li><a href="#section-63" data-target="section-63">PFZ</a></li>
+<li><a href="#section-64" data-target="section-64">SST</a></li>
+<li><a href="#section-65" data-target="section-65">Bathymetry</a></li>
+<li><a href="#section-66" data-target="section-66">49. FALLBACK MATRIX</a></li>
+<li><a href="#section-67" data-target="section-67">50. DATA AVAILABILITY SERVICE</a></li>
+<li><a href="#section-68" data-target="section-68">51. DATA CATALOG SCHEMA</a></li>
+<li><a href="#section-69" data-target="section-69">52. VARIABLE REGISTRY</a></li>
+<li><a href="#section-70" data-target="section-70">53. UNIT NORMALIZATION</a></li>
+<li><a href="#section-71" data-target="section-71">54. COORDINATE REFERENCE SYSTEM</a></li>
+<li><a href="#section-72" data-target="section-72">55. TEMPORAL STANDARD</a></li>
+<li><a href="#section-73" data-target="section-73">56. DATA QUALITY STATES</a></li>
+<li><a href="#section-74" data-target="section-74">57. SOURCE CONFLICT ENGINE</a></li>
+<li><a href="#section-75" data-target="section-75">58. CACHING</a></li>
+<li><a href="#section-76" data-target="section-76">Metadata cache</a></li>
+<li><a href="#section-77" data-target="section-77">Forecast cache</a></li>
+<li><a href="#section-78" data-target="section-78">Satellite cache</a></li>
+<li><a href="#section-79" data-target="section-79">Warning cache</a></li>
+<li><a href="#section-80" data-target="section-80">59. SCHEDULING</a></li>
+<li><a href="#section-81" data-target="section-81">60. DATA RETENTION</a></li>
+<li><a href="#section-82" data-target="section-82">61. DATA QUERY API</a></li>
+<li><a href="#section-83" data-target="section-83">62. Query API REQUEST EXAMPLE</a></li>
+<li><a href="#section-84" data-target="section-84">63. DATA DISCOVERY AGENT</a></li>
+<li><a href="#section-85" data-target="section-85">64. DATA DISCOVERY IS NOT DATA RETRIEVAL</a></li>
+<li><a href="#section-86" class="toc-h3" data-target="section-86">Discovery</a></li>
+<li><a href="#section-87" class="toc-h3" data-target="section-87">Retrieval</a></li>
+<li><a href="#section-88" class="toc-h3" data-target="section-88">Processing</a></li>
+<li><a href="#section-89" data-target="section-89">65. DATA DISCOVERY ALGORITHM</a></li>
+<li><a href="#section-90" data-target="section-90">66. SOURCE RANKING</a></li>
+<li><a href="#section-91" data-target="section-91">67. SCIENTIFIC PROCESSING LAYER</a></li>
+<li><a href="#section-92" data-target="section-92">Ocean engine</a></li>
+<li><a href="#section-93" data-target="section-93">Weather engine</a></li>
+<li><a href="#section-94" data-target="section-94">Spatial engine</a></li>
+<li><a href="#section-95" data-target="section-95">Temporal engine</a></li>
+<li><a href="#section-96" data-target="section-96">68. DERIVED PRODUCT VERSIONING</a></li>
+<li><a href="#section-97" data-target="section-97">69. HISTORICAL BASELINE ENGINE</a></li>
+<li><a href="#section-98" data-target="section-98">70. ALERT DATA PIPELINE</a></li>
+<li><a href="#section-99" data-target="section-99">71. GEOSPATIAL ALERT MATCHING</a></li>
+<li><a href="#section-100" data-target="section-100">72. ROUTE DATA PIPELINE</a></li>
+<li><a href="#section-101" data-target="section-101">73. SAFETY RULE</a></li>
+<li><a href="#section-102" data-target="section-102">74. LOGGING AND OBSERVABILITY</a></li>
+<li><a href="#section-103" data-target="section-103">75. FAILURE MODES</a></li>
+<li><a href="#section-104" class="toc-h3" data-target="section-104">Source unavailable</a></li>
+<li><a href="#section-105" class="toc-h3" data-target="section-105">No coverage</a></li>
+<li><a href="#section-106" class="toc-h3" data-target="section-106">Stale data</a></li>
+<li><a href="#section-107" class="toc-h3" data-target="section-107">Conflicting data</a></li>
+<li><a href="#section-108" class="toc-h3" data-target="section-108">Missing variable</a></li>
+<li><a href="#section-109" class="toc-h3" data-target="section-109">Authentication failure</a></li>
+<li><a href="#section-110" data-target="section-110">76. DEGRADED MODE</a></li>
+<li><a href="#section-111" data-target="section-111">77. DATA SECURITY</a></li>
+<li><a href="#section-112" data-target="section-112">78. API SECURITY</a></li>
+<li><a href="#section-113" data-target="section-113">79. HACKATHON-SCALE IMPLEMENTATION</a></li>
+<li><a href="#section-114" data-target="section-114">Phase 1</a></li>
+<li><a href="#section-115" data-target="section-115">Phase 2</a></li>
+<li><a href="#section-116" data-target="section-116">Phase 3</a></li>
+<li><a href="#section-117" data-target="section-117">Phase 4</a></li>
+<li><a href="#section-118" data-target="section-118">80. FIRST WORKING VERTICAL SLICE</a></li>
+<li><a href="#section-119" data-target="section-119">81. RECOMMENDED V1 STORAGE</a></li>
+<li><a href="#section-120" data-target="section-120">82. RECOMMENDED TECHNOLOGY STACK</a></li>
+<li><a href="#section-121" data-target="section-121">Acquisition</a></li>
+<li><a href="#section-122" data-target="section-122">Scientific</a></li>
+<li><a href="#section-123" data-target="section-123">Geospatial</a></li>
+<li><a href="#section-124" data-target="section-124">Storage</a></li>
+<li><a href="#section-125" data-target="section-125">API</a></li>
+<li><a href="#section-126" data-target="section-126">Scheduling</a></li>
+<li><a href="#section-127" data-target="section-127">83. GENERIC DATA PIPELINE CODE STRUCTURE</a></li>
+<li><a href="#section-128" data-target="section-128">84. DATA ACQUISITION TESTING</a></li>
+<li><a href="#section-129" data-target="section-129">Unit tests</a></li>
+<li><a href="#section-130" data-target="section-130">Integration tests</a></li>
+<li><a href="#section-131" data-target="section-131">Data-quality tests</a></li>
+<li><a href="#section-132" data-target="section-132">Regression tests</a></li>
+<li><a href="#section-133" data-target="section-133">85. GOLDEN DATASETS</a></li>
+<li><a href="#section-134" data-target="section-134">86. MOCK MODE</a></li>
+<li><a href="#section-135" class="toc-h3" data-target="section-135">LIVE</a></li>
+<li><a href="#section-136" class="toc-h3" data-target="section-136">MOCK</a></li>
+<li><a href="#section-137" data-target="section-137">87. DATA LINEAGE GRAPH</a></li>
+<li><a href="#section-138" data-target="section-138">88. WHAT SHOULD THE DATA DISCOVERY AGENT NEVER DO?</a></li>
+<li><a href="#section-139" data-target="section-139">89. WHAT SHOULD THE DATA SYSTEM GUARANTEE?</a></li>
+<li><a href="#section-140" data-target="section-140">90. FINAL DATA PIPELINE</a></li>
+<li><a href="#section-141" data-target="section-141">91. FINAL ENGINEERING RULES</a></li>
+<li><a href="#section-142" data-target="section-142">Rule 1</a></li>
+<li><a href="#section-143" data-target="section-143">Rule 2</a></li>
+<li><a href="#section-144" data-target="section-144">Rule 3</a></li>
+<li><a href="#section-145" data-target="section-145">Rule 4</a></li>
+<li><a href="#section-146" data-target="section-146">Rule 5</a></li>
+<li><a href="#section-147" data-target="section-147">Rule 6</a></li>
+<li><a href="#section-148" data-target="section-148">Rule 7</a></li>
+<li><a href="#section-149" data-target="section-149">Rule 8</a></li>
+<li><a href="#section-150" data-target="section-150">Rule 9</a></li>
+<li><a href="#section-151" data-target="section-151">Rule 10</a></li>
+<li><a href="#section-152" data-target="section-152">92. FINAL IMPLEMENTATION ORDER</a></li>
+<li><a href="#section-153" data-target="section-153">93. RESEARCHED OFFICIAL ACCESS REFERENCES</a></li>
+<li><a href="#section-154" data-target="section-154">INCOIS</a></li>
+<li><a href="#section-155" data-target="section-155">MOSDAC / ISRO</a></li>
+<li><a href="#section-156" data-target="section-156">IMD</a></li>
+<li><a href="#section-157" data-target="section-157">Copernicus Marine</a></li>
+<li><a href="#section-158" data-target="section-158">NOAA CoastWatch</a></li>
+<li><a href="#section-159" data-target="section-159">NASA Ocean Color</a></li>
+<li><a href="#section-160" data-target="section-160">GEBCO</a></li>
+<li><a href="#section-161" data-target="section-161">94. FINAL DECISION</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <div class="toc-content">
+    <div class="breadcrumb"><a href="index.html">Home</a> / Data Acquisition Matrix & Engineering Specification</div>
+
+    <div class="md-content">
+<h1 id="section-1">ORCA Marine Ecosystem Reasoning with Collaborative Agents</h1>
+
+<h1 id="section-2">Data Acquisition Matrix & Engineering Specification</h1>
+
+<p><strong>Problem Statement:</strong> ORCA --- Marine EcOsystem Reasoning with</p>
+<p>Collaborative Agents\</p>
+<p><strong>Problem Statement ID:</strong> 26176\</p>
+<p><strong>Organization:</strong> ISRO / Department of Space\</p>
+<p><strong>Document role:</strong> Engineering continuation of the ORCA Data System /</p>
+<p>Data Foundation document\</p>
+<p><strong>Status:</strong> Detailed research and implementation specification\</p>
+<p><strong>Research basis:</strong> Official provider documentation and current</p>
+<p>data-access documentation reviewed in September 2026</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-3">0. INTRODUCTION --- WHAT IS ALREADY COVERED</h1>
+
+<p>The previous Data System specification established the foundation:</p>
+
+<ul>
+<li>  ORCA needs heterogeneous satellite, oceanographic, meteorological,</li>
+</ul>
+<p>hazard, historical and geospatial data.</p>
+<ul>
+<li>  Primary Indian sources are INCOIS, MOSDAC/ISRO, IMD and</li>
+</ul>
+<p>authoritative Indian GIS.</p>
+<ul>
+<li>  Important secondary/validation sources include Copernicus Marine,</li>
+</ul>
+<p>NOAA CoastWatch and NASA.</p>
+<ul>
+<li>  Argo and BGC-Argo are important in-situ layers.</li>
+<li>  GEBCO provides bathymetry.</li>
+<li>  Raw scientific formats must be preserved.</li>
+<li>  ORCA should use a RAW → NORMALIZED → DERIVED data lifecycle.</li>
+<li>  Scientific arrays should remain in NetCDF/Zarr/GeoTIFF where</li>
+</ul>
+<p>appropriate.</p>
+<ul>
+<li>  PostgreSQL/PostGIS should hold metadata and spatial information.</li>
+<li>  Parquet should be used for large analytical tables.</li>
+<li>  A Data Catalog should describe available datasets.</li>
+<li>  A Data Quality system must track freshness, timestamps, coverage and</li>
+</ul>
+<p>quality flags.</p>
+<ul>
+<li>  A Data Discovery capability should determine which datasets are</li>
+</ul>
+<p>needed for a user task.</p>
+
+<p>This document continues from that point.</p>
+
+<p>The question now is:</p>
+
+<blockquote><strong>Exactly how does ORCA acquire, validate, normalize, store, expose<br>and select each dataset?</strong></blockquote>
+
+<p>This document therefore moves from <strong>"what data exists?"</strong> to <em></em>"how do</p>
+<p>we engineer the complete acquisition system?"<em></em></p>
+
+<p>The current official sources confirm that INCOIS exposes an ERDDAP</p>
+<p>service for scientific data and lists Argo, buoys, HF radar, tide</p>
+<p>gauges, ROMS and PFZ among its holdings; MOSDAC provides Oceansat-3</p>
+<p>products and has a documented access policy; Copernicus Marine provides</p>
+<p>a programmatic Toolbox for catalogue discovery, subsetting and</p>
+<p>downloads; NOAA CoastWatch provides a portal and ERDDAP access; and</p>
+<p>GEBCO provides current 2026 bathymetry downloads and OPeNDAP access.</p>
+<p>citeturn1search3turn1search9turn0search6turn0search11turn0search5turn1search0</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-4">1. THE CORE DATA ACQUISITION PRINCIPLE</h1>
+
+<p>ORCA should not be implemented as:</p>
+
+<pre><code class="language-text">Agent
+ ↓
+Call random API
+ ↓
+Get data
+ ↓
+Ask LLM what it means</code></pre>
+
+<p>That architecture is fragile.</p>
+
+<p>Instead:</p>
+
+<pre><code class="language-text">User task
+    ↓
+Data requirement planning
+    ↓
+Data catalog discovery
+    ↓
+Source selection
+    ↓
+Connector selection
+    ↓
+Acquisition
+    ↓
+Raw preservation
+    ↓
+Validation
+    ↓
+Normalization
+    ↓
+Spatial/temporal alignment
+    ↓
+Scientific processing
+    ↓
+Evidence creation
+    ↓
+Data Query API
+    ↓
+Agents</code></pre>
+
+<p>The acquisition system is therefore a <em></em>controlled scientific data</p>
+<p>infrastructure<em></em>, not merely a collection of API calls.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-5">2. FINAL DATA-SOURCE INVENTORY</h1>
+
+<h2 id="section-6">2.1 Primary Indian sources</h2>
+
+<p>-----------------------------------------------------------------------</p>
+<p>Source                              Primary responsibility</p>
+<p>----------------------------------- -----------------------------------</p>
+<p>INCOIS                              Ocean observations, forecasts, PFZ,</p>
+<p>Argo, buoys, ocean products</p>
+
+<p>MOSDAC / ISRO                       Indian satellite Earth observation</p>
+
+<p>IMD                                 Weather, marine forecasts, cyclone</p>
+<p>and weather warnings</p>
+
+<p>Authoritative Indian GIS            Maritime boundaries, coastline,</p>
+<p>protected/restricted zones, ports</p>
+<p>-----------------------------------------------------------------------</p>
+
+<h2 id="section-7">2.2 International scientific sources</h2>
+
+<p>-----------------------------------------------------------------------</p>
+<p>Source                              Primary responsibility</p>
+<p>----------------------------------- -----------------------------------</p>
+<p>Copernicus Marine                   Ocean forecasts, reanalysis,</p>
+<p>observations, biogeochemistry</p>
+
+<p>NOAA CoastWatch                     Satellite ocean observations and</p>
+<p>validation</p>
+
+<p>NASA Ocean Color / Earthdata        Historical ocean colour and</p>
+<p>satellite research data</p>
+<p>-----------------------------------------------------------------------</p>
+
+<h2 id="section-8">2.3 Physical/geospatial sources</h2>
+
+<p>Source          Primary responsibility</p>
+<p>--------------- ----------------------------</p>
+<p>GEBCO           Global bathymetry</p>
+<p>OpenStreetMap   General geographic context</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-9">3. MASTER DATA ACQUISITION MATRIX</h1>
+
+<p>This is the high-level matrix that the implementation team should use</p>
+<p>before writing connectors.</p>
+
+<p>-----------------------------------------------------------------------------------------------------------------------------------------------------------------</p>
+<p>ID        Domain       Dataset           Provider                 Main variables              Type                   Access pattern                 Priority</p>
+<p>--------- ------------ ----------------- ------------------------ --------------------------- ---------------------- ------------------------------ -------------</p>
+<p>IN-01     Ocean        Argo profiles     INCOIS                   Temperature, salinity,      Observation            ERDDAP                         Critical</p>
+<p>pressure</p>
+
+<p>IN-02     Ocean        Argo gridded      INCOIS                   T/S, errors                 Derived                ERDDAP                         High</p>
+<p>products</p>
+
+<p>IN-03     Ocean        PFZ               INCOIS                   PFZ locations/advisories    Advisory/derived       Portal/download                Critical</p>
+
+<p>IN-04     Ocean        Ocean State       INCOIS                   Wind, waves, currents, SST, Forecast               Operational service            Critical</p>
+<p>Forecast                                   MLD, D20</p>
+
+<p>IN-05     Ocean        Drifting buoys    INCOIS                   Pressure, SST, currents     Observation            Portal/ERDDAP where available  High</p>
+
+<p>IN-06     Ocean        Moored buoys      INCOIS                   Wind, waves, SST, currents, Observation            Visualization /                High</p>
+<p>met-ocean                                          source-specific access</p>
+
+<p>IN-07     Ocean        HF Radar          INCOIS                   Surface current vectors     Observation            Registered service             High</p>
+
+<p>IN-08     Ocean        Tide gauges       INCOIS                   Sea level                   Observation            Ocean observation service      High</p>
+
+<p>IN-09     Ocean        Tsunami buoys     INCOIS                   Sea level                   Hazard observation     Warning service                Critical</p>
+
+<p>IN-10     Ocean        ROMS              INCOIS                   SST, MLD, D20, currents     Model                  Product/service                High</p>
+
+<p>MS-01     EO           OCM-3             MOSDAC/ISRO              Ocean colour, derived       Satellite              MOSDAC                         Critical</p>
+<p>products</p>
+
+<p>MS-02     EO           SCAT-3            MOSDAC/ISRO              Surface wind vectors        Satellite              MOSDAC                         High</p>
+
+<p>MS-03     EO           SSTM              MOSDAC/ISRO              SST                         Satellite              MOSDAC                         Conditional</p>
+
+<p>MS-04     EO           INSAT products    MOSDAC/ISRO              Weather/ocean/atmospheric   Satellite              MOSDAC                         High</p>
+<p>products</p>
+
+<p>IM-01     Weather      Current weather   IMD                      Wind, temp, pressure etc.   Observation            REST API                       High</p>
+
+<p>IM-02     Weather      Forecast          IMD                      Weather forecast            Forecast               REST API                       Critical</p>
+
+<p>IM-03     Marine       Marine bulletins  IMD                      Marine conditions           Advisory               REST/API                       Critical</p>
+
+<p>IM-04     Marine       Fishermen warning IMD                      Warning/advisory            Advisory               REST/API                       Critical</p>
+
+<p>IM-05     Hazard       Cyclone           IMD                      Track, wind, cone           Forecast/advisory      REST/API                       Critical</p>
+
+<p>IM-06     Hazard       Lightning         IMD                      Lightning                   Hazard                 REST/API                       High</p>
+<p>observations/nowcast</p>
+
+<p>IM-07     Hazard       Radar             IMD                      Radar imagery               Observation            Service                        High</p>
+
+<p>GIS-01    GIS          Coastline         Indian authoritative     Geometry                    Static                 File/service                   Critical</p>
+<p>source</p>
+
+<p>GIS-02    GIS          EEZ               Indian authoritative     Polygon                     Static                 File/service                   Critical</p>
+<p>source</p>
+
+<p>GIS-03    GIS          Ports/harbours    Authoritative/verified   Point/geometry              Static                 File/service                   High</p>
+<p>GIS</p>
+
+<p>GIS-04    GIS          Restricted zones  Authoritative source     Polygon                     Static                 File/service                   Critical</p>
+
+<p>GIS-05    GIS          Protected areas   Authoritative source     Polygon                     Static                 File/service                   High</p>
+
+<p>GB-01     Bathymetry   GEBCO_2026        GEBCO                    Elevation/depth             Static grid            NetCDF/GeoTIFF/ASCII/OPeNDAP   High</p>
+
+<p>CM-01     Ocean        Global physics    Copernicus               T/S/current/SSH etc.        Model/reanalysis       Toolbox                        High</p>
+
+<p>CM-02     Ocean        Waves             Copernicus               Wave variables              Model                  Toolbox                        High</p>
+
+<p>CM-03     Bio          Biogeochemistry   Copernicus               CHL/O2/nutrients etc.       Model                  Toolbox                        Medium</p>
+
+<p>NOAA-01   EO           SST               NOAA                     SST                         Satellite              Portal/ERDDAP                  Medium</p>
+
+<p>NOAA-02   EO           Ocean colour      NOAA                     CHL/Kd490 etc.              Satellite              Portal/ERDDAP                  Medium</p>
+
+<p>NASA-01   EO           Ocean colour      NASA                     Ocean-colour products       Historical/satellite   Earthdata/Ocean Color          Medium</p>
+<p>archive</p>
+
+<p>OSM-01    GIS          Geographic        OSM                      Roads/places/facilities     Static                 API/download                   Medium</p>
+<p>context</p>
+<p>-----------------------------------------------------------------------------------------------------------------------------------------------------------------</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-10">4. INCOIS --- DETAILED ACQUISITION SPECIFICATION</h1>
+
+<p>INCOIS should be treated as the primary Indian ocean-data ecosystem.</p>
+
+<p>Its current data holdings explicitly list drifting buoys, moored buoys,</p>
+<p>Argo floats, HF radar, tide gauges, tsunami buoys, ROMS, PFZ and other</p>
+<p>ocean datasets. The holdings page also exposes information about mode of</p>
+<p>reception, availability, formats and accessibility. citeturn1search3</p>
+
+<p>INCOIS also operates an ERDDAP service specifically intended to provide</p>
+<p>consistent access to scientific ocean datasets and subsets.</p>
+<p>citeturn1search9</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-11">5. INCOIS ARGO</h1>
+
+<h2 id="section-12">5.1 Purpose</h2>
+
+<p>Argo is one of ORCA's most important in-situ data sources.</p>
+
+<p>Core variables:</p>
+
+<pre><code class="language-text">temperature
+salinity
+pressure
+latitude
+longitude
+time
+cycle number
+quality flags</code></pre>
+
+<p>INCOIS currently lists Argo temperature and salinity profiles from 2000</p>
+<p>onward, with public visualization/download facilities for open-ocean</p>
+<p>data. citeturn1search3</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h2 id="section-13">5.2 Acquisition</h2>
+
+<p>Primary route:</p>
+
+<pre><code class="language-text">INCOIS ERDDAP
+        ↓
+Dataset discovery
+        ↓
+Spatial/time subset
+        ↓
+Machine-readable retrieval</code></pre>
+
+<p>INCOIS ERDDAP is designed specifically to provide consistent subsetting</p>
+<p>and download of scientific datasets in common formats.</p>
+<p>citeturn1search9</p>
+
+<p>The connector should support:</p>
+
+<pre><code class="language-text">time range
+latitude range
+longitude range
+depth/pressure
+platform
+cycle
+variable selection</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h2 id="section-14">5.3 Storage</h2>
+
+<p>Raw:</p>
+
+<pre><code class="language-text">raw/incois/argo/</code></pre>
+
+<p>Normalized:</p>
+
+<pre><code class="language-text">Parquet</code></pre>
+
+<p>or a scientific profile representation.</p>
+
+<p>For gridded Argo:</p>
+
+<pre><code class="language-text">Zarr / NetCDF</code></pre>
+
+<p>Metadata:</p>
+
+<pre><code class="language-text">PostgreSQL/PostGIS</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h2 id="section-15">5.4 Argo canonical record</h2>
+
+<pre><code class="language-json">{
+  &quot;platform_id&quot;: &quot;...&quot;,
+  &quot;cycle_number&quot;: 123,
+  &quot;latitude&quot;: 15.2,
+  &quot;longitude&quot;: 68.4,
+  &quot;observation_time&quot;: &quot;...&quot;,
+  &quot;pressure&quot;: 100.0,
+  &quot;temperature&quot;: 22.4,
+  &quot;salinity&quot;: 35.7,
+  &quot;temperature_qc&quot;: &quot;1&quot;,
+  &quot;salinity_qc&quot;: &quot;1&quot;,
+  &quot;source&quot;: &quot;INCOIS&quot;,
+  &quot;dataset&quot;: &quot;ARGO&quot;
+}</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-16">6. BGC-ARGO</h1>
+
+<p>BGC-Argo should be represented as an extension of the Argo subsystem.</p>
+
+<p>Potential variables:</p>
+
+<pre><code class="language-text">oxygen
+chlorophyll fluorescence
+backscatter
+nitrate
+pH
+irradiance</code></pre>
+
+<p>The exact variables depend on the float and sensor configuration.</p>
+
+<p>ORCA should therefore never assume every Argo float has every BGC</p>
+<p>variable.</p>
+
+<p>Schema should use:</p>
+
+<pre><code class="language-text">variable availability = dynamic</code></pre>
+
+<p>rather than a rigid fixed record.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-17">7. INCOIS PFZ</h1>
+
+<p>PFZ is an operationally valuable product.</p>
+
+<p>Acquisition should preserve:</p>
+
+<pre><code class="language-text">advisory ID
+issue time
+valid time if supplied
+PFZ geometry/location
+reference landmark
+distance
+direction
+source
+original advisory</code></pre>
+
+<p>PFZ should be classified:</p>
+
+<pre><code class="language-text">data_type = advisory</code></pre>
+
+<p>and not:</p>
+
+<pre><code class="language-text">data_type = direct observation</code></pre>
+
+<p>ORCA should use PFZ as an input to a broader decision system.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-18">8. INCOIS OCEAN STATE FORECAST</h1>
+
+<p>Current OSF layers include:</p>
+
+<ul>
+<li>  wind</li>
+<li>  significant wave height</li>
+<li>  wave period</li>
+<li>  swell height</li>
+<li>  swell period</li>
+<li>  surface currents</li>
+<li>  SST</li>
+<li>  mixed-layer depth</li>
+<li>  D20</li>
+<li>  chlorophyll</li>
+<li>  particulate organic carbon</li>
+<li>  particulate inorganic carbon</li>
+<li>  aerosol optical thickness</li>
+<li>  Kd490</li>
+</ul>
+
+<p>The current official OSF interface exposes coastal and regional forecast</p>
+<p>selection. citeturn0search18</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h2 id="section-19">8.1 Forecast representation</h2>
+
+<p>Every forecast value must include:</p>
+
+<pre><code class="language-text">model/source
+initialization time
+valid time
+lead time
+variable
+unit
+spatial coordinate/grid</code></pre>
+
+<p>Example:</p>
+
+<pre><code class="language-json">{
+  &quot;variable&quot;: &quot;significant_wave_height&quot;,
+  &quot;value&quot;: 1.8,
+  &quot;unit&quot;: &quot;m&quot;,
+  &quot;forecast_initialization&quot;: &quot;...&quot;,
+  &quot;forecast_valid_time&quot;: &quot;...&quot;,
+  &quot;source&quot;: &quot;INCOIS_OSF&quot;
+}</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-20">9. INCOIS BUOYS</h1>
+
+<p>INCOIS lists:</p>
+
+<h3 id="section-21">Drifting buoy</h3>
+
+<p>Potential:</p>
+
+<pre><code class="language-text">atmospheric pressure
+SST
+ocean currents</code></pre>
+
+<p>with real-time availability and historical records extending from 1991</p>
+<p>in the current holdings table.</p>
+
+<h3 id="section-22">Moored buoy</h3>
+
+<p>Potential:</p>
+
+<pre><code class="language-text">pressure
+temperature
+humidity
+wind
+currents
+SST
+conductivity
+waves
+rainfall
+radiation
+irradiance
+temperature profiles
+salinity profiles</code></pre>
+
+<p>The current INCOIS holdings table identifies differing access</p>
+<p>restrictions: drifting buoy data has public visualization/download,</p>
+<p>while moored buoy data is listed as visualization-only.</p>
+<p>citeturn1search3</p>
+
+<p>This distinction must be recorded in the source catalog.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-23">10. INCOIS HF RADAR</h1>
+
+<p>HF radar:</p>
+
+<pre><code class="language-text">surface current vectors</code></pre>
+
+<p>Use for:</p>
+
+<ul>
+<li>  coastal current mapping</li>
+<li>  current validation</li>
+<li>  route analysis</li>
+<li>  coastal transport</li>
+</ul>
+
+<p>The current INCOIS holdings page identifies HF Radar current-vector data</p>
+<p>as real-time and requiring registered access. citeturn1search3</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-24">11. INCOIS TIDE GAUGES</h1>
+
+<p>Use:</p>
+
+<pre><code class="language-text">sea level
+time
+station
+location
+quality</code></pre>
+
+<p>Applications:</p>
+
+<ul>
+<li>  tide context</li>
+<li>  coastal hazard</li>
+<li>  sea-level anomalies</li>
+<li>  validation</li>
+</ul>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-25">12. INCOIS TSUNAMI BUOYS</h1>
+
+<p>Treat tsunami information as:</p>
+
+<pre><code class="language-text">hazard / authoritative warning</code></pre>
+
+<p>not a generic ocean measurement.</p>
+
+<p>The ingestion system must preserve the original warning and timestamp.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-26">13. INCOIS ROMS / MODEL PRODUCTS</h1>
+
+<p>Current holdings identify ROMS products including:</p>
+
+<pre><code class="language-text">SST
+MLD
+D20
+currents</code></pre>
+
+<p>with near-real-time availability. citeturn1search3</p>
+
+<p>Store model metadata separately from observations.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-27">14. MOSDAC / ISRO ACQUISITION</h1>
+
+<p>MOSDAC is the principal Indian satellite data portal relevant to ORCA.</p>
+
+<p>EOS-06/Oceansat-3 carries:</p>
+
+<pre><code class="language-text">OCM-3
+SCAT-3
+SSTM
+ARGOS</code></pre>
+
+<p>MOSDAC documents OCM-3 at 366 m LAC and 1.1 km GAC and SCAT-3 ocean</p>
+<p>surface wind-vector modes including 12.5 km and 25 km modes, plus an</p>
+<p>experimental 5 km mode. citeturn0search2turn0search3</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-28">15. MOSDAC ACCESS POLICY</h1>
+
+<p>This must be included in the Data Catalog.</p>
+
+<p>MOSDAC's current access policy distinguishes:</p>
+
+<pre><code class="language-text">Registered General Users
+Registered Privileged Users
+Anonymous Users</code></pre>
+
+<p>with different data availability and latency. The current policy states</p>
+<p>general users have limited access with a 3-day latency, privileged users</p>
+<p>can access all data with NRT access, and anonymous users can access</p>
+<p>metadata/image/open data with NRT access. citeturn0search6</p>
+
+<p>Therefore:</p>
+
+<blockquote><strong>Do not assume every MOSDAC product is freely accessible in real time<br>without registration.</strong></blockquote>
+
+<p>The connector must know the access profile required for each dataset.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-29">16. OCM-3</h1>
+
+<p>OCM-3:</p>
+
+<pre><code class="language-text">13 bands
+Visible/NIR
+LAC ≈ 366 m
+GAC ≈ 1.1 km</code></pre>
+
+<p>Potential products include ocean-colour and derived products.</p>
+
+<p>MOSDAC's current Oceansat-3 references include documentation for</p>
+<p>chlorophyll, aerosol optical depth, inherent optical properties,</p>
+<p>fluorescence line height, particulate organic carbon and other derived</p>
+<p>products. citeturn0search0turn0search3</p>
+
+<p>For ORCA, prioritize:</p>
+
+<pre><code class="language-text">chlorophyll
+ocean colour
+optical properties
+productivity-related products</code></pre>
+
+<p>where the operational product is available and documented.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-30">17. SCAT-3</h1>
+
+<p>SCAT-3 provides ocean surface wind vectors.</p>
+
+<p>Store:</p>
+
+<pre><code class="language-text">wind speed
+wind direction
+u component
+v component where provided
+time
+location
+quality
+resolution</code></pre>
+
+<p>Use:</p>
+
+<ul>
+<li>  marine weather</li>
+<li>  fishing conditions</li>
+<li>  air-sea interaction</li>
+<li>  storm analysis</li>
+<li>  model validation</li>
+</ul>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-31">18. SSTM</h1>
+
+<p>MOSDAC currently states that Oceansat-3 SSTM developed a technical</p>
+<p>problem in its scan mechanism and is not operating at present.</p>
+<p>citeturn0search16</p>
+
+<p>Therefore:</p>
+
+<pre><code class="language-text">SSTM connector
+    ↓
+Keep connector capability
+    ↓
+Do not depend on it for V1 live SST</code></pre>
+
+<p>SST fallback chain:</p>
+
+<pre><code class="language-text">INCOIS
+ ↓
+other operational Indian products
+ ↓
+NOAA
+ ↓
+Copernicus
+ ↓
+NASA/research source</code></pre>
+
+<p>The exact priority should depend on the variable's operational status</p>
+<p>and intended use.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-32">19. IMD ACQUISITION</h1>
+
+<p>IMD should be the primary atmospheric and warning source.</p>
+
+<p>The source catalog should distinguish:</p>
+
+<pre><code class="language-text">observation
+forecast
+nowcast
+warning
+bulletin
+cyclone product</code></pre>
+
+<p>These are not interchangeable.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-33">20. IMD DATA CONNECTORS</h1>
+
+<p>Connector groups:</p>
+
+<pre><code class="language-text">imd/
+├── weather/
+├── forecast/
+├── marine/
+├── fishermen/
+├── cyclone/
+├── lightning/
+├── radar/
+└── warnings/</code></pre>
+
+<p>Each should preserve:</p>
+
+<pre><code class="language-text">issued_at
+valid_from
+valid_to
+location/region
+warning_level
+original_text
+structured variables
+source URL/identifier</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-34">21. IMD CYCLONE</h1>
+
+<p>Cyclone records should contain:</p>
+
+<pre><code class="language-text">cyclone ID
+storm name if applicable
+issue time
+current position
+forecast positions
+wind
+pressure where available
+cone information
+warning category
+validity</code></pre>
+
+<p>Do not flatten the entire cyclone forecast into one point.</p>
+
+<p>A cyclone is a <strong>time-evolving track</strong>.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-35">22. IMD MARINE WARNINGS</h1>
+
+<p>Marine warning data should be treated as authoritative operational</p>
+<p>evidence.</p>
+
+<p>Store:</p>
+
+<pre><code class="language-text">bulletin ID
+issue time
+marine area
+valid period
+hazard
+wind
+sea state
+warning text
+source</code></pre>
+
+<p>This can later be transformed into spatial polygons and temporal</p>
+<p>intervals.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-36">23. GIS ACQUISITION</h1>
+
+<p>GIS is different because many layers are slow-changing.</p>
+
+<p>Recommended update pattern:</p>
+
+<pre><code class="language-text">Static authoritative GIS
+    ↓
+Periodic verification
+    ↓
+Versioned local copy</code></pre>
+
+<p>Every layer needs:</p>
+
+<pre><code class="language-text">source
+version
+effective date
+geometry CRS
+license
+authority
+last verified</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-37">24. GEBCO ACQUISITION</h1>
+
+<p>GEBCO_2026 is the current global grid.</p>
+
+<p>It provides a 15 arc-second grid, user-defined-area downloads, NetCDF,</p>
+<p>GeoTIFF and ASCII, and OPeNDAP access. The global NetCDF file is about 7</p>
+<p>GB uncompressed and the TID grid is about 3.5 GB uncompressed.</p>
+<p>citeturn1search0turn1search1</p>
+
+<p>For ORCA:</p>
+
+<p><strong>Do not download the entire global grid for the hackathon.</strong></p>
+
+<p>Instead:</p>
+
+<pre><code class="language-text">Gujarat / Arabian Sea bounding box
+        ↓
+GEBCO subset
+        ↓
+regional GeoTIFF/NetCDF
+        ↓
+local object storage</code></pre>
+
+<p>GEBCO's current download system supports user-defined areas.</p>
+<p>citeturn1search1</p>
+
+<p>GEBCO also provides OPeNDAP access through CEDA. citeturn1search1</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-38">25. GEBCO TID GRID</h1>
+
+<p>The Type Identifier Grid is useful because it tells ORCA what kind of</p>
+<p>source contributed to each bathymetric cell.</p>
+
+<p>This can be stored as:</p>
+
+<pre><code class="language-text">bathymetry.tif
+bathymetry_tid.tif</code></pre>
+
+<p>or corresponding NetCDF/Zarr arrays.</p>
+
+<p>Do not treat every GEBCO cell as equally measured.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-39">26. COPERNICUS MARINE ACQUISITION</h1>
+
+<p>Copernicus Marine now provides an official Toolbox with:</p>
+
+<pre><code class="language-text">catalogue discovery
+metadata
+subset
+original-file download
+remote dataset access
+Python API
+CLI</code></pre>
+
+<p>The current official documentation describes the Toolbox as the</p>
+<p>supported programmatic route for accessing Copernicus Marine data.</p>
+<p>citeturn0search11</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-40">27. COPERNICUS CATALOGUE-FIRST WORKFLOW</h1>
+
+<p>Do not hard-code every Copernicus dataset ID into agents.</p>
+
+<p>Instead:</p>
+
+<pre><code class="language-text">ORCA requirement
+       ↓
+Copernicus catalogue
+       ↓
+describe metadata
+       ↓
+find suitable dataset
+       ↓
+select variables
+       ↓
+select region/time
+       ↓
+subset</code></pre>
+
+<p>The Toolbox's catalogue API supports programmatic metadata discovery.</p>
+<p>citeturn0search17</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-41">28. COPERNICUS SUBSETTING</h1>
+
+<p>For large data, do not download the entire dataset.</p>
+
+<p>Use:</p>
+
+<pre><code class="language-text">dataset_id
+variables
+minimum longitude
+maximum longitude
+minimum latitude
+maximum latitude
+start datetime
+end datetime</code></pre>
+
+<p>The official Toolbox supports subsetting and can produce NetCDF, Zarr</p>
+<p>and CSV for gridded data; sparse datasets can be retrieved in CSV,</p>
+<p>Parquet and NetCDF according to the current documentation.</p>
+<p>citeturn0search8turn0search14</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-42">29. COPERNICUS CREDENTIALS</h1>
+
+<p>Copernicus Marine programmatic access requires an account/credentials.</p>
+
+<p>Therefore source registry:</p>
+
+<pre><code class="language-json">{
+  &quot;provider&quot;: &quot;Copernicus Marine&quot;,
+  &quot;authentication&quot;: &quot;required&quot;,
+  &quot;credential_type&quot;: &quot;account&quot;,
+  &quot;secret_storage&quot;: &quot;environment/secret manager&quot;
+}</code></pre>
+
+<p>Never put credentials into the agent prompt or source code.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-43">30. NOAA COASTWATCH</h1>
+
+<p>NOAA CoastWatch provides:</p>
+
+<ul>
+<li>  data portal</li>
+<li>  downloadable products</li>
+<li>  geographic/temporal subsets</li>
+<li>  ERDDAP</li>
+<li>  NetCDF/HDF processing tools</li>
+</ul>
+
+<p>The current NOAA documentation specifically identifies ERDDAP as a</p>
+<p>consistent method for subsetting and downloading gridded Level-3+</p>
+<p>environmental datasets. citeturn0search5</p>
+
+<p>The CoastWatch portal supports full-extent or subset downloads, with</p>
+<p>NetCDF for mapped/gridded data. citeturn0search15</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-44">31. NOAA ERDDAP CONNECTOR</h1>
+
+<p>ORCA should reuse the generic ERDDAP connector architecture.</p>
+
+<p>Instead of:</p>
+
+<pre><code class="language-text">incois_erddap.py
+noaa_erddap.py
+another_erddap.py</code></pre>
+
+<p>build:</p>
+
+<pre><code class="language-text">connectors/
+    erddap/
+        client.py
+        catalog.py
+        query.py
+        parser.py</code></pre>
+
+<p>Then configure:</p>
+
+<pre><code class="language-yaml">providers:
+  incois:
+    erddap_url: ...
+  noaa:
+    erddap_url: ...</code></pre>
+
+<p>This reduces engineering duplication.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-45">32. NASA OCEAN DATA</h1>
+
+<p>NASA should primarily support:</p>
+
+<pre><code class="language-text">historical
+research
+validation
+ocean colour
+long-term trends</code></pre>
+
+<p>Do not make NASA the first operational safety source.</p>
+
+<p>The NASA connector should therefore be optimized for:</p>
+
+<pre><code class="language-text">historical query
+spatial subset
+temporal subset
+product metadata
+scientific validation</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-46">33. OPENSTREETMAP</h1>
+
+<p>Use OSM for:</p>
+
+<pre><code class="language-text">general geographic context
+roads
+places
+facilities
+harbour context
+coastal infrastructure</code></pre>
+
+<p>Do not use OSM as the authoritative source for:</p>
+
+<pre><code class="language-text">EEZ
+navigation warnings
+official restricted areas
+safety boundaries</code></pre>
+
+<p>where authoritative government sources exist.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-47">34. GENERIC CONNECTOR INTERFACE</h1>
+
+<p>All connectors should implement a common interface.</p>
+
+<p>Conceptually:</p>
+
+<pre><code class="language-python">class DataConnector:
+
+    def discover(self, requirement):
+        ...
+
+    def get_metadata(self, dataset_id):
+        ...
+
+    def query(self, request):
+        ...
+
+    def download(self, request):
+        ...
+
+    def validate(self, dataset):
+        ...
+
+    def normalize(self, dataset):
+        ...</code></pre>
+
+<p>The implementation can vary by provider.</p>
+
+<p>The interface should not.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-48">35. DATASET REQUEST OBJECT</h1>
+
+<p>Agents should not pass arbitrary provider-specific parameters.</p>
+
+<p>They should create a canonical request.</p>
+
+<p>Example:</p>
+
+<pre><code class="language-json">{
+  &quot;domain&quot;: &quot;ocean&quot;,
+  &quot;variables&quot;: [
+    &quot;sst&quot;,
+    &quot;chlorophyll&quot;,
+    &quot;wave_height&quot;
+  ],
+  &quot;region&quot;: {
+    &quot;type&quot;: &quot;bbox&quot;,
+    &quot;min_lat&quot;: 18.0,
+    &quot;max_lat&quot;: 23.0,
+    &quot;min_lon&quot;: 68.0,
+    &quot;max_lon&quot;: 73.0
+  },
+  &quot;time&quot;: {
+    &quot;start&quot;: &quot;2026-09-16T00:00:00Z&quot;,
+    &quot;end&quot;: &quot;2026-09-17T12:00:00Z&quot;
+  },
+  &quot;data_type&quot;: [
+    &quot;forecast&quot;,
+    &quot;observation&quot;
+  ]
+}</code></pre>
+
+<p>The Data Discovery system translates this into provider-specific</p>
+<p>requests.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-49">36. DATASET RESPONSE OBJECT</h1>
+
+<p>The connector should return:</p>
+
+<pre><code class="language-json">{
+  &quot;dataset_id&quot;: &quot;incois_osf&quot;,
+  &quot;source&quot;: &quot;INCOIS&quot;,
+  &quot;status&quot;: &quot;success&quot;,
+  &quot;retrieved_at&quot;: &quot;...&quot;,
+  &quot;data_type&quot;: &quot;forecast&quot;,
+  &quot;coverage&quot;: {
+    &quot;spatial&quot;: &quot;...&quot;,
+    &quot;temporal&quot;: &quot;...&quot;
+  },
+  &quot;files&quot;: [
+    {
+      &quot;path&quot;: &quot;...&quot;,
+      &quot;format&quot;: &quot;netcdf&quot;
+    }
+  ],
+  &quot;metadata&quot;: {
+    &quot;variables&quot;: [],
+    &quot;units&quot;: {},
+    &quot;resolution&quot;: {}
+  }
+}</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-50">37. INGESTION MANAGER</h1>
+
+<p>The ingestion manager orchestrates connectors.</p>
+
+<pre><code class="language-text">Ingestion Manager
+│
+├── schedule acquisition
+├── select connector
+├── authenticate
+├── request data
+├── retry failures
+├── verify response
+├── checksum
+├── store raw
+├── update catalog
+└── emit ingestion event</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-51">38. RAW DATA NAMING</h1>
+
+<p>Use deterministic object paths.</p>
+
+<p>Example:</p>
+
+<pre><code class="language-text">raw/
+  incois/
+    argo/
+      2026/
+        09/
+          15/
+            platform_2901234_cycle_123.nc</code></pre>
+
+<p>For forecast:</p>
+
+<pre><code class="language-text">raw/
+  incois/
+    osf/
+      waves/
+        2026/
+          09/
+            15/
+              init_20260915T060000.nc</code></pre>
+
+<p>This makes reproducibility easier.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-52">39. CHECKSUMS AND DUPLICATES</h1>
+
+<p>Every downloaded file should record:</p>
+
+<pre><code class="language-text">SHA-256
+size
+retrieved_at
+source URL
+source modification time if available
+dataset version</code></pre>
+
+<p>If the same content is downloaded again:</p>
+
+<pre><code class="language-text">same checksum
+    ↓
+do not duplicate</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-53">40. RETRY POLICY</h1>
+
+<p>Connectors should support:</p>
+
+<pre><code class="language-text">timeout
+retry
+exponential backoff
+maximum retry count
+circuit breaker</code></pre>
+
+<p>Example:</p>
+
+<pre><code class="language-text">attempt 1 → immediate
+attempt 2 → 2 sec
+attempt 3 → 5 sec
+attempt 4 → 15 sec</code></pre>
+
+<p>Actual values can be configured.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-54">41. DATA FRESHNESS ENGINE</h1>
+
+<p>Every dataset gets:</p>
+
+<pre><code class="language-text">observation_age
+forecast_age
+retrieval_age</code></pre>
+
+<p>Example:</p>
+
+<pre><code class="language-json">{
+  &quot;observation_time&quot;: &quot;...&quot;,
+  &quot;retrieved_at&quot;: &quot;...&quot;,
+  &quot;age_hours&quot;: 4.2,
+  &quot;freshness_class&quot;: &quot;fresh&quot;
+}</code></pre>
+
+<p>Freshness thresholds must be variable-specific.</p>
+
+<p>Do not use one global rule.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-55">42. SPATIAL ALIGNMENT ENGINE</h1>
+
+<p>Sources can have:</p>
+
+<pre><code class="language-text">point
+line
+polygon
+raster
+grid
+trajectory</code></pre>
+
+<p>The spatial engine should support:</p>
+
+<pre><code class="language-text">point lookup
+nearest neighbor
+polygon aggregation
+raster sampling
+spatial intersection
+buffer
+distance
+point-in-polygon
+route intersection</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-56">43. TEMPORAL ALIGNMENT ENGINE</h1>
+
+<p>Support:</p>
+
+<pre><code class="language-text">observation time
+forecast initialization
+forecast valid time
+interval
+trajectory time
+advisory validity</code></pre>
+
+<p>Important distinction:</p>
+
+<pre><code class="language-text">forecast_init_time ≠ forecast_valid_time</code></pre>
+
+<p>This must never be lost.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-57">44. SPATIO-TEMPORAL JOIN</h1>
+
+<p>Example:</p>
+
+<pre><code class="language-text">User location:
+20.5 N, 69.7 E
+
+Requested:
+2026-09-16 06:00
+
+ORCA:
+1. find nearest grid cell
+2. find valid forecast timestamp
+3. retrieve forecast
+4. find nearby observations
+5. calculate spatial distance
+6. compare observation/model
+7. attach uncertainty</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-58">45. OBSERVATION VS FORECAST</h1>
+
+<p>Canonical schema:</p>
+
+<pre><code class="language-text">data_type:
+  observation
+  forecast
+  advisory
+  derived
+  historical
+  static</code></pre>
+
+<p>Forecast:</p>
+
+<pre><code class="language-text">forecast_initialization_time
+forecast_valid_time
+lead_time</code></pre>
+
+<p>Observation:</p>
+
+<pre><code class="language-text">observation_time</code></pre>
+
+<p>Advisory:</p>
+
+<pre><code class="language-text">issued_time
+valid_from
+valid_to</code></pre>
+
+<p>Derived:</p>
+
+<pre><code class="language-text">input_evidence_ids
+processing_method
+processing_version</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-59">46. PROVENANCE</h1>
+
+<p>Every derived result should preserve its inputs.</p>
+
+<p>Example:</p>
+
+<pre><code class="language-json">{
+  &quot;derived_product&quot;: &quot;fishing_suitability&quot;,
+  &quot;method_version&quot;: &quot;1.0&quot;,
+  &quot;inputs&quot;: [
+    &quot;EV-001&quot;,
+    &quot;EV-002&quot;,
+    &quot;EV-003&quot;,
+    &quot;EV-004&quot;
+  ],
+  &quot;generated_at&quot;: &quot;...&quot;,
+  &quot;software_version&quot;: &quot;...&quot;
+}</code></pre>
+
+<p>This allows ORCA to answer:</p>
+
+<blockquote>"Why did you recommend this location?"</blockquote>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-60">47. EVIDENCE OBJECT</h1>
+
+<p>Canonical evidence:</p>
+
+<pre><code class="language-json">{
+  &quot;evidence_id&quot;: &quot;EV-001&quot;,
+  &quot;source&quot;: &quot;INCOIS&quot;,
+  &quot;dataset&quot;: &quot;OSF&quot;,
+  &quot;variable&quot;: &quot;wave_height&quot;,
+  &quot;value&quot;: 1.8,
+  &quot;unit&quot;: &quot;m&quot;,
+  &quot;data_type&quot;: &quot;forecast&quot;,
+  &quot;forecast_initialization&quot;: &quot;...&quot;,
+  &quot;forecast_valid_time&quot;: &quot;...&quot;,
+  &quot;location&quot;: {
+    &quot;lat&quot;: 20.4,
+    &quot;lon&quot;: 69.8
+  },
+  &quot;quality&quot;: &quot;valid&quot;,
+  &quot;retrieved_at&quot;: &quot;...&quot;
+}</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-61">48. DATA SOURCE PRIORITY</h1>
+
+<p>Priority must be variable-specific.</p>
+
+<p>Example:</p>
+
+<h2 id="section-62">Cyclone warning</h2>
+
+<pre><code class="language-text">IMD authoritative warning
+        ↓
+Do not override with generic model</code></pre>
+
+<h2 id="section-63">PFZ</h2>
+
+<pre><code class="language-text">INCOIS PFZ
+        ↓
+Use as primary advisory</code></pre>
+
+<h2 id="section-64">SST</h2>
+
+<pre><code class="language-text">Operational Indian source
+        ↓
+Copernicus / NOAA / NASA validation/fallback</code></pre>
+
+<h2 id="section-65">Bathymetry</h2>
+
+<pre><code class="language-text">GEBCO scientific context
+        ↓
+authoritative navigation data where required</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-66">49. FALLBACK MATRIX</h1>
+
+<p>-------------------------------------------------------------------------------</p>
+<p>Variable          Primary              Fallback               Important</p>
+<p>restriction</p>
+<p>----------------- -------------------- ---------------------- -----------------</p>
+<p>PFZ               INCOIS               None                   Do not invent PFZ</p>
+
+<p>Cyclone warning   IMD                  Official contextual    Do not override</p>
+<p>sources</p>
+
+<p>Fishermen warning IMD                  INCOIS context         Preserve warning</p>
+
+<p>Tsunami           INCOIS               None                   Authoritative</p>
+<p>warning</p>
+
+<p>SST               INCOIS/operational   Copernicus/NOAA/NASA   Check latency</p>
+<p>source</p>
+
+<p>Chlorophyll       INCOIS/MOSDAC        NASA/NOAA/Copernicus   Resolution</p>
+<p>differs</p>
+
+<p>Wind              IMD/MOSDAC           NOAA/Copernicus        Compare</p>
+<p>timestamps</p>
+
+<p>Waves             INCOIS               Copernicus             Forecast metadata</p>
+
+<p>Currents          INCOIS               Copernicus             Resolution</p>
+<p>matters</p>
+
+<p>Argo T/S          INCOIS Argo          Global Argo/Copernicus Observation</p>
+<p>sparse</p>
+
+<p>Bathymetry        GEBCO                authoritative charts   Not a navigation</p>
+<p>where available        chart</p>
+
+<p>General map       OSM                  other map sources      Not safety</p>
+<p>authority</p>
+<p>-------------------------------------------------------------------------------</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-67">50. DATA AVAILABILITY SERVICE</h1>
+
+<p>Before retrieval, ORCA should ask:</p>
+
+<pre><code class="language-text">Does the source have the required variable?
+Does it cover the region?
+Does it cover the requested time?
+Is it fresh enough?
+Is access currently available?</code></pre>
+
+<p>Example:</p>
+
+<pre><code class="language-json">{
+  &quot;dataset&quot;: &quot;argo&quot;,
+  &quot;region&quot;: &quot;Arabian Sea&quot;,
+  &quot;time&quot;: &quot;2026-09-16&quot;,
+  &quot;available&quot;: true,
+  &quot;latest_profile_age_hours&quot;: 31,
+  &quot;spatial_density&quot;: &quot;sparse&quot;
+}</code></pre>
+
+<p>This prevents hallucinated availability.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-68">51. DATA CATALOG SCHEMA</h1>
+
+<p>Recommended table:</p>
+
+<pre><code class="language-text">dataset_registry
+----------------
+dataset_id
+provider
+dataset_name
+description
+domain
+variables
+data_type
+spatial_coverage
+temporal_coverage
+spatial_resolution
+temporal_resolution
+update_frequency
+access_method
+endpoint
+format
+authentication
+license
+primary_for
+fallback_sources
+quality_notes
+status
+last_verified</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-69">52. VARIABLE REGISTRY</h1>
+
+<p>Separate dataset registry from variable registry.</p>
+
+<pre><code class="language-text">variable_registry
+-----------------
+variable_id
+canonical_name
+aliases
+unit
+domain
+description
+valid_range
+aggregation_method
+preferred_sources
+fallback_sources</code></pre>
+
+<p>Example:</p>
+
+<pre><code class="language-json">{
+  &quot;variable_id&quot;: &quot;sst&quot;,
+  &quot;canonical_name&quot;: &quot;sea_surface_temperature&quot;,
+  &quot;aliases&quot;: [
+    &quot;SST&quot;,
+    &quot;sea_surface_temp&quot;
+  ],
+  &quot;unit&quot;: &quot;degC&quot;,
+  &quot;domain&quot;: &quot;ocean&quot;
+}</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-70">53. UNIT NORMALIZATION</h1>
+
+<p>External providers may use different units.</p>
+
+<p>ORCA should define canonical units.</p>
+
+<p>Examples:</p>
+
+<pre><code class="language-text">temperature → °C
+salinity → PSU / provider-defined practical salinity convention
+wave height → m
+wind speed → m/s
+pressure → Pa or hPa according to canonical convention
+distance → km
+depth → m
+time → UTC ISO 8601</code></pre>
+
+<p>Do not silently convert without recording the transformation.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-71">54. COORDINATE REFERENCE SYSTEM</h1>
+
+<p>Canonical spatial standard:</p>
+
+<pre><code class="language-text">WGS84
+EPSG:4326</code></pre>
+
+<p>unless a scientific raster requires a native projection.</p>
+
+<p>Store:</p>
+
+<pre><code class="language-text">native_crs
+canonical_crs
+transformation_method</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-72">55. TEMPORAL STANDARD</h1>
+
+<p>Use:</p>
+
+<pre><code class="language-text">UTC
+ISO 8601</code></pre>
+
+<p>internally.</p>
+
+<p>Example:</p>
+
+<pre><code class="language-text">2026-09-16T06:00:00Z</code></pre>
+
+<p>The UI can convert to local Indian time.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-73">56. DATA QUALITY STATES</h1>
+
+<p>Recommended:</p>
+
+<pre><code class="language-text">VALID
+SUSPECT
+MISSING
+STALE
+INVALID
+UNAVAILABLE</code></pre>
+
+<p>Do not simply discard questionable records.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-74">57. SOURCE CONFLICT ENGINE</h1>
+
+<p>Example:</p>
+
+<pre><code class="language-text">INCOIS SST = 28.1
+NOAA SST   = 27.8
+Copernicus = 28.0
+Buoy       = 28.2</code></pre>
+
+<p>The engine should consider:</p>
+
+<pre><code class="language-text">time difference
+distance
+resolution
+observation vs forecast
+quality flags
+provider methodology</code></pre>
+
+<p>Then report:</p>
+
+<pre><code class="language-text">agreement
+disagreement
+confidence</code></pre>
+
+<p>rather than arbitrarily selecting one.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-75">58. CACHING</h1>
+
+<p>Use caching at multiple levels.</p>
+
+<h2 id="section-76">Metadata cache</h2>
+
+<p>Long-lived.</p>
+
+<pre><code class="language-text">dataset metadata
+source catalog
+variable registry</code></pre>
+
+<h2 id="section-77">Forecast cache</h2>
+
+<p>Shorter.</p>
+
+<pre><code class="language-text">latest forecast cycle</code></pre>
+
+<h2 id="section-78">Satellite cache</h2>
+
+<p>Product-dependent.</p>
+
+<h2 id="section-79">Warning cache</h2>
+
+<p>Very short-lived and refresh aggressively.</p>
+
+<p>Never cache a safety warning indefinitely.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-80">59. SCHEDULING</h1>
+
+<p>Acquisition schedules should be dataset-specific.</p>
+
+<p>Example:</p>
+
+<pre><code class="language-text">IMD warnings
+→ frequent polling
+
+Forecasts
+→ after forecast cycle
+
+Satellite
+→ after product availability
+
+Argo
+→ periodic refresh
+
+GEBCO
+→ version/update based
+
+Static GIS
+→ periodic verification</code></pre>
+
+<p>Do not use one universal cron schedule.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-81">60. DATA RETENTION</h1>
+
+<p>Recommended:</p>
+
+<pre><code class="language-text">RAW
+Long-term / according to storage budget
+
+NORMALIZED
+Long-term for important operational data
+
+DERIVED
+Versioned and reproducible
+
+TEMPORARY CACHE
+Short retention</code></pre>
+
+<p>For the hackathon:</p>
+
+<p>Keep:</p>
+
+<ul>
+<li>  current data</li>
+<li>  selected historical window</li>
+<li>  raw examples</li>
+<li>  all derived outputs used in demonstrations</li>
+</ul>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-82">61. DATA QUERY API</h1>
+
+<p>Agents should never directly know provider-specific URLs.</p>
+
+<p>Expose ORCA APIs.</p>
+
+<p>Example:</p>
+
+<pre><code class="language-text">GET /api/ocean/sst
+GET /api/ocean/chlorophyll
+GET /api/ocean/waves
+GET /api/ocean/currents
+GET /api/ocean/argo
+GET /api/weather/wind
+GET /api/weather/rainfall
+GET /api/hazard/cyclone
+GET /api/hazard/lightning
+GET /api/marine/warnings
+GET /api/pfz
+GET /api/gis/geofences
+GET /api/gis/ports
+GET /api/bathymetry</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-83">62. Query API REQUEST EXAMPLE</h1>
+
+<pre><code class="language-json">{
+  &quot;region&quot;: {
+    &quot;type&quot;: &quot;bbox&quot;,
+    &quot;bbox&quot;: [
+      68.0,
+      18.0,
+      73.0,
+      23.0
+    ]
+  },
+  &quot;time&quot;: {
+    &quot;start&quot;: &quot;2026-09-16T00:00:00Z&quot;,
+    &quot;end&quot;: &quot;2026-09-16T12:00:00Z&quot;
+  },
+  &quot;variables&quot;: [
+    &quot;sst&quot;,
+    &quot;chlorophyll&quot;,
+    &quot;wave_height&quot;,
+    &quot;wind&quot;
+  ]
+}</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-84">63. DATA DISCOVERY AGENT</h1>
+
+<p>The agent should reason at the semantic level.</p>
+
+<p>User:</p>
+
+<blockquote>"Find a safe productive fishing zone tomorrow morning."</blockquote>
+
+<p>Planner creates:</p>
+
+<pre><code class="language-text">Need:
+PFZ
+SST
+chlorophyll
+waves
+wind
+currents
+marine warning
+cyclone
+lightning
+geofences</code></pre>
+
+<p>Data Discovery:</p>
+
+<pre><code class="language-text">PFZ → INCOIS
+SST → INCOIS
+chlorophyll → INCOIS/MOSDAC
+waves → INCOIS
+wind → IMD/MOSDAC
+cyclone → IMD
+lightning → IMD
+geofence → GIS</code></pre>
+
+<p>Then Retrieval executes.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-85">64. DATA DISCOVERY IS NOT DATA RETRIEVAL</h1>
+
+<p>Keep these separate.</p>
+
+<h3 id="section-86">Discovery</h3>
+
+<p>Answers:</p>
+
+<blockquote>Which datasets should we use?</blockquote>
+
+<h3 id="section-87">Retrieval</h3>
+
+<p>Answers:</p>
+
+<blockquote>How do we obtain those datasets?</blockquote>
+
+<h3 id="section-88">Processing</h3>
+
+<p>Answers:</p>
+
+<blockquote>How do we convert them into usable information?</blockquote>
+
+<p>This separation makes the system easier to test.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-89">65. DATA DISCOVERY ALGORITHM</h1>
+
+<p>Conceptually:</p>
+
+<pre><code class="language-text">INPUT:
+user task
+
+1. classify task
+2. extract location
+3. extract time
+4. extract user role
+5. determine decision type
+6. identify required variables
+7. search catalog
+8. rank datasets
+9. check availability
+10. select primary/fallback
+11. generate retrieval plan</code></pre>
+
+<p>Output:</p>
+
+<pre><code class="language-json">{
+  &quot;task&quot;: &quot;...&quot;,
+  &quot;datasets&quot;: [
+    {
+      &quot;dataset_id&quot;: &quot;incois_osf&quot;,
+      &quot;variables&quot;: [&quot;wave_height&quot;, &quot;current&quot;],
+      &quot;priority&quot;: 1
+    }
+  ]
+}</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-90">66. SOURCE RANKING</h1>
+
+<p>Dataset selection should score:</p>
+
+<pre><code class="language-text">authority
+freshness
+spatial relevance
+temporal relevance
+resolution
+availability
+quality
+coverage</code></pre>
+
+<p>Conceptually:</p>
+
+<pre><code class="language-text">score =
+authority
++ freshness
++ relevance
++ quality
++ coverage</code></pre>
+
+<p>The exact formula should be deterministic and configurable.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-91">67. SCIENTIFIC PROCESSING LAYER</h1>
+
+<p>The data system should expose reusable calculations.</p>
+
+<h2 id="section-92">Ocean engine</h2>
+
+<pre><code class="language-text">SST anomaly
+chlorophyll anomaly
+gradient
+front detection
+MLD
+D20
+current statistics</code></pre>
+
+<h2 id="section-93">Weather engine</h2>
+
+<pre><code class="language-text">wind exposure
+wave exposure
+rainfall
+lightning proximity
+cyclone proximity</code></pre>
+
+<h2 id="section-94">Spatial engine</h2>
+
+<pre><code class="language-text">point-in-polygon
+distance
+intersection
+geofence
+nearest port</code></pre>
+
+<h2 id="section-95">Temporal engine</h2>
+
+<pre><code class="language-text">historical comparison
+forecast matching
+rolling averages
+anomaly windows</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-96">68. DERIVED PRODUCT VERSIONING</h1>
+
+<p>Every derived dataset needs:</p>
+
+<pre><code class="language-text">method
+method_version
+software_version
+input_dataset_versions
+generated_at
+parameters</code></pre>
+
+<p>Example:</p>
+
+<pre><code class="language-json">{
+  &quot;product&quot;: &quot;sst_anomaly&quot;,
+  &quot;method_version&quot;: &quot;1.0&quot;,
+  &quot;baseline&quot;: &quot;2015-2025_monthly&quot;,
+  &quot;input&quot;: &quot;incois_sst&quot;,
+  &quot;generated_at&quot;: &quot;...&quot;
+}</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-97">69. HISTORICAL BASELINE ENGINE</h1>
+
+<p>For a question like:</p>
+
+<blockquote>"Why did chlorophyll decrease?"</blockquote>
+
+<p>ORCA needs:</p>
+
+<pre><code class="language-text">current value
+7-day average
+30-day average
+seasonal average
+historical climatology</code></pre>
+
+<p>A baseline should specify:</p>
+
+<pre><code class="language-text">baseline period
+spatial grid
+temporal aggregation
+missing-data handling</code></pre>
+
+<p>Do not call a single previous day the "historical baseline."</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-98">70. ALERT DATA PIPELINE</h1>
+
+<p>Warnings should have a separate fast path.</p>
+
+<pre><code class="language-text">IMD / INCOIS
+       ↓
+Alert ingestion
+       ↓
+Deduplication
+       ↓
+Spatial indexing
+       ↓
+Temporal indexing
+       ↓
+Affected-user calculation
+       ↓
+Notification</code></pre>
+
+<p>Chat should not be required for alerts.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-99">71. GEOSPATIAL ALERT MATCHING</h1>
+
+<p>Example:</p>
+
+<pre><code class="language-text">Cyclone polygon/track
+        +
+User location
+        +
+User route
+        ↓
+Spatial intersection
+        ↓
+Affected?</code></pre>
+
+<p>This is deterministic geospatial computation.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-100">72. ROUTE DATA PIPELINE</h1>
+
+<p>Route planning needs:</p>
+
+<pre><code class="language-text">start
+destination
+geofences
+coastline
+depth context
+current
+wind
+waves
+hazards</code></pre>
+
+<p>The route engine produces:</p>
+
+<pre><code class="language-text">candidate routes
+distance
+ETA
+hazard exposure
+weather exposure
+geofence violations</code></pre>
+
+<p>The LLM explains the result.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-101">73. SAFETY RULE</h1>
+
+<p>ORCA should distinguish:</p>
+
+<pre><code class="language-text">scientific information
+operational recommendation
+authoritative warning
+navigation authority</code></pre>
+
+<p>A model-derived recommendation must never be presented as an official</p>
+<p>safety clearance.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-102">74. LOGGING AND OBSERVABILITY</h1>
+
+<p>Every acquisition should generate a trace:</p>
+
+<pre><code class="language-text">request_id
+source
+dataset
+query
+started_at
+completed_at
+status
+bytes
+checksum
+records
+errors</code></pre>
+
+<p>Every agent task should be able to trace:</p>
+
+<pre><code class="language-text">answer
+ ↓
+derived result
+ ↓
+evidence
+ ↓
+dataset
+ ↓
+raw file
+ ↓
+source</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-103">75. FAILURE MODES</h1>
+
+<p>The system must explicitly handle:</p>
+
+<h3 id="section-104">Source unavailable</h3>
+
+<pre><code class="language-text">primary unavailable
+→ fallback</code></pre>
+
+<h3 id="section-105">No coverage</h3>
+
+<pre><code class="language-text">source exists
+but region unavailable
+→ report unavailable</code></pre>
+
+<h3 id="section-106">Stale data</h3>
+
+<pre><code class="language-text">data exists
+but too old
+→ mark stale</code></pre>
+
+<h3 id="section-107">Conflicting data</h3>
+
+<pre><code class="language-text">sources disagree
+→ preserve both
+→ calculate confidence</code></pre>
+
+<h3 id="section-108">Missing variable</h3>
+
+<pre><code class="language-text">required variable unavailable
+→ identify incomplete decision</code></pre>
+
+<h3 id="section-109">Authentication failure</h3>
+
+<pre><code class="language-text">credential unavailable
+→ fallback / degraded mode</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-110">76. DEGRADED MODE</h1>
+
+<p>ORCA should still operate when some sources are unavailable.</p>
+
+<p>Example:</p>
+
+<pre><code class="language-text">INCOIS unavailable
+       ↓
+Copernicus + NOAA available
+       ↓
+scientific analysis possible
+       ↓
+but Indian operational advisory unavailable
+       ↓
+response explicitly states limitation</code></pre>
+
+<p>For a safety-critical warning, however:</p>
+
+<pre><code class="language-text">authoritative warning source unavailable
+       ↓
+do not fabricate equivalent warning</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-111">77. DATA SECURITY</h1>
+
+<p>Credentials should be stored in:</p>
+
+<pre><code class="language-text">environment variables
+secret manager
+deployment secret store</code></pre>
+
+<p>Never:</p>
+
+<pre><code class="language-text">LLM prompt
+Git repository
+frontend JavaScript
+database plaintext</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-112">78. API SECURITY</h1>
+
+<p>Internal APIs should support:</p>
+
+<pre><code class="language-text">authentication
+authorization
+rate limits
+request validation
+logging</code></pre>
+
+<p>The public frontend should not receive provider credentials.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-113">79. HACKATHON-SCALE IMPLEMENTATION</h1>
+
+<p>Do not implement every source immediately.</p>
+
+<h2 id="section-114">Phase 1</h2>
+
+<p>Build:</p>
+
+<pre><code class="language-text">INCOIS Argo
+INCOIS OSF
+INCOIS PFZ
+IMD marine/cyclone
+GIS
+GEBCO regional subset</code></pre>
+
+<h2 id="section-115">Phase 2</h2>
+
+<p>Add:</p>
+
+<pre><code class="language-text">MOSDAC OCM
+MOSDAC SCAT
+INSAT</code></pre>
+
+<h2 id="section-116">Phase 3</h2>
+
+<p>Add:</p>
+
+<pre><code class="language-text">Copernicus
+NOAA
+NASA</code></pre>
+
+<h2 id="section-117">Phase 4</h2>
+
+<p>Add:</p>
+
+<pre><code class="language-text">BGC-Argo
+HF Radar
+tide gauges
+advanced ecosystem products</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-118">80. FIRST WORKING VERTICAL SLICE</h1>
+
+<p>The first complete demonstration should work like this:</p>
+
+<pre><code class="language-text">User:
+&quot;Kal subah Gujarat ke paas fishing ke liye
+safe aur productive area batao.&quot;
+
+             ↓
+
+Planner
+
+             ↓
+
+Data Discovery
+
+             ↓
+
+INCOIS PFZ
+INCOIS SST
+INCOIS chlorophyll
+INCOIS waves
+INCOIS currents
+IMD wind
+IMD fishermen warning
+IMD cyclone
+GIS restricted zones
+
+             ↓
+
+Data Retrieval
+
+             ↓
+
+Validation
+
+             ↓
+
+Spatial/Temporal Alignment
+
+             ↓
+
+Ocean Engine
+Weather Engine
+Spatial Engine
+
+             ↓
+
+Risk Engine
+
+             ↓
+
+Evidence Validator
+
+             ↓
+
+Recommendation
+
+             ↓
+
+Map + explanation + evidence</code></pre>
+
+<p>This single workflow demonstrates almost the entire PS.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-119">81. RECOMMENDED V1 STORAGE</h1>
+
+<pre><code class="language-text">MinIO
+│
+├── raw/
+│   ├── incois/
+│   ├── imd/
+│   ├── mosdac/
+│   ├── copernicus/
+│   ├── noaa/
+│   ├── nasa/
+│   └── gebco/
+│
+├── normalized/
+│
+└── derived/</code></pre>
+
+<p>PostgreSQL/PostGIS:</p>
+
+<pre><code class="language-text">datasets
+variables
+sources
+observations
+geometries
+warnings
+pfz
+ports
+geofences
+evidence
+derived_products
+ingestion_runs</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-120">82. RECOMMENDED TECHNOLOGY STACK</h1>
+
+<h2 id="section-121">Acquisition</h2>
+
+<pre><code class="language-text">Python
+httpx / requests
+xarray
+pandas
+netCDF4
+h5py
+rasterio
+geopandas</code></pre>
+
+<h2 id="section-122">Scientific</h2>
+
+<pre><code class="language-text">xarray
+numpy
+scipy
+pandas</code></pre>
+
+<h2 id="section-123">Geospatial</h2>
+
+<pre><code class="language-text">GeoPandas
+Shapely
+PostGIS
+Rasterio
+pyproj</code></pre>
+
+<h2 id="section-124">Storage</h2>
+
+<pre><code class="language-text">MinIO
+PostgreSQL
+PostGIS
+Zarr
+NetCDF
+Parquet</code></pre>
+
+<h2 id="section-125">API</h2>
+
+<pre><code class="language-text">FastAPI</code></pre>
+
+<h2 id="section-126">Scheduling</h2>
+
+<p>For the hackathon:</p>
+
+<pre><code class="language-text">APScheduler
+or
+simple scheduled workers</code></pre>
+
+<p>Do not introduce Airflow unless the workflow genuinely requires it.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-127">83. GENERIC DATA PIPELINE CODE STRUCTURE</h1>
+
+<pre><code class="language-text">orca_data/
+│
+├── catalog/
+│   ├── datasets.py
+│   ├── variables.py
+│   └── sources.py
+│
+├── connectors/
+│   ├── base.py
+│   ├── erddap.py
+│   ├── incois.py
+│   ├── imd.py
+│   ├── mosdac.py
+│   ├── copernicus.py
+│   ├── noaa.py
+│   ├── nasa.py
+│   └── gebco.py
+│
+├── ingestion/
+│   ├── manager.py
+│   ├── scheduler.py
+│   ├── retry.py
+│   └── checksum.py
+│
+├── validation/
+│   ├── schema.py
+│   ├── quality.py
+│   ├── spatial.py
+│   └── temporal.py
+│
+├── normalization/
+│   ├── ocean.py
+│   ├── weather.py
+│   ├── satellite.py
+│   └── gis.py
+│
+├── alignment/
+│   ├── spatial.py
+│   └── temporal.py
+│
+├── derived/
+│   ├── anomaly.py
+│   ├── ocean.py
+│   ├── risk.py
+│   └── geospatial.py
+│
+├── evidence/
+│   ├── provenance.py
+│   └── evidence.py
+│
+└── api/
+    ├── ocean.py
+    ├── weather.py
+    ├── hazards.py
+    └── geospatial.py</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-128">84. DATA ACQUISITION TESTING</h1>
+
+<p>Each connector should have:</p>
+
+<h2 id="section-129">Unit tests</h2>
+
+<pre><code class="language-text">query construction
+parser
+unit conversion
+metadata</code></pre>
+
+<h2 id="section-130">Integration tests</h2>
+
+<pre><code class="language-text">live provider request
+authentication
+download
+subset</code></pre>
+
+<h2 id="section-131">Data-quality tests</h2>
+
+<pre><code class="language-text">coordinate range
+time
+units
+missing values</code></pre>
+
+<h2 id="section-132">Regression tests</h2>
+
+<p>Save a small known dataset and verify that new code produces the</p>
+<p>expected normalized output.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-133">85. GOLDEN DATASETS</h1>
+
+<p>For the hackathon, maintain small frozen examples:</p>
+
+<pre><code class="language-text">golden/
+├── argo/
+├── osf/
+├── pfz/
+├── imd/
+├── mosdac/
+└── gebco/</code></pre>
+
+<p>These allow the team to work even if an external service temporarily</p>
+<p>fails.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-134">86. MOCK MODE</h1>
+
+<p>The application should have:</p>
+
+<pre><code class="language-text">LIVE MODE
+MOCK MODE</code></pre>
+
+<h3 id="section-135">LIVE</h3>
+
+<p>Uses real sources.</p>
+
+<h3 id="section-136">MOCK</h3>
+
+<p>Uses cached/frozen data.</p>
+
+<p>This is extremely valuable during a hackathon presentation because an</p>
+<p>external API outage should not destroy the demo.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-137">87. DATA LINEAGE GRAPH</h1>
+
+<p>The system should conceptually maintain:</p>
+
+<pre><code class="language-text">SOURCE
+  ↓
+DATASET
+  ↓
+OBSERVATION
+  ↓
+DERIVED PRODUCT
+  ↓
+EVIDENCE
+  ↓
+DECISION
+  ↓
+RECOMMENDATION</code></pre>
+
+<p>Example:</p>
+
+<pre><code class="language-text">INCOIS OSF
+    ↓
+Wave forecast
+    ↓
+Wave exposure calculation
+    ↓
+Risk evidence
+    ↓
+Route risk
+    ↓
+Recommendation</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-138">88. WHAT SHOULD THE DATA DISCOVERY AGENT NEVER DO?</h1>
+
+<p>It should not:</p>
+
+<ul>
+<li>  invent a dataset</li>
+<li>  invent an API</li>
+<li>  assume availability</li>
+<li>  ignore freshness</li>
+<li>  ignore source authority</li>
+<li>  silently substitute a source</li>
+<li>  discard quality flags</li>
+<li>  treat a forecast as an observation</li>
+<li>  treat PFZ as guaranteed fish presence</li>
+<li>  treat GEBCO as a navigation chart</li>
+<li>  override official warnings</li>
+<li>  fabricate missing values</li>
+</ul>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-139">89. WHAT SHOULD THE DATA SYSTEM GUARANTEE?</h1>
+
+<p>For every piece of information delivered to an agent:</p>
+
+<pre><code class="language-text">WHERE did it come from?
+WHEN was it observed?
+WHEN was it forecast?
+HOW fresh is it?
+WHAT is its unit?
+WHAT is its spatial resolution?
+WHAT is its temporal resolution?
+WHAT quality flags exist?
+WHAT processing was applied?
+WHAT source produced it?
+CAN the result be traced back?</code></pre>
+
+<p>If the system cannot answer these questions, the data should not be</p>
+<p>treated as high-confidence evidence.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-140">90. FINAL DATA PIPELINE</h1>
+
+<p>The complete architecture is:</p>
+
+<pre><code class="language-text">                     EXTERNAL DATA SOURCES
+                              │
+       ┌──────────────────────┼──────────────────────┐
+       │                      │                      │
+     INCOIS                 IMD                 MOSDAC/ISRO
+       │                      │                      │
+       │                      │                      │
+       └──────────────────────┼──────────────────────┘
+                              │
+                 COPERNICUS / NOAA / NASA
+                              │
+                    GIS / GEBCO / OSM
+                              │
+                              ▼
+                       SOURCE CATALOG
+                              │
+                              ▼
+                    DATA DISCOVERY ENGINE
+                              │
+                              ▼
+                     DATA REQUIREMENT
+                              │
+                              ▼
+                       CONNECTOR ROUTER
+                              │
+                              ▼
+                       INGESTION MANAGER
+                              │
+                     ┌────────┴────────┐
+                     ▼                 ▼
+                  RAW STORE        METADATA STORE
+                     │                 │
+                     ▼                 ▼
+                 VALIDATION        DATA CATALOG
+                     │
+                     ▼
+                NORMALIZATION
+                     │
+                     ▼
+          SPATIAL + TEMPORAL ALIGNMENT
+                     │
+                     ▼
+              DERIVED DATA ENGINES
+                     │
+         ┌───────────┼───────────┐
+         ▼           ▼           ▼
+       OCEAN       WEATHER      GIS
+       ENGINE      ENGINE      ENGINE
+         │           │           │
+         └───────────┼───────────┘
+                     ▼
+                 RISK ENGINE
+                     │
+                 ROUTE ENGINE
+                     │
+                     ▼
+              EVIDENCE STORE
+                     │
+                     ▼
+              DATA QUERY API
+                     │
+                     ▼
+               AGENTIC SYSTEM
+                     │
+                     ▼
+             DECISION + EXPLANATION</code></pre>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-141">91. FINAL ENGINEERING RULES</h1>
+
+<h2 id="section-142">Rule 1</h2>
+
+<p><strong>Sources remain sources.</strong></p>
+
+<p>Do not pretend ORCA owns the scientific measurements.</p>
+
+<h2 id="section-143">Rule 2</h2>
+
+<p><strong>Raw data is immutable.</strong></p>
+
+<p>Never overwrite provider data.</p>
+
+<h2 id="section-144">Rule 3</h2>
+
+<p><strong>Metadata is first-class data.</strong></p>
+
+<p>A value without time, location, unit and provenance is incomplete.</p>
+
+<h2 id="section-145">Rule 4</h2>
+
+<p><em></em>Observation, forecast, advisory and derived data are different</p>
+<p>semantic objects.<em></em></p>
+
+<p>Never merge them blindly.</p>
+
+<h2 id="section-146">Rule 5</h2>
+
+<p><strong>The LLM does not calculate scientific truth.</strong></p>
+
+<p>Deterministic scientific engines do.</p>
+
+<h2 id="section-147">Rule 6</h2>
+
+<p><strong>Official warnings have operational authority.</strong></p>
+
+<p>The system should contextualize them, not contradict them casually.</p>
+
+<h2 id="section-148">Rule 7</h2>
+
+<p><strong>Every recommendation must be traceable to evidence.</strong></p>
+
+<h2 id="section-149">Rule 8</h2>
+
+<p><strong>Fallbacks are explicit.</strong></p>
+
+<p>Never silently substitute a source.</p>
+
+<h2 id="section-150">Rule 9</h2>
+
+<p><strong>Spatial and temporal alignment must be recorded.</strong></p>
+
+<p>Interpolation is a scientific operation, not invisible preprocessing.</p>
+
+<h2 id="section-151">Rule 10</h2>
+
+<p><strong>The data system must work in degraded/mock mode.</strong></p>
+
+<p>A hackathon demo should not depend on perfect internet/API availability.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-152">92. FINAL IMPLEMENTATION ORDER</h1>
+
+<p>The actual engineering team should now work in this order:</p>
+
+<pre><code class="language-text">STEP 1
+Build Source Registry
+
+        ↓
+
+STEP 2
+Build generic HTTP + ERDDAP connector
+
+        ↓
+
+STEP 3
+Connect INCOIS Argo
+
+        ↓
+
+STEP 4
+Connect INCOIS OSF
+
+        ↓
+
+STEP 5
+Connect INCOIS PFZ
+
+        ↓
+
+STEP 6
+Connect IMD marine/cyclone
+
+        ↓
+
+STEP 7
+Load coastline/EEZ/geofences
+
+        ↓
+
+STEP 8
+Load regional GEBCO
+
+        ↓
+
+STEP 9
+Build RAW storage
+
+        ↓
+
+STEP 10
+Build normalization
+
+        ↓
+
+STEP 11
+Build spatial/temporal alignment
+
+        ↓
+
+STEP 12
+Build evidence/provenance
+
+        ↓
+
+STEP 13
+Build Data Query API
+
+        ↓
+
+STEP 14
+Connect Ocean/Weather/Spatial engines
+
+        ↓
+
+STEP 15
+Only then connect agents</code></pre>
+
+<p>This order is intentional.</p>
+
+<p><strong>Do not start by building agents.</strong></p>
+
+<p>First make sure ORCA can reliably answer:</p>
+
+<pre><code class="language-text">&quot;What data do we have?&quot;
+&quot;Where did it come from?&quot;
+&quot;Can I retrieve it?&quot;
+&quot;Is it fresh?&quot;
+&quot;Is it valid?&quot;
+&quot;What does it mean?&quot;
+&quot;Can I trace it?&quot;</code></pre>
+
+<p>Only then should the agentic layer be allowed to reason over it.</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-153">93. RESEARCHED OFFICIAL ACCESS REFERENCES</h1>
+
+<h2 id="section-154">INCOIS</h2>
+
+<ul>
+<li>  Data Holdings:\</li>
+</ul>
+<p>https://incois.gov.in/site/dataholdings.jsp</p>
+
+<ul>
+<li>  INCOIS ERDDAP:\</li>
+</ul>
+<p>https://erddap.incois.gov.in/erddap/</p>
+
+<ul>
+<li>  Ocean State Forecast:\</li>
+</ul>
+<p>https://www.incois.gov.in/oceanservices/osfforecast.jsp</p>
+
+<ul>
+<li>  Ocean Observation Network:\</li>
+</ul>
+<p>https://incois.gov.in/OON/index.jsp</p>
+
+<p>INCOIS confirms the availability and access characteristics of Argo,</p>
+<p>buoys, HF radar, tide gauges, ROMS and PFZ datasets in its current</p>
+<p>holdings. citeturn1search3turn1search7</p>
+
+<h2 id="section-155">MOSDAC / ISRO</h2>
+
+<ul>
+<li>  MOSDAC:\</li>
+</ul>
+<p>https://mosdac.gov.in/</p>
+
+<ul>
+<li>  Oceansat-3:\</li>
+</ul>
+<p>https://mosdac.gov.in/oceansat-3</p>
+
+<ul>
+<li>  Oceansat-3 Payloads:\</li>
+</ul>
+<p>https://mosdac.gov.in/oceansat-3-payloads</p>
+
+<ul>
+<li>  Oceansat-3 References:\</li>
+</ul>
+<p>https://www.mosdac.gov.in/oceansat-3-references</p>
+
+<ul>
+<li>  Data Access Policy:\</li>
+</ul>
+<p>https://www.mosdac.gov.in/data-access-policy</p>
+
+<p>MOSDAC documents the current Oceansat-3 payload configuration and its</p>
+<p>access profiles. citeturn0search2turn0search3turn0search6</p>
+
+<h2 id="section-156">IMD</h2>
+
+<ul>
+<li>  API portal:\</li>
+</ul>
+<p>https://api.imd.gov.in/</p>
+
+<ul>
+<li>  API reference:\</li>
+</ul>
+<p>https://api.imd.gov.in/public/api_reference.html</p>
+
+<ul>
+<li>  Main weather/marine service:\</li>
+</ul>
+<p>https://mausam.imd.gov.in/</p>
+
+<h2 id="section-157">Copernicus Marine</h2>
+
+<ul>
+<li>  Data Store:\</li>
+</ul>
+<p>https://data.marine.copernicus.eu/</p>
+
+<ul>
+<li>  Marine portal:\</li>
+</ul>
+<p>https://marine.copernicus.eu/</p>
+
+<ul>
+<li>  Toolbox documentation:\</li>
+</ul>
+<p>https://help.marine.copernicus.eu/</p>
+
+<p>The current Toolbox supports metadata discovery, subsetting,</p>
+<p>original-file retrieval and remote programmatic access.</p>
+<p>citeturn0search11turn0search17turn0search8</p>
+
+<h2 id="section-158">NOAA CoastWatch</h2>
+
+<ul>
+<li>  Main portal:\</li>
+</ul>
+<p>https://coastwatch.noaa.gov/</p>
+
+<ul>
+<li>  Data access tools:\</li>
+</ul>
+<p>https://coastwatch.noaa.gov/cwn/data-access-tools.html</p>
+
+<p>NOAA documents both its data portal and ERDDAP-based programmatic/subset</p>
+<p>access. citeturn0search5turn0search7</p>
+
+<h2 id="section-159">NASA Ocean Color</h2>
+
+<ul>
+<li>  Ocean Color:\</li>
+</ul>
+<p>https://oceancolor.gsfc.nasa.gov/</p>
+
+<ul>
+<li>  Ocean Data:\</li>
+</ul>
+<p>https://oceandata.sci.gsfc.nasa.gov/</p>
+
+<h2 id="section-160">GEBCO</h2>
+
+<ul>
+<li>  GEBCO 2026:\</li>
+</ul>
+<p>https://www.gebco.net/data-products-gridded-bathymetry-data/gebco2026-grid</p>
+
+<ul>
+<li>  Gridded bathymetry:\</li>
+</ul>
+<p>https://www.gebco.net/data-products/gridded-bathymetry-data</p>
+
+<p>GEBCO_2026 is the current 15-arc-second global grid and supports global</p>
+<p>files, user-defined-area downloads and OPeNDAP.</p>
+<p>citeturn1search0turn1search1</p>
+
+<p>------------------------------------------------------------------------</p>
+
+<h1 id="section-161">94. FINAL DECISION</h1>
+
+<p>The previous document answered:</p>
+
+<blockquote><strong>What data should ORCA have?</strong></blockquote>
+
+<p>This document answers:</p>
+
+<blockquote><strong>How should ORCA acquire and engineer that data?</strong></blockquote>
+
+<p>The next layer after this should be the <em></em>actual implementation of the</p>
+<p>first connectors<em></em>, beginning with:</p>
+
+<pre><code class="language-text">INCOIS ERDDAP
+      ↓
+Argo
+      ↓
+OSF
+      ↓
+PFZ</code></pre>
+
+<p>Then:</p>
+
+<pre><code class="language-text">IMD
+      ↓
+Marine + cyclone</code></pre>
+
+<p>Then:</p>
+
+<pre><code class="language-text">GIS + GEBCO</code></pre>
+
+<p>Once those are working, ORCA will have a genuine data foundation rather</p>
+<p>than a conceptual list of sources.</p>
+
+    </div>
+
+    <div class="page-nav">
+      <a href="fisher.html">
+      <span class="page-nav-label">&#8592; Previous</span>
+      <span class="page-nav-title">Fisher Research</span>
+    </a>
+      <a href="agentic-spec.html" class="next">
+      <span class="page-nav-label">Next &#8594;</span>
+      <span class="page-nav-title">Agentic Spec</span>
+    </a>
+    </div>
+  </div>
+</div>
+
+<footer class="container">
+  <strong>ORCA</strong> &#183; Marine EcOsystem Reasoning with Collaborative Agents &#183; SIH 2026 &#183; PS 26176
+</footer>
+
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
+
+<script>
+// Back to top button
+window.addEventListener('scroll', function() {
+  var btn = document.getElementById('backToTop');
+  if (window.scrollY > 300) { btn.classList.add('visible'); }
+  else { btn.classList.remove('visible'); }
+});
+
+// Scroll-spy: highlight active TOC link
+(function() {
+  var tocLinks = document.querySelectorAll('#tocList a');
+  if (!tocLinks.length) return;
+
+  var headingEls = [];
+  tocLinks.forEach(function(link) {
+    var target = link.getAttribute('data-target');
+    var el = document.getElementById(target);
+    if (el) headingEls.push({ el: el, link: link });
+  });
+
+  function updateActive() {
+    var scrollY = window.scrollY + 80;
+    var current = null;
+
+    for (var i = 0; i < headingEls.length; i++) {
+      if (headingEls[i].el.offsetTop <= scrollY) {
+        current = headingEls[i];
+      }
+    }
+
+    tocLinks.forEach(function(l) { l.classList.remove('active'); });
+    if (current) {
+      current.link.classList.add('active');
+      // Scroll TOC to keep active item visible
+      var tocSticky = current.link.closest('.toc-sticky');
+      if (tocSticky) {
+        var linkTop = current.link.offsetTop - tocSticky.offsetTop;
+        var stickyHeight = tocSticky.clientHeight;
+        if (linkTop < tocSticky.scrollTop || linkTop > tocSticky.scrollTop + stickyHeight - 40) {
+          tocSticky.scrollTop = linkTop - stickyHeight / 3;
+        }
+      }
+    }
+  }
+
+  window.addEventListener('scroll', updateActive);
+  updateActive();
+})();
+
+// --- Mermaid Diagram Compiler & Interactive Viewer ---
+(function() {
+  if (typeof mermaid === 'undefined') return;
+
+  try {
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'neutral',
+      securityLevel: 'loose',
+      fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+      maxTextSize: 100000,
+      flowchart: {
+        htmlLabels: true,
+        curve: 'basis',
+        useMaxWidth: true
+      },
+      er: {
+        useMaxWidth: true
+      }
+    });
+  } catch (e) {
+    console.error('Mermaid init error:', e);
+  }
+
+  window.mmZoomState = window.mmZoomState || {};
+
+  async function compileMermaidDiagrams() {
+    var containers = document.querySelectorAll('.mermaid-container');
+    if (!containers.length) return;
+
+    for (var i = 0; i < containers.length; i++) {
+      var container = containers[i];
+      var id = container.id;
+      var preEl = container.querySelector('pre.mermaid-source');
+      var stageEl = document.getElementById(id + '-stage');
+      if (!preEl || !stageEl) continue;
+
+      var code = preEl.textContent.trim();
+      mmZoomState[id] = 1.0;
+
+      try {
+        var renderId = 'mm-svg-' + id.replace(/[^a-zA-Z0-9_-]/g, '_') + '-' + i;
+        var res = await mermaid.render(renderId, code);
+        stageEl.innerHTML = res.svg;
+        var svgEl = stageEl.querySelector('svg');
+        if (svgEl) {
+          svgEl.style.maxWidth = '100%';
+          svgEl.style.height = 'auto';
+          svgEl.style.display = 'block';
+          svgEl.style.margin = '0 auto';
+          svgEl.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+        }
+      } catch (err) {
+        console.error('Mermaid render error for ' + id + ':', err);
+        stageEl.innerHTML = '<div class="mermaid-error">' +
+          '<div class="mermaid-error-title">&#9888; Diagram Compilation Notice</div>' +
+          '<p>' + (err.message || String(err)) + '</p>' +
+          '</div>';
+      }
+    }
+  }
+
+  window.mermaidZoom = function(id, factor) {
+    var stage = document.getElementById(id + '-stage');
+    if (!stage) return;
+    var svg = stage.querySelector('svg');
+    if (!svg) return;
+    mmZoomState[id] = (mmZoomState[id] || 1.0) * factor;
+    if (mmZoomState[id] < 0.25) mmZoomState[id] = 0.25;
+    if (mmZoomState[id] > 4.0) mmZoomState[id] = 4.0;
+    stage.style.transform = 'scale(' + mmZoomState[id] + ')';
+    if (mmZoomState[id] > 1.0) {
+      svg.style.maxWidth = 'none';
+    } else {
+      svg.style.maxWidth = '100%';
+    }
+  };
+
+  window.mermaidReset = function(id) {
+    var stage = document.getElementById(id + '-stage');
+    if (!stage) return;
+    var svg = stage.querySelector('svg');
+    if (!svg) return;
+    mmZoomState[id] = 1.0;
+    stage.style.transform = 'scale(1)';
+    svg.style.maxWidth = '100%';
+  };
+
+  window.mermaidToggleCode = function(id) {
+    var codeDiv = document.getElementById(id + '-code');
+    if (!codeDiv) return;
+    codeDiv.style.display = (codeDiv.style.display === 'none') ? 'block' : 'none';
+  };
+
+  window.mermaidCopy = function(id) {
+    var container = document.getElementById(id);
+    if (!container) return;
+    var codePre = container.querySelector('.mermaid-code pre code') || container.querySelector('pre.mermaid-source');
+    if (!codePre) return;
+    navigator.clipboard.writeText(codePre.textContent).then(function() {
+      var btn = container.querySelector('.mm-btn-copy');
+      if (btn) {
+        var orig = btn.innerHTML;
+        btn.innerHTML = '&#10003; Copied!';
+        btn.style.color = '#137333';
+        setTimeout(function() { btn.innerHTML = orig; btn.style.color = ''; }, 2000);
+      }
+    });
+  };
+
+  window.mermaidFullscreen = function(id) {
+    var container = document.getElementById(id);
+    if (!container) return;
+    if (!document.fullscreenElement) {
+      if (container.requestFullscreen) {
+        container.requestFullscreen().catch(function() { container.classList.toggle('is-fullscreen'); });
+      } else {
+        container.classList.toggle('is-fullscreen');
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  };
+
+  document.addEventListener('fullscreenchange', function() {
+    var containers = document.querySelectorAll('.mermaid-container');
+    containers.forEach(function(c) {
+      if (c === document.fullscreenElement) {
+        c.classList.add('is-fullscreen');
+      } else {
+        c.classList.remove('is-fullscreen');
+      }
+    });
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', compileMermaidDiagrams);
+  } else {
+    compileMermaidDiagrams();
+  }
+})();
+</script>
+
+</body>
+</html>
